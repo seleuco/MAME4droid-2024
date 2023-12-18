@@ -17,6 +17,7 @@ After installing, place your MAME-titled zipped ROMs in /storage/emulated/0/Andr
 This MAME4droid version uses only '0.261' romset. 
 
 FEATURES 
+========
 
 * Autorotate with individual settings for portrait and landscape orientation
 * Physical and touch Mouse support (autodetected)
@@ -32,7 +33,8 @@ FEATURES
 * Display 1 to 6 buttons on screen 
 * Options for video aspect ratio, scaling, rotate, etc. 
 
-MAME LICENSE 
+MAME LICENSE
+============
  
 Copyright (C) 1997-2023  MAMEDev and contributors 
  
