@@ -18,19 +18,19 @@ This MAME4droid version uses only '0.261' romset.
 
 FEATURES 
 
-*Autorotate with individual settings for portrait and landscape orientation 
-*Physical and touch Mouse support (autodetected) 
-*Virtual and full Physical keyboard support (with Keys remapping) 
-*Plug and play support for most Bluetooth and USB Gamepads 
-*Touch lightgun with auto-detection option 
-*Touch Controller can be toggled on and off 
-*Image smoothing and effects (Overlay filters including scanlines, CRT, etc.) 
-*Digital or Analog touch selectable 
-*Animated touch stick or DPAD 
-*Customizable In-App button layout 
-*Tilt Sensor replacement for joystick movement 
-*Display 1 to 6 buttons on screen 
-*Options for video aspect ratio, scaling, rotate, etc. 
+* Autorotate with individual settings for portrait and landscape orientation
+* Physical and touch Mouse support (autodetected)
+* Virtual and full Physical keyboard support (with Keys remapping) 
+* Plug and play support for most Bluetooth and USB Gamepads 
+* Touch lightgun with auto-detection option 
+* Touch Controller can be toggled on and off 
+* Image smoothing and effects (Overlay filters including scanlines, CRT, etc.) 
+* Digital or Analog touch selectable 
+* Animated touch stick or DPAD 
+* Customizable In-App button layout 
+* Tilt Sensor replacement for joystick movement 
+* Display 1 to 6 buttons on screen 
+* Options for video aspect ratio, scaling, rotate, etc. 
 
 MAME LICENSE 
  
