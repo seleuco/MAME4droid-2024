@@ -1,0 +1,81 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdk 34
+
+    ndkVersion "21.3.6528147"
+
+    defaultConfig {
+        applicationId "com.seleuco.mame4d2024"
+        minSdkVersion 29
+        targetSdkVersion 34
+        versionCode 10
+        versionName '1.0'
+        setProperty("archivesBaseName", "MAME4droid 2024-$versionName")
+        ndk {
+            moduleName "mame4droid-jni"
+            //noinspection ChromeOsAbiSupport
+            abiFilters  "arm64-v8a"
+        }
+    }
+
+    bundle {
+        language {
+            // This property is set to true by default.
+            enableSplit = false
+        }
+        density {
+            // This property is set to true by default.
+            enableSplit = false
+        }
+        abi {
+            // This property is set to true by default.
+            enableSplit = false
+        }
+    }
+
+    packagingOptions {
+		//doNotStrip "**/*.so" //CUIDADO QUITAR EN RELEASE. Lo he añadido al final con nueva sintaxis
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
+    buildTypes {
+        release {
+			//minifyEnabled true
+			minifyEnabled false
+			//shrinkResources true
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+			signingConfig signingConfigs.debug
+		}
+		debug {
+			minifyEnabled false
+			debuggable true
+			jniDebuggable true
+			//renderscriptDebuggable true
+		}
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path file('src/main/jni/Android.mk')
+        }
+    }
+
+    namespace 'com.seleuco.mame4droid'
+
+}
+
+dependencies {
+	//implementation "androidx.annotation:annotation:1.7.0"
+}
+
+androidComponents {
+	onVariants(selector().withBuildType("debug")) {
+		packaging.jniLibs.keepDebugSymbols.add("**/*.so")
+	}
+
+	registerSourceType("../../../../src") // will cause src/main/foobar (and src/debug/foobar etc.) to appear as sources in Android Studi
+}

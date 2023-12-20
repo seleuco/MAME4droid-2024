@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>MAME4Droid Reloaded Help</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="mystyle.css">
+
+</head>
+<body class="view">
+<div class="page">
+    <div class="header">
+        <h1 class="title">Installation</h1>
+    </div><!-- /header -->
+    <div class="content">
+        <h3>First Time Installation</h3>
+        <p>When MAME4droid is first run, it will create a folder structure for you on the internal
+            memory of your Android device.</p>
+        <p>The default folder is: <em>/sdcard/MAME4droid/</em> (check out 2020 note)</p>
+        <p>This folder contains all the other folders MAME uses as well as some basic configuration
+            files.</p>
+        <p>Since MAME4droid does not come with game ROM files, you will need to copy them to the<em>
+            /sdcard/MAME4droid/roms</em> folder yourself. These should be properly named, ZIPped
+            MAME v1.39u1 ROMs files with the filenames in all lower case.</p>
+        <p>2023 Note: From Android 10 Google has added scoped storage. That means applications can
+            no longer read anywhere on the SD card, only in their own directories if I am not using
+            Android document APIs. So, I have implemented scoped storage support using android
+            storage access framework (SAF), that's way, now you can store/read ROM's files from a
+            custom folder in your external storage using Android 10+. SAF is more slow than native
+            file access support but I have implemented file caching so the performance is good
+            enough. Anyway, avoid to use ROM's folders with subdirectories and try to store in the
+            ROMs folder only the MAME4droid ROM's files. You can avoid using SAF selecting an
+            internal MAME4droid folder on install, normally
+             <em>/sdcard/Android/data/com.seleuco.mame4droid/files</em>.
+            This is fastest but you will lose your ROMs files when you uninstall MAME4droid.
+        </p>
+        <p>
+        <h3>Update/ Custom Installation</h3>
+        <p>MAME4droid (0.l39u1) version 1.7 (January 7th, 2015) made some changes to the default
+            locations and installation due to the enhanced SD Card security of KitKat and Lollipop
+            versions of the Android operating system. This can have an adverse effect on previous
+            installations of MAME4droid users while helping those with these versions of
+            Android.</p>
+        <p>Your ROMs are still safe and sound - right where you left them which is probably on your
+            external microSD card. The quick fix is to simply go into <em>Options-&gt;Settings-&gt;General-&gt;Change
+                ROMs Path</em>. Point this to your actual ROMs folder (not your MAME4droid folder).
+            If you have no custom filters or have 'favorites' turned on, you should now see all your
+            ROMs as you remember them.</p>
+        <p>Even changing your ROMs path, you may appear to lose configuration settings like
+            favorites and more. One fix? Copy all the files (not folders) from the root of your
+            MAME4droid folder (mame4droid.cfg, favorites.ini, etc) to /<em>/sdcard/MAME4droid</em>.
+            Overwrite any files already there. Restart MAME4droid.</p>
+        <p>If you are an advanced user, you may relocate the entire installation (not just the ROMs
+            folder) to another location (like the one you had before). You'll need the full path to
+            your installation. You may change this under <em>Options-&gt;Settings-&gt;Advanced-&gt;Installation
+                Path</em>. Be careful using this option; if you chose a valid but incorrect path, a
+            complete new installation of MAME4droid will be made there. Recommended for experienced
+            users only.</p>
+        <h3>Folder Configuration</h3>
+        <p>MAME4droid can make use of many advanced MAME features such as bezel and marquee artwork
+            and sound samples (for games that require them). Place appropriate assets into the
+            respective folders. Check out the <a class="link" href="external.htm" rel="external">Resources
+                and Assets</a> section for asset resources.</p>
+        <p>artwork/ -&gt; Artwork directory<br>
+            cfg/ -&gt; MAME configuration files directory<br>
+            hi/ -&gt; Hiscores directory<br>
+            nvram/ -&gt; NVRAM files directory<br>
+            roms/ -&gt; ROMs directory<br>
+            samples/ -&gt; Samples directory<br>
+            snap/ -&gt; Screen snapshots directory<br>
+            sta/ -&gt; Save states directory</p>
+
+    </div><!-- /content -->
+
+    <div class="header">
+        <h4 class="title"><a class="link" href="javascript:history.go(-1)" data-direction="reverse">Go
+            Back</a></h4>
+    </div>
+
+</div><!-- /page -->
+</body>
+</html>

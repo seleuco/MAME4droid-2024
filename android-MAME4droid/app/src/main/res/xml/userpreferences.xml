@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Configuration">
+
+    <PreferenceScreen
+            android:key="PREFSCR_EMU"
+            android:title="Emulation"
+            android:summary="Select it to open emulation options"
+            android:persistent="false">
+
+		<com.seleuco.mame4droid.prefs.ListPrefWithWarn
+			android:entries="@array/pref_resolution_options"
+			android:title='Emulated resolution'
+			android:key="PREF_EMU_RESOLUTION"
+			android:entryValues="@array/pref_resolution_values"
+			android:defaultValue="1" />
+
+	    <com.seleuco.mame4droid.prefs.ListPrefWithWarn
+			android:entries="@array/pref_sound_options"
+			android:title='Sound'
+			android:key="PREF_EMU_SOUND"
+			android:entryValues="@array/pref_sound_values"
+			android:defaultValue="44100" />
+
+	   	<CheckBoxPreference android:key="PREF_EMU_SHOW_FPS"
+			android:title="Show FPS" android:summary="Enable it to turn FPS display on"
+			android:defaultValue="false" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_AUTO_FRAMESKIP"
+			android:title="Auto frameskip" android:summary="Enable it to turn auto frameskip on"
+			android:defaultValue="false" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="CHEATS"
+			android:title="Cheats" android:summary="Enables the reading of the cheat database"
+			android:defaultValue="false" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="SKIP_GAMEINFO"
+			android:title="Skip game info " android:summary="Forces to skip displaying the system info screen"
+			android:defaultValue="false" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_DISABLE_DRC"
+			android:title="Disable DRC" android:summary="Disable DRC (dynamic recompiler) CPU core if available for maximum compability but less performance."
+			android:defaultValue="false" android:disableDependentsState="true" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_DRC_USE_C"
+			android:title="DRC use C" android:summary="Force DRC to use the C code backend so ARM64 devices works."
+			android:defaultValue="true" android:dependency="PREF_EMU_DISABLE_DRC" />
+
+	<!--
+	   	<CheckBoxPreference android:key="PREF_GLOBAL_AUTOSAVE"
+			android:title="Autosave" android:summary="When enabled, automatically creates a save state file when exiting a game."
+			android:defaultValue="false" />
+	-->
+
+	    <PreferenceScreen android:key="vector" android:title="Vector"
+	        android:summary="Select it to open vector games options" android:persistent="false">
+
+	    <com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_BEAM2X"
+			android:title="Beam 2x" android:summary="Sets the width of the vectors to 2x"
+			android:defaultValue="true" />
+
+	    <com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_FLICKER"
+			android:title="Flicker" android:summary="Simulates a vector flicker effect"
+			android:defaultValue="false" />
+
+	    </PreferenceScreen>
+
+	    <PreferenceScreen android:key="defaultData"
+			android:title="Default MAME data" android:summary="Restore MAME data to default values (cfg and nvram files)" />
+
+	</PreferenceScreen>
+
+	<PreferenceScreen android:key="inputSettings" android:title="Input"
+	    android:summary="Select it to open input options" android:persistent="false">
+
+    <PreferenceScreen android:key="touchController" android:title="Touch controller"
+	        android:summary="Select it to open touch controller options" android:persistent="false">
+
+		<ListPreference
+			android:entries="@array/pref_controller_type_options"
+			android:title='Mode'
+			android:key="PREF_CONTROLLER_TYPE"
+			android:entryValues="@array/pref_controller_type_values"
+			android:defaultValue="1" />
+
+        <PreferenceScreen android:key="customControlLayout"
+			android:title="Customize layout" android:summary="Select to customize fullscreen touch control layout" />
+
+		<PreferenceScreen android:key="defaultControlLayout"
+			android:title="Default layout" android:summary="Restore fullscreen touch control layout to default values" />
+
+		<ListPreference
+			android:entries="@array/pref_buttons_size_options"
+			android:title='Buttons size (fullscreen)'
+			android:key="PREF_BUTTONS_SIZE"
+			android:entryValues="@array/pref_buttons_size_values"
+			android:defaultValue="3" />
+
+		<ListPreference
+			android:entries="@array/pref_buttons_size_options"
+			android:title='Stick and DPAD size (fullscreen)'
+			android:key="PREF_STICK_SIZE"
+			android:entryValues="@array/pref_buttons_size_values"
+			android:defaultValue="3" />
+
+		<ListPreference
+			android:entries="@array/pref_numbuttons_options"
+			android:title='Number of buttons (fullscreen) '
+			android:key="PREF_NUMBUTTONS"
+			android:entryValues="@array/pref_numbuttons_values"
+			android:defaultValue="-1" />
+
+		<CheckBoxPreference android:key="PREF_HIDE_STICK"
+			android:title="Hide stick" android:summary="Enable to hide stick or dpad when fullscreen"
+			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="PREF_ANIMATED_INPUT"
+			android:title="Animated" android:summary="Animated touch control. Disable for performance boost"
+			android:defaultValue="true" />
+
+		<CheckBoxPreference android:key="PREF_VIBRATE"
+			android:title="Vibrate" android:summary="Enable to vibrate when touch"
+			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="PREF_TOUCH_DZ"
+			android:title="Digital dead zone" android:summary="Enable Touch Dead Zone"
+			android:defaultValue="true" />
+
+	    <ListPreference
+			android:entries="@array/pref_dz_options"
+			android:title='Analog dead zone'
+			android:key="PREF_ANALOG_DZ"
+			android:entryValues="@array/pref_dz_values"
+			android:defaultValue="2" />
+
+	</PreferenceScreen>
+
+    <PreferenceScreen android:key="externalController" android:title="Game controller"
+	        android:summary="Select it to open external controller options" android:persistent="false">
+
+		<CheckBoxPreference android:key="PREF_CONTROLLER_AUTODETECT"
+			android:title="Controller autodetect" android:summary="Try to detect game controllers (like Xbox one controller) to automatic controller mapping"
+			android:defaultValue="True"/>
+
+		<PreferenceScreen android:key="defineKeys"
+			android:title="Define keys" android:summary="Select to map emulator stick and buttons to physical keys or buttons" />
+
+		<PreferenceScreen android:key="defaultsKeys"
+			android:title="Default keys" android:summary="Restore keys to default values" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_INPUT_FAKE_ID"
+			android:title="Return always same controller ID" android:summary="If you enable this option, multi controller support will be disabled and will always returned the same device ID when you define your controller. This is useful to persist configuration on controllers or keyboards which lose their mappings when you disconnect and connect again"
+			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="PREF_DISABLE_RIGHT_STICK"
+			android:title="Disable right stick" android:summary="Disable right stick when controller is autodetected"
+			android:defaultValue="false" android:dependency="PREF_CONTROLLER_AUTODETECT"/>
+
+	     <ListPreference
+			android:entries="@array/pref_dz_options"
+			android:title='Analog dead zone'
+			android:key="PREF_GAMEPAD_DZ"
+			android:entryValues="@array/pref_dz_values"
+			android:defaultValue="3" />
+
+    </PreferenceScreen>
+
+		<PreferenceScreen android:key="mouse" android:title="Mouse"
+			android:summary="Select it to open mouse options.\n(On touch mouse, second finger will be main fire. Third finger when second finger is pressed will be alternate fire)" android:persistent="false">
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_MOUSE"
+				android:title="Physical Mouse" android:summary="Enable physical (hardware) mouse support"
+				android:defaultValue="true" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_TOUCH_MOUSE"
+				android:title="Touch mouse" android:summary="Enable touch mouse support"
+				android:defaultValue="True" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_GAME_MOUSE"
+				android:title="Gaming touch mouse" android:summary="Enable to use touch mouse for games."
+				android:defaultValue="True" android:dependency="PREF_TOUCH_MOUSE"/>
+
+		</PreferenceScreen>
+
+		<PreferenceScreen android:key="mouse" android:title="Keyboard"
+			android:summary="Select it to open keyboard options" android:persistent="false">
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_KEYBOARD"
+				android:title="Physical keyboard" android:summary="Enable physical (hardware) keyboard support"
+				android:defaultValue="true" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_KEYBOARD_HIDE_CONTROLLER"
+				android:title="Hide touch controller" android:summary="Enable to auto hide touch controller when physical keyboard is detected"
+				android:defaultValue="True" android:dependency="PREF_KEYBOARD"/>
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_VIRTUAL_KEYBOARD"
+				android:title="Virtual keyboard" android:summary="Enable virtual keyboard support"
+				android:defaultValue="True" />
+
+		</PreferenceScreen>
+
+		<PreferenceScreen android:key="lightgunController" android:title="Touch lightgun"
+			android:summary="Select it to open touch lightgun options.\n(First finger will be main fire. Second finger when first finger is pressed will be alternate fire)" android:persistent="false">
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_LIGHTGUN"
+				android:title="Touch lighgun" android:summary="Enable to use touch lightgun for games."
+				android:defaultValue="True" />
+
+			<CheckBoxPreference android:key="PREF_BOTTOM_RELOAD"
+				android:title="Bottom as reload" android:summary="Touch at the bottom of the screen to get off-screen reload"
+				android:defaultValue="True" android:dependency="PREF_TOUCH_LIGHTGUN"/>
+
+		</PreferenceScreen>
+
+
+	<PreferenceScreen android:key="tiltController" android:title="Tilt controller"
+	    android:summary="Select it to open tilt controller options" android:persistent="false">
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TILT_SENSOR"
+			android:title="Tilt sensor"
+			android:summary="Enable to use tilt sensor for games."
+			android:defaultValue="false" />
+
+	    <ListPreference
+			android:entries="@array/pref_dz_options"
+			android:title='Dead zone'
+			android:key="PREF_TILT_DZ"
+			android:entryValues="@array/pref_dz_values"
+			android:defaultValue="3" android:dependency="PREF_TILT_SENSOR"/>
+
+		<com.seleuco.mame4droid.prefs.SensitivityPrefScreen
+			android:key="PREF_TILT_SENSITIVITY"
+			android:title="Sensitivity"
+			android:summary="Set tilt sensor sensitivity"
+			android:defaultValue="6" android:dependency="PREF_TILT_SENSOR"/>
+
+		<ListPreference
+			android:entries="@array/pref_tilt_neutralz_options"
+			android:title='Neutral vertical position'
+			android:key="PREF_TILT_NEUTRAL"
+			android:entryValues="@array/pref_tilt_neutralz_values"
+			android:defaultValue="5" android:dependency="PREF_TILT_SENSOR" />
+
+		<CheckBoxPreference android:key="PREF_TILT_ANALOG"
+			android:title="Tilt as analog" android:summary="Enable to use tilt sensor as analog device, disable to use as digital"
+			android:defaultValue="true"  android:dependency="PREF_TILT_SENSOR"/>
+
+		<CheckBoxPreference android:key="PREF_TILT_TOUCH"
+			android:title="Touch anywhere" android:summary="Enable to tap anywhere on screen to fire. First finger is main fire. Second finger when first finger is pressed is alternate fire"
+			android:defaultValue="false"  android:dependency="PREF_TILT_SENSOR"/>
+
+		<CheckBoxPreference android:key="PREF_TILT_INVERT_X"
+			android:title="Invert X axe" android:summary="Enable to invert X axe."
+			android:defaultValue="false"  android:dependency="PREF_TILT_SENSOR"/>
+
+		<CheckBoxPreference android:key="PREF_TILT_SWAP_YZ"
+			android:title="Swap Z,Y axes" android:summary="Enable to swap Z,Y axes. This fixes vertical tilt on some devices"
+			android:defaultValue="false"  android:dependency="PREF_TILT_SENSOR"/>
+
+    </PreferenceScreen>
+
+
+		<ListPreference
+			android:entries="@array/pref_stick_options"
+			android:title='Stick type'
+			android:key="PREF_STICK_TYPE"
+			android:entryValues="@array/pref_stick_values"
+			android:defaultValue="-1" />
+
+	    <CheckBoxPreference android:key="PREF_PXASP1"
+			android:title="P4,P3,P2 as P1" android:summary="Allow a single input device to control multiple players at once. Could cause problems in some ROMs"
+			android:defaultValue="False" />
+
+    </PreferenceScreen>
+
+    <PreferenceScreen android:key="general" android:title="General"
+        android:summary="Select it to open general options" android:persistent="false">
+
+		<PreferenceScreen android:key="changeRomPath"
+			android:title="Change ROMs path" android:summary="Change roms location. You have to move ROMs files manually" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="SAVESATES_IN_ROM_PATH"
+			android:title="Save States in ROMs path" android:summary="Game states will be stored under ROM files folder. This prevents Android 11+ from deleting them when using external storage for ROMs files and uninstalling the app"
+			android:defaultValue="False" />
+
+		<com.seleuco.mame4droid.prefs.ListPrefWithWarn
+			android:title='Overlay effect'
+			android:key="PREF_OVERLAY"
+			android:entries="@array/pref_overlay_options"
+			android:entryValues="@array/pref_overlay_values"
+			android:defaultValue="none" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_GLOBAL_WARN_ON_EXIT"
+			android:title="Warn on exit" android:summary="Enable it to warn when you press the exit button when gaming"
+			android:defaultValue="true" />
+
+
+	    <com.seleuco.mame4droid.prefs.ListPrefWithWarn android:key="PREF_GLOBAL_NAVBAR_MODE"
+			android:title="Navigation bar mode"
+			android:entries="@array/pref_navbar_options"
+			android:entryValues="@array/pref_navbar_values"
+			android:defaultValue="1"/>
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_GLOBAL_USE_NOTCH"
+			android:title="Use Notch" android:summary="Expand display area to use notch area on devices supported"
+			android:defaultValue="false" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_GLOBAL_SIMPLE_UI"
+			android:title="Use simple UI" android:summary="Use the MAME simple UI instead of the cabinet one"
+			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="PREF_GLOBAL_SCALE_BEYOND"
+			android:title="Scale beyond boundaries" android:summary="Enable it to scale beyond screen boundaries when a fixed scale is selected"
+			android:defaultValue="true" />
+
+	    <CheckBoxPreference android:key="PREF_GLOBAL_OVERSCAN"
+			android:title="TV overscan" android:summary="Enable it to apply a 10 pct safe area to correct overscan issues on some TV sets"
+			android:defaultValue="false" />
+
+	</PreferenceScreen>
+
+    <PreferenceScreen android:key="advanced" android:title="Advanced"
+        android:summary="Select it to open advanced options" android:persistent="false">
+
+       <com.seleuco.mame4droid.prefs.ListPrefWithWarn
+			android:entries="@array/pref_global_video_render_options"
+			android:title='Video engine'
+			android:key="PREF_GLOBAL_VIDEO_RENDER_MODE"
+			android:entryValues="@array/pref_global_video_render_values"
+			android:defaultValue="1" />
+
+		<com.seleuco.mame4droid.prefs.ListPrefWithWarn android:entries="@array/pref_sound_engine_options"
+			android:title='Sound engine' android:key="PREF_SOUND_ENGINE"
+			android:entryValues="@array/pref_sound_engine_values"
+			android:defaultValue="1" />
+
+        <com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_DOUBLE_BUFFER"
+			android:title="Double buffer" android:summary="Avoids flickering on older devices at the expense of input latency"
+			android:defaultValue="True" />
+
+		<com.seleuco.mame4droid.prefs.ListPrefWithWarn android:entries="@array/pref_low_norm_or_hight_options"
+			android:title='Main thread priority' android:key="PREF_MAIN_THREAD_PRIORITY"
+			android:entryValues="@array/pref_low_norm_or_hight_values"
+			android:defaultValue="2" />
+
+        <com.seleuco.mame4droid.prefs.EditTextPrefWithWarn
+                android:dialogTitle="Change installation path:"
+                android:key="PREF_INSTALLATION_DIR"
+                android:title="Installation path"
+                android:defaultValue=""/>
+
+        <com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_FORCE_ALTGLPATH"
+			android:title="Alternate OpenGL path" android:summary="Enable alternate OpenGL render path. Could be faster than default path but not work on some devices (like overlay rendering)"
+			android:defaultValue="False" />
+
+		<CheckBoxPreference android:key="PREF_GLOBAL_DEBUG"
+			android:title="Debug mode" android:summary="Only for developers"
+			android:defaultValue="false" />
+
+	</PreferenceScreen>
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="Portrait Display Settings">
+
+		<ListPreference android:entries="@array/pref_scaleMode_options"
+			android:title='Scaling mode' android:key="PREF_PORTRAIT_SCALING_MODE"
+			android:entryValues="@array/pref_scaleMode_values"
+			android:defaultValue="1" />
+<!--
+		<ListPreference
+			android:title='Overlay effect' android:key="PREF_PORTRAIT_OVERLAY"
+			android:defaultValue="none" />
+-->
+		<CheckBoxPreference android:key="PREF_PORTRAIT_TOUCH_CONTROLLER"
+			android:title="Touch controller visible" android:summary="Disable to hide the touch controller. Useful when you are using a GamePad"
+			android:defaultValue="true" />
+
+		<CheckBoxPreference android:key="PREF_PORTRAIT_BITMAP_FILTERING"
+			android:title="Smooth scaling" android:summary="Select to turn bitmap filtering on"
+			android:defaultValue="true" />
+
+		<CheckBoxPreference android:key="PREF_PORTRAIT_FULLSCREEN"
+			android:title="Fullscreen" android:summary="Select to enable fullscreen portrait mode"
+			android:defaultValue="false" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="Lansdscape Display Settings">
+
+		<ListPreference android:entries="@array/pref_scaleMode_options"
+			android:title='Scaling mode' android:key="PREF_LANDSCAPE_SCALING_MODE"
+			android:entryValues="@array/pref_scaleMode_values"
+			android:defaultValue="1" />
+<!--
+		<ListPreference
+			android:title='Overlay effect ' android:key="PREF_LANDSCAPE_OVERLAY"
+			android:defaultValue="none" />
+-->
+		<CheckBoxPreference android:key="PREF_LANDSCAPE_TOUCH_CONTROLLER"
+			android:title="Touch controller visible" android:summary="Disable to hide the touch controller. Useful when you are using a GamePad"
+			android:defaultValue="true" />
+
+		<CheckBoxPreference android:key="PREF_LANDSCAPE_BITMAP_FILTERING"
+			android:title="Smooth scaling" android:summary="Select to turn bitmap filtering on"
+			android:defaultValue="true" />
+
+	</PreferenceCategory>
+
+
+</PreferenceScreen>

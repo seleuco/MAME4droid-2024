@@ -1,0 +1,33 @@
+<!DOCTYPE html> 
+
+<html>
+<head>
+<title>MAME4Droid Reloaded Help</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="mystyle.css">
+	
+</head>
+<body class="view"> 
+<div class="page">
+	<div class="header">
+<h1 class="title">Netplay</h1>
+  </div><!-- /header -->
+	<div class="content">         MAME4droid supports a simple, but effective netplay implementation over WIFI.<br>
+      <br>
+      You must specify whether you will be hosting (server) or joining (client) the game. If joining, you must also enter the host's IP address in the field below. Make sure your firewall is open on port 55435 (default; you can change it if you like) and that the port is forwarded in your router, if applicable.<br>
+      <br>
+      Host delay frame option, denotes the maximum number of frames MAME4droid will need to emulate at once to maintain synchronization due to actual network latency. You can figure out an appropriate ballpark for this number by pinging the other player and dividing the time (in milliseconds) by 16 (roughly the number of milliseconds in a frame from a game running at 60 fps). If the gameplay is a bit choppy, try increasing the number of delay frames a bit. You can change this value at real time on the host device.<br>
+      <br>
+      TIP: Try a Wi-Fi direct connection to improve netplay performance or to play without an access point. Also use a 5Ghz network to improve netplay.
+	  
+  </div><!-- /content --> 
+  
+<div class="header"> 
+<h4 class="title"><a class="link" href="javascript:history.go(-1)" data-direction="reverse">Go Back</a></h4> 
+</div>  
+  
+</div><!-- /page -->
+</body>
+</html>

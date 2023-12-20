@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>MAME4Droid Reloaded Help</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="mystyle.css">
+
+</head>
+<body class="view">
+<div class="page">
+    <div class="header">
+        <h1 class="title">Settings</h1>
+    </div><!-- /header -->
+    <div class="content">
+        <h3>Game Filter</h3>
+        <ul>
+            <li><strong>Show Only Favorites: </strong>Show only favorites games in ROM manager. To
+                set a game as a favorite, highlight the game and hit the A button (you can also
+                delete files this way). The favorites are saved to the file: Favorites.ini. This
+                file is compatible with the standard MAME Favorites.ini file format so you can copy
+                this over from your PC version of MAME.
+            </li>
+            <li><strong>Keyword: </strong>Enter a keyword to filter the games on (i.e. Mario)</li>
+            <li><strong>Hide Clones: </strong>Hides the clones and shows only the original set. For
+                example, Shao-Lin's Road is a clone of Kicker. This option would hide Shao-Lin's
+                Road and show only Kicker.
+            </li>
+            <li><strong>Hide Not Working:</strong> Hides games that MAME reports as not working.
+            </li>
+            <li><strong>Year &gt;=:</strong> Show only games released on this year or later.</li>
+            <li><strong>Year &lt;=: </strong>Show only games released on this year or earlier.</li>
+            <li><strong>Manufacturer:</strong> Show only games released by the given manufacturer.
+            </li>
+            <li><strong>Driver Source:</strong> Many games share a similar driver. This will show
+                only the given driver. For example, <em>williams</em> would show Robotron, Defender,
+                Bubbles, etc.
+            </li>
+            <li><strong>Category:</strong> Shows games that match a given category.</li>
+            <li><strong>Reset Filters to Default:</strong> Resets all filters.</li>
+        </ul>
+        <h3>Emulation</h3>
+        <ul>
+            <li><strong>Auto Switch Resolution:</strong> Auto switch resolution to original arcade
+                resolution instead emulated resolution. This option improves performance and fits
+                arcade aspect ratios to screen boundaries.
+            </li>
+            <li><strong>Emulated Resolution: </strong>Force MAME internal drawing resolution, use
+                hi-res resolution to improve artwork rendering at the expense of performance or to
+                minimize 4:3 scaling artifacts.
+            </li>
+            <li><strong>Refresh speed (Video sync):</strong> Lets you change the default game speed
+                to sync with the selected refresh rate. It's useful to avoid jitter on some games or
+                devices.
+            </li>
+            <li><strong>Audio Sync:</strong> Enable it to get smoother gameplay and better sound in
+                some cases. You should also disable Throttle, and set manual frame skip to 6 or 8 if
+                needed.
+            </li>
+            <li><strong>Emulated Speed:</strong> Changes the way MAME throttles gameplay such that
+                the game runs at some multiplier of the original speed. It's useful to make higher
+                demanding games playable using lower nominal speed ( ex, 80%).
+            </li>
+            <li><strong>Throttle:</strong> Configures the default throttling setting. When
+                throttling is on, MAME attempts to keep the game running at the game's intended
+                speed. When throttling is off, MAME runs the game as fast as it can. Note that the
+                fastest speed is more often than not limited by your graphics card, especially for
+                older games.
+            </li>
+            <li><strong>Frame Skip:</strong> Specifies the frameskip value. This is the number of
+                frames out of every 12 to drop when running. For example, if you select a frame skip
+                value of 2, then MAME will display 10 out of every 12 frames. By skipping those
+                frames, you may be able to get full speed in a game that requires more horsepower
+                than your device has. The default value is auto frameskip that automatically
+                determines the frameskip level while you're playing the game, adjusting it
+                constantly in a frantic attempt to keep the game running at full speed.
+            </li>
+            <li><strong>Sound:</strong> Enable or disable sound altogether. Also Sets the audio
+                sample rate. Smaller values (e.g. 11025) cause lower audio quality but faster
+                emulation speed. Higher values (e.g. 48000) cause higher audio quality but slower
+                emulation speed.
+            </li>
+            <li><strong>Show FPS:</strong> Toggles the display of Frames Per Second - useful for
+                benchmarking..
+            </li>
+            <li><strong>Show Info/Warnings:</strong> Shows Game Info and any warnings when a game is
+                selected.
+            </li>
+            <li><strong>Cheats: </strong>Enables use of the cheat database. If the cheat database is
+                present, it will also enable the Cheat menu in the MAME native user interface (press
+                coin+start at the same time when gaming).
+            </li>
+            <li><strong>Save battery:</strong> Allows MAME to give time back to the system (sleep)
+                when running with throttle turned on. This allows other programs to have some CPU
+                time, assuming that the game isn't taxing 100% of your CPU resources. This option
+                can potentially cause hiccups in performance if other demanding programs are
+                running.
+            </li>
+            <li><strong>Aspect</strong>
+                <ul>
+                    <li><strong>MAME (original arcade):</strong> Use the original aspect ratio.</li>
+                    <li><strong>Forced Pixel Aspect (and resolution):</strong> Enable it to force
+                        pixel aspect ratio bypassing MAME video selection.
+                    </li>
+                    <li><strong>Forced Pixel Aspect (smart, fixed resolution):</strong> Enable it to
+                        force pixel aspect ratio bypassing MAME video selection if is better.
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Forced Refresh Rate (Hz)</strong> Lets you force the default game refresh
+                rate to sync with the device display. Beware, some games could not work if you
+                change their default refresh rate.
+            </li>
+            <li><strong>Save Hiscores:</strong> If enabled, saves hiscores on some games not saving
+                on NVRAM. It could cause problems with some games or save states.
+            </li>
+            <li><strong>Custom BIOS:</strong> For NeoGeo games. Allows the use of other BIOS files
+                such as Unibios instead of the MVS default one.
+            </li>
+            <li><strong>Vector</strong>
+                <ul>
+                    <li><strong>Beam 2x: </strong>Sets the width of the vectors to 2x.</li>
+                    <li><strong>Antialias: </strong>Enables antialiased line rendering for vector
+                        games.
+                    </li>
+                    <li><strong>Flicker:</strong> Simulates a vector &quot;flicker&quot; effect,
+                        similar to a vector monitor that needs adjustment.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <h3>Input</h3>
+        <ul>
+            <li><strong>Touch Controller</strong>
+                <ul>
+                    <li><strong>Mode</strong> (Touch Type)
+                        <ul>
+                            <li><strong>Digital DPAD:</strong> The controller is a digital DPAD.
+                                Some games need it or are better suited for this kind of controller.
+                            </li>
+                            <li><strong>Digital Stick:</strong> This is the old one faked analog
+                                stick.
+                            </li>
+                            <li><strong>Analog-Digital. (Performance):</strong> The controller is a
+                                full analog stick, MAME map it to a digital stick if needed. It's
+                                painted for performance.
+                            </li>
+                            <li><strong>Analog-Digital (Pretty): </strong>The controller is a full
+                                analog stick.
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Customize Layout: </strong>Select to customize landscape touch
+                        control layout. You should press 'back' when you finish.
+                    </li>
+                    <li><strong>Default Touch Layout:</strong> Restore landscape control layout to
+                        default values.
+                    </li>
+                    <li><strong>Buttons Size:</strong> Select the buttons size when you are on
+                        fullscreen (landscape)
+                    </li>
+                    <li><strong>Stick and DPAD Size:</strong> Select the stick DPAD size when you
+                        are on fullscreen (landscape)
+                    </li>
+                    <li><strong>Number of buttons (fullscreen):</strong> Set the number of buttons
+                        on the screen (landscape)
+                    </li>
+                    <li><strong>Hide Stick:</strong> Enable to hide stick on full screen mode.</li>
+                    <li><strong>Animated:</strong> Animates ON/OFF DPad/Stick. Disable to for better
+                        performance.
+                    </li>
+                    <li><strong>Vibrate:</strong> Enable/Disable device vibration when buttons or
+                        dpad/stick is touched.
+                    </li>
+                    <li><strong>Digital Dead Zone:</strong> Enable/Disable a deadzone on DPAD touch
+                        center. It could be better for some games. Disable if you don't like it.
+                    </li>
+                    <li><strong>Analog Dead Zone:</strong> Select the deadzone amount on stick touch
+                        center.
+                    </li>
+                </ul>
+            </li>
+            <li><strong>External Controller</strong>
+                <ul>
+                    <li><strong>Mode</strong>
+                        <ul>
+                            <li><strong> Keyboard or IME:</strong> Select this value to use an
+                                external keyboard or devices based on keyboard IMEs like
+                                WiiController.
+                            </li>
+                            <li><strong> Controller Autodetection:</strong> Plug and play detection
+                                of many USB / Bluetooth controllers. Supports multiple controllers.
+                            </li>
+                            <li><strong>Original iCade: </strong>Select this value to use iON's
+                                iCade controller. Pair via Bluetooth before selecting this option.
+                            </li>
+                            <li><strong> iCP, Gametel or iCade compatible: </strong>Select this
+                                value to use an iCade compatible layout. Controller should be
+                                configured on iCade mode.
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Define Keys:</strong> Let you define or map the HW keys to emulator
+                        controls. (Xperia Play and any other devices with physical keyboards users
+                        should configure their buttons or keys here). If a gamepad is auto detected,
+                        you should disable autodetection to redefine buttons. You can remap the
+                        controls for all four players here.
+                    </li>
+                    <li><strong>Default Keys:</strong> Restore key mappings to default settings.
+                    </li>
+                    <li><strong>Automap options:</strong> Let you define the Thumbs or L1,L2 buttons
+                        behavior when a GamePad is autodetected. Use this to change Coin and Start
+                        button mappings between multiple selections.
+                    </li>
+                    <li><strong>Warn on exit:</strong> Enable this to warn when you press the Exit
+                        button on the external controller (GamePad) during game play.
+                    </li>
+                    <li><strong>Disable right stick:</strong> Disable right stick when it is
+                        autodetected.
+                    </li>
+                    <li><strong>Analog Dead Zone:</strong> Select the deadzone amount on external
+                        GamePad analog nubs.
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Tilt Controller</strong>
+                <ul>
+                    <li><strong>Tilt sensor:</strong> Enable to use tilt sensor. This lets you use
+                        the built in gyroscope and accelerometer to simulate joystick control. Great
+                        for shooting games to add some challenge instead of using the touch screen.
+                    </li>
+                    <li><strong>Tilt sensor dead zone: </strong>Select the deadzone amount on tilt
+                        sensor.
+                    </li>
+                    <li><strong>Tilt sensor sensitivity:</strong> Set tilt sensor sensitivity on x
+                        and z axis.
+                    </li>
+                    <li><strong>Tilt sensor neutral vertical position: </strong>Set tilt rest
+                        position on z axis.
+                    </li>
+                    <li><strong>Tilt as analog: </strong>Enable to use tilt sensor as analog device,
+                        disable to use as digital.
+                    </li>
+                    <li><strong>Touch anywhere:</strong> Enable to tap anywhere on screen to fire.
+                        First finger is main fire. Second finger when first finger is pressed is
+                        alternate fire
+                    </li>
+                    <li><strong>Invert X Axe</strong> - Inverts the X axis so tilt controls feel
+                        more like a control yoke (for Star Wars, etc.)
+                    </li>
+                    <li><strong>Swap Z,Y axes: </strong>Enable to swap Z,Y axes. This fix vertical
+                        tilt on some devices.
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Touch lightgun</strong>: Enable to tap on touchscreen as a lightgun. First
+                finger is main fire. Second finger when first finger is pressed is alternate
+                <ul>
+                    <li><strong>Mode</strong>
+                        <ul>
+                            <li><strong>Auto</strong>: Light gun games will automatically be
+                                detected by MAME4droid and the Touch Lightgun will be automatically
+                                enabled.
+                            </li>
+                            <li><strong>Disabled</strong>: Touch Lightgun is disabled</li>
+                            <li><strong>Enabled: </strong>Turn on Touch Lightgun. Useful if a
+                                lightgun game fails to be detected by MAME4droid.
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Bottom as reload:</strong> Enable this option to allow shooting the
+                        bottom of the screen instead of off the screen (Lethal Enforcers, etc. in
+                        landscape, full scaled mode)
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Nvidia Shield</strong>
+                <ul>
+                    <li><strong>Nvidia Shield mouse:</strong> Enable mouse support on Nvidia Shield
+                        devices. Also lets you use advanced arcade controllers features like
+                        X-Arcade tankstick trackball on Nvidia Shield devices.
+                    </li>
+                    <li><strong>Shield Controller as a mouse:</strong> Enable to use right stick on
+                        Shield Controller as a mouse instead as a second stick. That's way you can
+                        play better games like Arkanoid but you lose second stick support for games
+                        like Robotron.
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Button A as Autofire:</strong> Set the A button to be autofire. Allows for
+                nine different speed variations.
+            </li>
+            <li><strong>Stick Type:</strong> Limits the joystick's range of motion: 8-way, 4-way,
+                2-way. Arcade game control panels were often retrofitted for a different game that
+                had 4-way requirements that wouldn't function properly with an 8-way controller. A
+                classic example of this is Pac-Man. The game was originally designed for a 4-way
+                stick and is programmed to respond only when a new input occurs. If the user is
+                holding the stick in the 'down' position, then suddenly makes a motion to move to
+                the 'right', what often happens is that the stick first moves into the 'down-right'
+                diagonal. The game does not recognize as new input since 'down' is still being held.
+                However, 'right' is also now considered held, and when the user completes the motion
+                to move 'right', it is also not a new input and Pac-Man will still be moving 'down'.
+            </li>
+            <li><strong>P4,P3,P2 as P1: </strong>Send Player 1 input data to Player 2, 3, 4 so you
+                can use the 2-4 players at the same time. Funny :). It makes some weird problems
+                with some ROMs like Dungeons &amp; Dragons.
+            </li>
+            <li><strong>Save-Load Combo:</strong> Enable it to press START+R1 to load a game and
+                START+L1 to save a game.
+            </li>
+        </ul>
+        <h3>General</h3>
+        <ul>
+            <li><strong>Change ROMs path:</strong> Change current ROMs path. This doesn't change the
+                MAME4droid application folder, just where the ROMs can be found. You'll need to move
+                the ROMs accordingly, of course. This is useful for storing your ROMs on an external
+                storage while keeping the game settings, etc. stored internally. If you want to
+                change the entire MAME4droid application folder, look under Advanced. Requires
+                application restart.
+            </li>
+            <li><strong>Save States in ROMs path:</strong> Game states will be stored under ROM
+                files folder. This prevents Android 11+ from deleting them when using external
+                storage for ROMs files and uninstalling the app.
+            </li>
+            <li><strong>Image Enhancer: </strong>This setting allows you to apply HQx bitmap
+                smoothing techniques to give the games a less pixelated look. HQ2x - HQ4x is
+                supported. To learn more about HQx, <a class="link"
+                                                       href="http://en.wikipedia.org/wiki/Hqx"
+                                                       target="new">see this wiki</a>. Beware, HQx
+                is CPU intensive. Use with high end devices.
+            </li>
+            <li><strong>True RGB:</strong> Performs more accurate rendering of true colors but at
+                the expense of performance. This will also improve the quality of artwork assets.
+                Requires application restart.
+            </li>
+            <li><strong>Notification Icon:</strong> Enable it to show a notification icon when
+                MAME4droid is suspended.
+            </li>
+            <li><strong>Navigation bar mode:</strong> Hide or dim navigation bar on Android versions
+                4.2 and higher. You can select immersive mode on Android versions 4.4 and higher.
+                Disable if you have problems with full screen modes.
+            </li>
+            <li><strong>Scale beyond boundaries:</strong> Enable it to scale beyond screen
+                boundaries if a fixed scale mode is selected.
+            </li>
+            <li><strong>TV overscan:</strong> Enable it to apply a 10% &quot;safe area&quot; to
+                correct overscan issues on some TV sets.
+            </li>
+        </ul>
+        <h3>Advanced</h3>
+        <ul>
+            <li><strong>Video Engine</strong>
+                <ul>
+                    <li><strong> SW:</strong> Software rendering. More accurate. Higher device
+                        compatibility.
+                    </li>
+                    <li><strong>GL:</strong> Open GL ES 1.1 or above. This should be your choice if
+                        it works fine for you. Faster rendering even with image filtering.
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Sound Engine:</strong> Set the audio Engine. AudioTrack for safety. OpenSL
+                for performance and low latency on capable devices.
+            </li>
+            <li><strong>Threaded Video render:</strong> Enable it to use a dedicate thread to do the
+                video rendering (performance gain on dual core devices). Disable if you have
+                stuttering, artifacts or tearing.
+            </li>
+            <li><strong>Video thread priority:</strong> Set to default value unless you have
+                problems. Requires application restart.
+            </li>
+            <li><strong>Double buffer:</strong> Avoids flickering at the expenses of performance.
+            </li>
+            <li><strong>Main thread priority:</strong> Set to default value unless you have
+                problems. Requires application restart.
+            </li>
+            <li><strong>Alternate OpenGL Path:</strong> Enable it to use the newer OpenGL render
+                path. Select it if you have performance problems with old render path. Could not
+                work in older devices (like overlay rendering)
+            </li>
+            <li><strong>Debug Mode:</strong> Enable debug mode. Only for developers.</li>
+        </ul>
+        <h3>Display Settings</h3>
+        <p>MAME4droid allows separate display settings for portrait and landscape orientations.</p>
+        <ul>
+            <li><strong>Scaling Mode</strong>
+                <ul>
+                    <li><strong>Keep Aspect:</strong> keeps the aspect ratio</li>
+                    <li><strong> Stretch to fit screen:</strong> will use all available screen.</li>
+                    <li><strong> Original</strong></li>
+                    <li><strong>Integer Scaling:</strong> For purists; get the most accurate
+                        scaling.
+                    </li>
+                    <li><strong>1.5X: </strong>1.5 original size.</li>
+                    <li><strong>2X:</strong> Double original size.</li>
+                    <li><strong> 2.5X:</strong> 2.5 original size.</li>
+                    <li> (... and so on)</li>
+                </ul>
+            </li>
+            <li><strong>Overlay Effect:</strong> Applies an image filter (scanlines, CRT) at the
+                expense of performance.
+            </li>
+            <li><strong>Touch controller visible:</strong> Hide/Show the touch controller. Disable
+                if you want to use an external controller like a keyboard, Bluetooth controller or
+                Wiimote.
+            </li>
+            <li><strong>Smooth scaling:</strong> Turn on bitmap filtering at the expense of
+                performance.
+            </li>
+            <li><strong>Fullscreen:</strong> Enable full screen (portrait orientation only)<br>
+            </li>
+        </ul>
+
+    </div><!-- /content -->
+
+    <div class="header">
+        <h4 class="title"><a class="link" href="javascript:history.go(-1)" data-direction="reverse">Go
+            Back</a></h4>
+    </div>
+
+</div><!-- /page -->
+</body>
+</html>
