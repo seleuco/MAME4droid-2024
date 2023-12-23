@@ -55,6 +55,9 @@ public class TouchLightgun implements IController {
 
 	protected int lightgun_pid = -1;
 
+	protected long millis_pressed = 0;
+	protected boolean press_on = false;
+
 	protected MAME4droid mm = null;
 
     public void setMAME4droid(MAME4droid value) {
@@ -81,13 +84,19 @@ public class TouchLightgun implements IController {
 			actionEvent == MotionEvent.ACTION_POINTER_UP ||
 			actionEvent == MotionEvent.ACTION_CANCEL) {
 			if (pid == lightgun_pid) {
+				millis_pressed = 0;
+				press_on = false;
 				lightgun_pid = -1;
 				//Emulator.setAnalogData(4, 0, 0);
 				digital_data[0] &= ~A_VALUE;
 				digital_data[0] &= ~B_VALUE;
 			} else {
-				digital_data[0] &= ~B_VALUE;
+				if(!press_on)
+				   digital_data[0] &= ~B_VALUE;
+				else
+				   digital_data[0] &= ~A_VALUE;
 			}
+
 			Emulator.setDigitalData(0, digital_data[0]);
 		} else {
 			for (int i = 0; i < event.getPointerCount(); i++) {
@@ -105,8 +114,13 @@ public class TouchLightgun implements IController {
 				x -= location[0];
 				y -= location[1];
 
-				float xf = (float) (x - mm.getEmuView().getWidth() / 2) / (float) (mm.getEmuView().getWidth() / 2);
-				float yf = (float) (y - mm.getEmuView().getHeight() / 2) / (float) (mm.getEmuView().getHeight() / 2);
+				//Log.d("LIGHTGUN"," x:"+ x+" "+" y:"+y);
+
+				float x1 = mm.getEmuView().getWidth();
+				float y1 = 	mm.getEmuView().getHeight();
+
+				float xf = (float) (x - x1 / 2) / (float) (x1 / 2);
+				float yf = (float) (y - y1 / 2) / (float) (y1 / 2);
 
 				//System.out.println("nx2:"+x+" ny2:"+y+" l0:"+location[0]+" l1:"+location[1]+" xf:"+xf+" yf:"+yf);
 
@@ -115,19 +129,45 @@ public class TouchLightgun implements IController {
 
 				if (lightgun_pid == pointerId) {
 
-					if (mm.getPrefsHelper().isBottomReload()) {
-						if (yf > 0.90)
-							yf = 1.1f;
+					if(!press_on)
+					{
+						if (mm.getPrefsHelper().isBottomReload()) {
+							if (yf > 0.90)
+								yf = 1.1f;
+						}
+
+						if (!mm.getInputHandler().getTiltSensor().isEnabled()) {
+							Log.d("LIGHTGUN","POS F1 x:"+ xf+" "+" y:"+-yf);
+							Emulator.setAnalogData(8, xf, -yf);
+						}
+
+						if ((digital_data[0] & B_VALUE) == 0)
+							digital_data[0] |= A_VALUE;
+
+						if(mm.getPrefsHelper().isLightgunLongPress()) {
+							if (millis_pressed == 0) {
+								millis_pressed = System.currentTimeMillis();
+							} else if (System.currentTimeMillis() - millis_pressed > 100 && !press_on) {
+								press_on = true;
+								digital_data[0] |= B_VALUE;
+								digital_data[0] &= ~A_VALUE;
+							}
+						}
 					}
-
-					if (!mm.getInputHandler().getTiltSensor().isEnabled())
-						Emulator.setAnalogData(8, xf, -yf);
-
-					if ((digital_data[0] & B_VALUE) == 0)
-						digital_data[0] |= A_VALUE;
 				} else {
-					digital_data[0] &= ~A_VALUE;
-					digital_data[0] |= B_VALUE;
+					if(!press_on) {
+						digital_data[0] &= ~A_VALUE;
+						digital_data[0] |= B_VALUE;
+					}
+					else
+					{
+						if (!mm.getInputHandler().getTiltSensor().isEnabled()) {
+							//Log.d("LIGHTGUN","POS F2 x:"+ xf+" "+" y:"+-yf);
+							Emulator.setAnalogData(8, xf, -yf);
+						}
+
+						digital_data[0] |= A_VALUE;
+					}
 				}
 			}
 			Emulator.setDigitalData(0, digital_data[0]);

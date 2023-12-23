@@ -119,6 +119,9 @@ public class Emulator {
 
 	final static public int KEYBOARD = 66;
 
+	final static public int ONE_PROCESSOR = 67;
+	final static public int NODEADZONEANDSAT = 68;
+
 	//set str
     final static public int SAF_PATH = 1;
     final static public int ROM_NAME = 2;

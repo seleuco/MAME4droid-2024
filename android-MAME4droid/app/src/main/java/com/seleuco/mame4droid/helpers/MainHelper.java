@@ -259,6 +259,12 @@ public class MainHelper {
             if (mm.getPrefsHelper().isDefaultData()) {
                 String dir = mm.getMainHelper().getInstallationDIR();
 
+				File a = new File(dir + File.separator + "ui/mame_avail.ini");
+				a.delete();
+
+				File b = new File(dir + File.separator + "mame.ini");
+				b.delete();
+
                 File f1 = new File(dir + File.separator + "cfg/");
                 File f2 = new File(dir + File.separator + "nvram/");
 
@@ -270,8 +276,8 @@ public class MainHelper {
             }
 
         } catch (Exception e) {
-            Toast.makeText(mm, "Failed deleting:" + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+            /*Toast.makeText(mm, "Failed deleting:" + e.getMessage(),
+                    Toast.LENGTH_LONG).show();*/
             e.printStackTrace();
         }
     }
@@ -453,6 +459,9 @@ public class MainHelper {
 		Emulator.setValue(Emulator.DRC_USE_C,
 			prefsHelper.isDRCUseC() ? 1 : 0);
 
+		Emulator.setValue(Emulator.ONE_PROCESSOR,
+			prefsHelper.isOneProcessor() ? 1 : 0);
+
 		Emulator.setValue(Emulator.SIMPLE_UI,
 			prefsHelper.isSimpleUI() ? 1 : 0);
 
@@ -466,6 +475,9 @@ public class MainHelper {
                 .isDoubleBuffer() ? 1 : 0);
         Emulator.setValue(Emulator.PXASP1, mm.getPrefsHelper()
                 .isPlayerXasPlayer1() ? 1 : 0);
+		Emulator.setValue(Emulator.NODEADZONEANDSAT, mm.getPrefsHelper()
+			.isOverrideDZandSAT() ? 1 : 0);
+
 
         Emulator.setValue(Emulator.VBEAM2X, mm.getPrefsHelper()
                 .isVectorBeam2x() ? 1 : 0);

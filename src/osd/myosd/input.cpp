@@ -510,6 +510,16 @@ void my_osd_interface::customize_input_type_list(std::vector<input_type_entry> &
             case IPT_UI_PAUSE: //no P as Pause
                 entry.defseq(SEQ_TYPE_STANDARD) = input_code();//no P default so systems natural keboards don't hung
                 break;
+            case IPT_SERVICE: //START+A+B is service
+                entry.defseq(SEQ_TYPE_STANDARD) |= (JOYCODE_START);
+                entry.defseq(SEQ_TYPE_STANDARD) += (JOYCODE_BUTTON1);
+                entry.defseq(SEQ_TYPE_STANDARD) += (JOYCODE_BUTTON2);
+                break;
+            case IPT_UI_SOFT_RESET: //SELECT+A+B is soft reset
+                entry.defseq(SEQ_TYPE_STANDARD) |= (JOYCODE_SELECT);
+                entry.defseq(SEQ_TYPE_STANDARD) += (JOYCODE_BUTTON1);
+                entry.defseq(SEQ_TYPE_STANDARD) += (JOYCODE_BUTTON2);
+                break;
 
             //SELECT+UP/RIGHT/DOWN insert 2P/3P/4P credit
             case IPT_COIN2:
@@ -631,9 +641,10 @@ void my_osd_interface::customize_input_type_list(std::vector<input_type_entry> &
             case IPT_PADDLE_V:
             //case IPT_POSITIONAL_V:
                 entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_V_INDEXED(entry.player());
-                entry.defseq(SEQ_TYPE_INCREMENT) |= JOYCODE_HAT1DOWN_INDEXED(entry.player());
-                entry.defseq(SEQ_TYPE_DECREMENT) |= JOYCODE_HAT1UP_INDEXED(entry.player());
-
+                if(entry.type()!=IPT_LIGHTGUN_Y) {
+                    entry.defseq(SEQ_TYPE_INCREMENT) |= JOYCODE_HAT1DOWN_INDEXED(entry.player());
+                    entry.defseq(SEQ_TYPE_DECREMENT) |= JOYCODE_HAT1UP_INDEXED(entry.player());
+                }
                 break;
             case IPT_AD_STICK_X:
             case IPT_TRACKBALL_X:
@@ -641,8 +652,10 @@ void my_osd_interface::customize_input_type_list(std::vector<input_type_entry> &
             case IPT_DIAL:
             case IPT_PADDLE:
                 entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_U_INDEXED(entry.player());
-                entry.defseq(SEQ_TYPE_INCREMENT) |= JOYCODE_HAT1RIGHT_INDEXED(entry.player());
-                entry.defseq(SEQ_TYPE_DECREMENT) |= JOYCODE_HAT1LEFT_INDEXED(entry.player());
+                if(entry.type()!=IPT_LIGHTGUN_X) {
+                    entry.defseq(SEQ_TYPE_INCREMENT) |= JOYCODE_HAT1RIGHT_INDEXED(entry.player());
+                    entry.defseq(SEQ_TYPE_DECREMENT) |= JOYCODE_HAT1LEFT_INDEXED(entry.player());
+                }
                 break;
             case IPT_PEDAL:
                 entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_W_INDEXED(entry.player());

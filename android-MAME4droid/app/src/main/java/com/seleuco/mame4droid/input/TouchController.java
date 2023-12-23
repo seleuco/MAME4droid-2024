@@ -552,14 +552,21 @@ public class TouchController implements IController {
 					n = 0;
 				} else if (Emulator.isSaveorload()) {
 					//n = 2;
-					n = 4;
-					//n=6;//all buttons
+					if(mm.getPrefsHelper().getNumButtons() > 4)
+						n = 5;
+					else
+					    n = 4;
 				}else if (!Emulator.isInGame() ){
-					//n = 2;
-					n = 2;
+					if(mm.getPrefsHelper().getNumButtons() > 2)
+						n = mm.getPrefsHelper().getNumButtons();
+					else
+						n = 2;
 				//n=6;//all buttons
 			    }else if(Emulator.isInGame() && Emulator.isInMenu()){
-				    n = 2;
+					if(mm.getPrefsHelper().getNumButtons() > 2)
+						n = mm.getPrefsHelper().getNumButtons();
+					else
+						n = 2;
 				} else {
 					n = mm.getPrefsHelper().getNumButtons();
 					if (n == -1) {

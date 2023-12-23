@@ -70,7 +70,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String SKIP_GAMEINFO = "SKIP_GAMEINFO";
 	final static public String PREF_EMU_DISABLE_DRC = "PREF_EMU_DISABLE_DRC";
 	final static public String PREF_EMU_DRC_USR_C = "PREF_EMU_DRC_USR_C";
-
+	final static public String PREF_EMU_ONE_PROCESSOR = "PREF_EMU_ONE_PROCESSOR";
 
     final static public String PREF_GLOBAL_AUTOSAVE = "PREF_GLOBAL_AUTOSAVE";
     final static public String PREF_GLOBAL_DEBUG = "PREF_GLOBAL_DEBUG";
@@ -130,6 +130,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
     final static public String PREF_FORCE_ALTGLPATH = "PREF_FORCE_ALTGLPATH";
     final static public String PREF_PXASP1 = "PREF_PXASP1";
+	final static public String PREF_NODEADZONEANDSAT = "PREF_NODEADZONEANDSAT";
     final static public String SAVESATES_IN_ROM_PATH = "SAVESATES_IN_ROM_PATH";
 
     final static public String PREF_BEAM2X = "PREF_BEAM2X";
@@ -143,6 +144,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_OVERLAY = "PREF_OVERLAY";
 
     final static public String PREF_MAME_DEFAULTS = "PREF_MAME_DEFAULTS";
+	final static public String PREF_LIGHTGUN_LONGPRESS = "PREF_LIGHTGUN_LONGPRESS";
     final static public String PREF_BOTTOM_RELOAD = "PREF_BOTTOM_RELOAD";
 
     final static public int LOW = 1;
@@ -300,6 +302,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		return getSharedPreferences().getBoolean(PREF_EMU_DRC_USR_C, true);
 	}
 
+	public boolean isOneProcessor() {
+		return getSharedPreferences().getBoolean(PREF_EMU_ONE_PROCESSOR, true);
+	}
+
     public boolean isAutosave() {
         return getSharedPreferences().getBoolean(PREF_GLOBAL_AUTOSAVE, false);
     }
@@ -353,6 +359,9 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	}
 
 	public boolean isTouchGameMouse() {
+
+		if(!isTouchMouseEnabled())
+			return false;
 
 		if(!getSharedPreferences().getBoolean(PREF_TOUCH_GAME_MOUSE, true))
 			return false;
@@ -552,6 +561,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
         return getSharedPreferences().getBoolean(PREF_PXASP1, false);
     }
 
+	public boolean isOverrideDZandSAT() {
+		return getSharedPreferences().getBoolean(PREF_NODEADZONEANDSAT, true);
+	}
+
     public boolean isVectorBeam2x() {
         return getSharedPreferences().getBoolean(PREF_BEAM2X, true);
     }
@@ -608,6 +621,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     public boolean isBottomReload() {
         return getSharedPreferences().getBoolean("PREF_BOTTOM_RELOAD", true);
     }
+
+	public boolean isLightgunLongPress() {
+		return getSharedPreferences().getBoolean("PREF_LIGHTGUN_LONGPRESS", true);
+	}
 
     public boolean isFakeID() {
         return getSharedPreferences().getBoolean(PREF_INPUT_FAKE_ID, false);

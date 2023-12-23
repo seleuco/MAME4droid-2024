@@ -17,6 +17,10 @@
 			android:entryValues="@array/pref_resolution_values"
 			android:defaultValue="1" />
 
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_ONE_PROCESSOR"
+			android:title="Only one processor" android:summary="Enable it so that games that use discrete sound like dkong don't hung. Disable it to get a great improvement in 3D games that are capable of taking advantage of several threads."
+			android:defaultValue="true" />
+
 	    <com.seleuco.mame4droid.prefs.ListPrefWithWarn
 			android:entries="@array/pref_sound_options"
 			android:title='Sound'
@@ -141,7 +145,7 @@
 	        android:summary="Select it to open external controller options" android:persistent="false">
 
 		<CheckBoxPreference android:key="PREF_CONTROLLER_AUTODETECT"
-			android:title="Controller autodetect" android:summary="Try to detect game controllers (like Xbox one controller) to automatic controller mapping"
+			android:title="Controller autodetect" android:summary="Try to detect game controllers (like Xbox one controller) to automatic controller mapping and to use advanced features like analog triggers"
 			android:defaultValue="True"/>
 
 		<PreferenceScreen android:key="defineKeys"
@@ -208,6 +212,10 @@
 				android:title="Touch lighgun" android:summary="Enable to use touch lightgun for games."
 				android:defaultValue="True" />
 
+			<CheckBoxPreference android:key="PREF_LIGHTGUN_LONGPRESS"
+				android:title="Long press as button two" android:summary="Enable to use first finger long press as button two. Useful for t.crisis"
+				android:defaultValue="True" android:dependency="PREF_TOUCH_LIGHTGUN"/>
+
 			<CheckBoxPreference android:key="PREF_BOTTOM_RELOAD"
 				android:title="Bottom as reload" android:summary="Touch at the bottom of the screen to get off-screen reload"
 				android:defaultValue="True" android:dependency="PREF_TOUCH_LIGHTGUN"/>
@@ -268,6 +276,10 @@
 			android:key="PREF_STICK_TYPE"
 			android:entryValues="@array/pref_stick_values"
 			android:defaultValue="-1" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_NODEADZONEANDSAT"
+			android:title="Override SAT and DZ" android:summary="Override MAME deadzone and saturation so touch stick and lightgun are accurate"
+			android:defaultValue="True" />
 
 	    <CheckBoxPreference android:key="PREF_PXASP1"
 			android:title="P4,P3,P2 as P1" android:summary="Allow a single input device to control multiple players at once. Could cause problems in some ROMs"

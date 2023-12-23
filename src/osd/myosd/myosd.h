@@ -38,6 +38,12 @@ extern int myosd_display_height;
 //  OPTIONS
 //============================================================
 
+#define KEYBOARDINPUT_PROVIDER   "keyboardprovider"
+#define MOUSEINPUT_PROVIDER      "mouseprovider"
+#define LIGHTGUNINPUT_PROVIDER   "lightgunprovider"
+#define JOYSTICKINPUT_PROVIDER   "joystickprovider"
+
+
 #define OPTION_HISCORE  "hiscore"
 #define OPTION_BEAM     "beam"
 #define OPTION_BENCH    "bench"
@@ -95,6 +101,7 @@ public:
     virtual void output_callback(osd_output_channel channel, const util::format_argument_pack<char> &args) override;
 
     // getters
+    bool isMachine() {return m_machine!=nullptr;}
     running_machine &machine() const { assert(m_machine != nullptr); return *m_machine; }
     render_target *target() const { assert(m_target != nullptr); return m_target; }
     emu_options &options() { return m_options; }

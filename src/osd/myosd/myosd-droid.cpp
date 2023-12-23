@@ -104,6 +104,8 @@ static int myosd_droid_enable_drc_use_c = 1;
 static int myosd_droid_simple_ui = 0;
 static int myosd_droid_prev_pause = 0;
 static int myosd_droid_pause = 0;
+static int myosd_one_processor = 0;
+static int myosd_droid_no_dzsat = 0;
 
 //vector options
 static int myosd_droid_vector_beam2x = 1;
@@ -325,6 +327,12 @@ void myosd_droid_setMyValue(int key, int i, int value) {
             break;
         case com_seleuco_mame4droid_Emulator_KEYBOARD:
             myosd_droid_keyboard_enable = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_ONE_PROCESSOR:
+            myosd_one_processor = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_NODEADZONEANDSAT:
+            myosd_droid_no_dzsat = value;
             break;
     }
 }
@@ -1030,10 +1038,12 @@ int myosd_droid_main(int argc, char **argv) {
         n++;
     }
 
-    args[n] = (char *) "-numprocessors";
-    n++;
-    args[n] = (char *) "1"; //thats way dkong works
-    n++;
+    if(myosd_one_processor) {
+        args[n] = (char *) "-numprocessors";
+        n++;
+        args[n] = (char *) "1"; //thats way dkong works
+        n++;
+    }
 
     args[n] = (char *) "-ui_active";
     n++;
@@ -1095,6 +1105,14 @@ int myosd_droid_main(int argc, char **argv) {
     if(myosd_droid_auto_frameskip)
     {
         args[n] = (char *) "-afs";n++;
+    }
+
+    if(myosd_droid_no_dzsat)
+    {
+        args[n] = (char *) "-jdz";n++;
+        args[n] = (char *) "0.0";n++;
+        args[n] = (char *) "-jsat";n++;
+        args[n] = (char *) "1.0";n++;
     }
 
     myosd_main(n, args, &callbacks, sizeof(callbacks));

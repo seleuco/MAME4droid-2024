@@ -28,9 +28,12 @@
 
 #include "uiinput.h"
 
+#include "modules/lib/osdobj_common.h"
+
 // OSD headers
 #include "video.h"
 #include "myosd.h"
+
 
 #include <android/log.h>
 
@@ -54,8 +57,32 @@ static const options_entry s_option_entries[] =
 
     // MYOSD options
     { nullptr,              nullptr,    core_options::option_type::HEADER,      "MYOSD OPTIONS" },
-    { OPTION_VIDEO,         "sw",    core_options::option_type::STRING,      "video output method: none,sw" },
+    { OPTION_VIDEO,         "myosd",    core_options::option_type::STRING,      "video output method: none,myosd" },
     { OPTION_SOUND,         "myosd",      core_options::option_type::STRING,      "sound output method: none,myosd" },
+    { OSDOPTION_NUMSCREENS "(1-1)",              "1",              core_options::option_type::INTEGER,   "Does nothing in MAME4droid" },
+    { OSDOPTION_GL_GLSL,                         "0",              core_options::option_type::BOOLEAN,   "Does nothing in MAME4droid" },
+    { OSDOPTION_FILTER ";glfilter;flt",          "1",              core_options::option_type::BOOLEAN,   "Does nothing in MAME4droid" },
+    { OSDOPTION_PRESCALE "(1-1)",               "1",              core_options::option_type::INTEGER,   "Does nothing in MAME4droid" },
+    { OSDOPTION_WINDOW ";w",                     "0",              core_options::option_type::BOOLEAN,   "Does nothing in MAME4droid" },
+    { OPTION_KEEPASPECT ";ka",                           "1",         core_options::option_type::BOOLEAN,    "Does nothing in MAME4droid" },
+    { OSDOPTION_MAXIMIZE ";max",                 "1",              core_options::option_type::BOOLEAN,   "Does nothing in MAME4droid" },
+    { OSDOPTION_WAITVSYNC ";vs",                 "0",              core_options::option_type::BOOLEAN,   "Does nothing in MAME4droid" },
+    { OSDOPTION_SYNCREFRESH ";srf",              "0",              core_options::option_type::BOOLEAN,   "Does nothing in MAME4droid" },
+
+    { OPTION_PADDLE_DEVICE ";paddle",                    "none",  core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+    { OPTION_ADSTICK_DEVICE ";adstick",                  "none",  core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+    { OPTION_PEDAL_DEVICE ";pedal",                      "none",  core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+    { OPTION_DIAL_DEVICE ";dial",                        "none",  core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+    { OPTION_TRACKBALL_DEVICE ";trackball",              "none",  core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+    { OPTION_LIGHTGUN_DEVICE,                            "none",  core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+    { OPTION_POSITIONAL_DEVICE,                          "none",  core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+    { OPTION_MOUSE_DEVICE,                               "none",     core_options::option_type::STRING,     "Does nothing in MAME4droid" },
+
+    { KEYBOARDINPUT_PROVIDER,                OSDOPTVAL_AUTO,   core_options::option_type::STRING,    "provider for keyboard input: " },
+    { MOUSEINPUT_PROVIDER,                   OSDOPTVAL_AUTO,   core_options::option_type::STRING,    "provider for mouse input: " },
+    { LIGHTGUNINPUT_PROVIDER,                OSDOPTVAL_AUTO,   core_options::option_type::STRING,    "provider for lightgun input: " },
+    { JOYSTICKINPUT_PROVIDER,                OSDOPTVAL_AUTO,   core_options::option_type::STRING,    "provider for joystick input: " },
+
     { OPTION_HISCORE,       "0",        core_options::option_type::BOOLEAN,     "enable hiscore system" },
     { OPTION_BEAM,          "1.0",      core_options::option_type::FLOAT,       "set vector beam width maximum" },
     { OPTION_BENCH,         "0",        core_options::option_type::INTEGER,     "benchmark for the given number of emulated seconds" },
@@ -91,12 +118,13 @@ extern "C" int myosd_main(int argc, char** argv, myosd_callbacks* callbacks, siz
     osdInterface = new my_osd_interface(options, host_callbacks);
     int res = emulator_info::start_frontend(options, *osdInterface, args);
     delete osdInterface;
+    osdInterface = nullptr;
     return res;
 }
 
 extern "C" void myosd_pause(bool pause)
 {
-    if(osdInterface!= nullptr && osdInterface->machine()!= nullptr)
+    if(osdInterface!= nullptr && osdInterface->isMachine() )
     {
         pause ? osdInterface->machine().pause() : osdInterface->machine().resume();
 
@@ -112,7 +140,7 @@ extern "C" void myosd_pause(bool pause)
 
 extern "C" bool myosd_is_paused()
 {
-    if(osdInterface!= nullptr && osdInterface->machine()!= nullptr)
+    if(osdInterface!= nullptr && osdInterface->isMachine())
     {
         return osdInterface->machine().paused();
     }
@@ -124,7 +152,7 @@ extern "C" bool myosd_is_paused()
 //============================================================
 extern "C" void myosd_pushEvent(myosd_inputevent event)
 {
-    if(osdInterface!= nullptr && osdInterface->machine()!= nullptr && osdInterface->target()!= nullptr) {
+    if(osdInterface!= nullptr && osdInterface->isMachine() && osdInterface->target()!= nullptr) {
 
         switch(event.type) {
             case event.MYOSD_KEY_EVENT:
@@ -207,7 +235,7 @@ extern "C" void myosd_set(int var, intptr_t value)
 //============================================================
 
 my_osd_interface::my_osd_interface(emu_options &options, myosd_callbacks &callbacks)
-: m_options(options), m_verbose(false), m_callbacks(callbacks)
+: m_machine(nullptr),m_target(nullptr), m_options(options), m_verbose(false), m_callbacks(callbacks)
 {
     osd_output::push(this);
 
