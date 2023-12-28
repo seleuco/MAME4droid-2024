@@ -215,7 +215,10 @@ static void droid_pause(int doPause){
     pthread_mutex_lock(&pause_mutex);
 
     __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause %d",doPause);
-    int isPaused = (myosd_is_paused() ? 1 : 0);
+    int isPaused = 0;
+
+    if(myosd_droid_inGame)
+      isPaused = (myosd_is_paused() ? 1 : 0);
 
     if(myosd_droid_pause && doPause) {
         __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause already paused...");
@@ -231,7 +234,9 @@ static void droid_pause(int doPause){
         myosd_droid_pause = 0;
         __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause previous paused %d...",doPause);
     } else {
-        myosd_pause(doPause ? true : false);
+        if(myosd_droid_inGame) {
+            myosd_pause(doPause ? true : false);
+        }
         myosd_droid_pause = doPause;
         __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause pausing %d...",doPause);
     }
@@ -716,6 +721,7 @@ static void droid_init(void) {
 
         switch (myosd_droid_resolution)
         {
+            case 0:{reswidth = 400;resheight = 300;break;}//400x300 (4/3)
             case 1:{reswidth = 640;resheight = 480;break;}//640x480 (4/3)
             case 2:{reswidth = 800;resheight = 600;break;}//800x600 (4/3)
             case 3:{reswidth = 1024;resheight = 768;break;}//1024x768 (4/3)

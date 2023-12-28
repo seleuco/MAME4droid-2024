@@ -68,7 +68,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_EMU_AUTO_FRAMESKIP = "PREF_EMU_AUTO_FRAMESKIP";
 	final static public String CHEATS = "CHEATS";
 	final static public String SKIP_GAMEINFO = "SKIP_GAMEINFO";
-	final static public String PREF_EMU_DISABLE_DRC = "PREF_EMU_DISABLE_DRC";
+	final static public String PREF_EMU_DISABLE_DRC = "PREF_EMU_DISABLE_DRC_2";
 	final static public String PREF_EMU_DRC_USR_C = "PREF_EMU_DRC_USR_C";
 	final static public String PREF_EMU_ONE_PROCESSOR = "PREF_EMU_ONE_PROCESSOR";
 
@@ -95,6 +95,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     final static public String PREF_DISABLE_RIGHT_STICK = "PREF_DISABLE_RIGHT_STICK";
     final static public String PREF_ANIMATED_INPUT = "PREF_ANIMATED_INPUT";
     final static public String PREF_TOUCH_LIGHTGUN = "PREF_TOUCH_LIGHTGUN";
+	final static public String PREF_TOUCH_LIGHTGUN_FORCE = "PREF_TOUCH_LIGHTGUN_FORCE";
     final static public String PREF_TOUCH_DZ = "PREF_TOUCH_DZ";
     final static public String PREF_CONTROLLER_TYPE = "PREF_CONTROLLER_TYPE";
     final static public String PREF_STICK_TYPE = "PREF_STICK_TYPE";
@@ -106,6 +107,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     final static public String PREF_MOUSE = "PREF_MOUSE";
 	final static public String PREF_TOUCH_MOUSE = "PREF_TOUCH_MOUSE";
 	final static public String PREF_TOUCH_GAME_MOUSE = "PREF_TOUCH_GAME_MOUSE";
+	final static public String PREF_TOUCH_GAME_MOUSE_FORCE = "PREF_TOUCH_GAME_MOUSE_FORCE";
 	final static public String PREF_KEYBOARD = "PREF_KEYBOARD";
 	final static public String PREF_KEYBOARD_HIDE_CONTROLLER = "PREF_KEYBOARD_HIDE_CONTROLLER";
 	final static public String PREF_VIRTUAL_KEYBOARD = "PREF_VIRTUAL_KEYBOARD";
@@ -295,7 +297,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	}
 
 	public boolean isDisabledDRC() {
-		return getSharedPreferences().getBoolean(PREF_EMU_DISABLE_DRC, false);
+		return getSharedPreferences().getBoolean(PREF_EMU_DISABLE_DRC, true);
 	}
 
 	public boolean isDRCUseC() {
@@ -341,7 +343,11 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
         boolean enabled = getSharedPreferences().getBoolean(PREF_TOUCH_LIGHTGUN, true);
 
-        if (enabled && Emulator.getValue(Emulator.IS_LIGHTGUN) == 1 && !this.isTiltSensorEnabled() && !mm.getInputHandler().getMouse().isEnabled())
+        if (enabled &&
+
+			(Emulator.getValue(Emulator.IS_LIGHTGUN) == 1 || getSharedPreferences().getBoolean(PREF_TOUCH_LIGHTGUN_FORCE, false))
+
+			&& !this.isTiltSensorEnabled() && !mm.getInputHandler().getMouse().isEnabled())
             return true;
 
         return false;
@@ -381,7 +387,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		if(isTouchLightgun())
 			return false;
 
-		return Emulator.getValue(Emulator.IS_MOUSE)==1;
+		return Emulator.getValue(Emulator.IS_MOUSE)==1 || getSharedPreferences().getBoolean(PREF_TOUCH_GAME_MOUSE_FORCE, false);
 
 	}
 

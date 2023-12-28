@@ -159,6 +159,7 @@
 	</string-array>
 
 	<string-array name="pref_resolution_options">
+		<item>400x300 (4/3)</item>
 		<item>640x480 (4/3)</item>
 		<item>800x600 (4/3)</item>
 		<item>1024x768 (4/3)</item>
@@ -171,6 +172,7 @@
 		<item>Native (All Screen)</item>
 	</string-array>
 	<string-array name="pref_resolution_values">
+		<item>0</item>
 		<item>1</item>
 		<item>2</item>
 		<item>3</item>
@@ -248,13 +250,26 @@
 
     <string-array name="pref_navbar_options">
 	    <item>Visible</item>
-		<item>Immersive mode </item>
+		<item>Immersive mode</item>
+	</string-array>
+
+	<string-array name="pref_input_modes_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+
+	<string-array name="pref_input_modes_options">
+		<item>Disabled</item>
+		<item>Auto</item>
+		<item>Enabled</item>
 	</string-array>
 
 	<string-array name="pref_navbar_values">
 		<item>0</item>
 		<item>2</item>
 	</string-array>
+
 
 	<string-array name="pref_overlay_options">
 		<item>none</item>

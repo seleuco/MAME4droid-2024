@@ -18,7 +18,7 @@
 			android:defaultValue="1" />
 
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_ONE_PROCESSOR"
-			android:title="Only one processor" android:summary="Enable it so that games that use discrete sound like dkong don't hung. Disable it to get a great improvement in 3D games that are capable of taking advantage of several threads."
+			android:title="Only one processor" android:summary="Enable it so that games that use discrete sound like dkong don't hung. Disable it to get a great improvement in 3D games that are capable of taking advantage of several threads"
 			android:defaultValue="true" />
 
 	    <com.seleuco.mame4droid.prefs.ListPrefWithWarn
@@ -44,13 +44,13 @@
 			android:title="Skip game info " android:summary="Forces to skip displaying the system info screen"
 			android:defaultValue="false" />
 
-		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_DISABLE_DRC"
-			android:title="Disable DRC" android:summary="Disable DRC (dynamic recompiler) CPU core if available for maximum compability but less performance."
-			android:defaultValue="false" android:disableDependentsState="true" />
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_DISABLE_DRC_2"
+			android:title="Disable DRC" android:summary="Disable DRC (dynamic recompiler) CPU core if available for more performance on ARM64 since there is not native DRC. Enable it to test DRC C backend performance in some games"
+			android:defaultValue="true" android:disableDependentsState="true" />
 
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_DRC_USE_C"
-			android:title="DRC use C" android:summary="Force DRC to use the C code backend so ARM64 devices works."
-			android:defaultValue="true" android:dependency="PREF_EMU_DISABLE_DRC" />
+			android:title="DRC use C" android:summary="Force DRC to use the C code backend so ARM64 devices works"
+			android:defaultValue="true" android:dependency="PREF_EMU_DISABLE_DRC_2" />
 
 	<!--
 	   	<CheckBoxPreference android:key="PREF_GLOBAL_AUTOSAVE"
@@ -183,8 +183,12 @@
 				android:defaultValue="True" />
 
 			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_GAME_MOUSE"
-				android:title="Gaming touch mouse" android:summary="Enable to use touch mouse for games."
+				android:title="Gaming touch mouse" android:summary="Enable to use touch mouse for games (autodetected)."
 				android:defaultValue="True" android:dependency="PREF_TOUCH_MOUSE"/>
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_GAME_MOUSE_FORCE"
+				android:title="Always gaming touch mouse" android:summary="Forces the use of the touch mouse in all games (useful when fails autodetect)."
+				android:defaultValue="False" android:dependency="PREF_TOUCH_GAME_MOUSE"/>
 
 		</PreferenceScreen>
 
@@ -209,8 +213,12 @@
 			android:summary="Select it to open touch lightgun options.\n(First finger will be main fire. Second finger when first finger is pressed will be alternate fire)" android:persistent="false">
 
 			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_LIGHTGUN"
-				android:title="Touch lighgun" android:summary="Enable to use touch lightgun for games."
+				android:title="Touch lightgun" android:summary="Enable to use touch lightgun for games (autodetected)."
 				android:defaultValue="True" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_LIGHTGUN_FORCE"
+				android:title="Always touch lightgun" android:summary="Forces the use of the touch lighgun in all games (useful when fails autodetect)."
+				android:defaultValue="False" android:dependency="PREF_TOUCH_LIGHTGUN"/>
 
 			<CheckBoxPreference android:key="PREF_LIGHTGUN_LONGPRESS"
 				android:title="Long press as button two" android:summary="Enable to use first finger long press as button two. Useful for t.crisis"

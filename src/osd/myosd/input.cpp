@@ -486,6 +486,12 @@ void my_osd_interface::customize_input_type_list(std::vector<input_type_entry> &
             case IPT_BUTTON4:
                 entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON4_INDEXED(entry.player());
                 break;
+            case IPT_BUTTON5:
+                entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON5_INDEXED(entry.player());
+                break;
+            case IPT_BUTTON6:
+                entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON6_INDEXED(entry.player());
+                break;
 
             case IPT_UI_FAST_FORWARD: //fast forward es start+a
                 entry.defseq(SEQ_TYPE_STANDARD) |= (JOYCODE_START);
@@ -574,9 +580,21 @@ void my_osd_interface::customize_input_type_list(std::vector<input_type_entry> &
             /* allow L1 and R1 to move pages in MAME UI */
             case IPT_UI_PAGE_UP:
                 entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON5;
+
+                entry.defseq(SEQ_TYPE_STANDARD) |= (JOYCODE_BUTTON1);
+                entry.defseq(SEQ_TYPE_STANDARD) += JOYCODE_HAT1UP_INDEXED(0);
+
+                entry.defseq(SEQ_TYPE_STANDARD) |= (JOYCODE_BUTTON1);
+                entry.defseq(SEQ_TYPE_STANDARD) += JOYCODE_V_NEG_SWITCH_INDEXED(0);
                 break;
             case IPT_UI_PAGE_DOWN:
                 entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON6;
+
+                entry.defseq(SEQ_TYPE_STANDARD) |= (JOYCODE_BUTTON1);
+                entry.defseq(SEQ_TYPE_STANDARD) += JOYCODE_HAT1DOWN_INDEXED(0);
+
+                entry.defseq(SEQ_TYPE_STANDARD) |= (JOYCODE_BUTTON1);
+                entry.defseq(SEQ_TYPE_STANDARD) += JOYCODE_V_POS_SWITCH_INDEXED(0);
                 break;
 
             /* these are mostly the same as MAME defaults, except we add dpad to them */
