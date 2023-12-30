@@ -104,6 +104,9 @@ static int myosd_droid_enable_drc_use_c = 1;
 static int myosd_droid_simple_ui = 0;
 static int myosd_droid_prev_pause = 0;
 static int myosd_droid_pause = 0;
+static int myosd_droid_do_pause = 0;
+static int myosd_droid_do_resume = 0;
+
 static int myosd_one_processor = 0;
 static int myosd_droid_no_dzsat = 0;
 
@@ -235,7 +238,25 @@ static void droid_pause(int doPause){
         __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause previous paused %d...",doPause);
     } else {
         if(myosd_droid_inGame) {
-            myosd_pause(doPause ? true : false);
+
+            //keyboard[MYOSD_KEY_PAUSE] = 0x80;
+
+            if(doPause)
+            {
+                myosd_droid_do_pause = 1;
+                while(!myosd_is_paused()){usleep(1);};
+                //usleep(60*1000);
+            }
+            else
+            {
+                myosd_droid_do_resume = 1;
+                while(myosd_is_paused()){usleep(1);};
+                //usleep(60*1000);
+            }
+
+            //keyboard[MYOSD_KEY_PAUSE] = 0x00;
+
+            //myosd_pause(doPause ? true : false);//this way makes LUA engine sig fault
         }
         myosd_droid_pause = doPause;
         __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause pausing %d...",doPause);
@@ -359,6 +380,8 @@ int myosd_droid_getMyValue(int key, int i) {
                 return myosd_droid_light_gun;
             case com_seleuco_mame4droid_Emulator_IS_MOUSE:
                 return myosd_droid_mouse;
+            case com_seleuco_mame4droid_Emulator_PAUSE:
+                return myosd_is_paused() ? 1 : 0;
             default :
                 return -1;
         }
@@ -914,6 +937,15 @@ static void droid_input_poll_cb(bool relative_reset,
         }
     }
 
+    if(myosd_droid_do_pause){
+        myosd_pause(true);
+        myosd_droid_do_pause = 0;
+    }
+
+    if(myosd_droid_do_resume){
+        myosd_pause(false);
+        myosd_droid_do_resume = 0;
+    }
 }
 
 void droid_sound_init_cb(int rate, int stereo){
@@ -1119,6 +1151,11 @@ int myosd_droid_main(int argc, char **argv) {
         args[n] = (char *) "0.0";n++;
         args[n] = (char *) "-jsat";n++;
         args[n] = (char *) "1.0";n++;
+    }
+
+    if(0)
+    {
+        args[n] = (char *) "-v";n++;
     }
 
     myosd_main(n, args, &callbacks, sizeof(callbacks));

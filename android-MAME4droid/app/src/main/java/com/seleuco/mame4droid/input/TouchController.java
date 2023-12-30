@@ -341,7 +341,7 @@ public class TouchController implements IController {
 
 									if (iv.getType() == TYPE_BUTTON_RECT) {
 
-										if ((/*iv.getValue() == BTN_COIN ||*/ iv.getValue() == BTN_EXIT) && stick_state != STICK_NONE &&
+										if ((iv.getValue() == BTN_START || iv.getValue() == BTN_EXIT) && stick_state != STICK_NONE &&
 											mm.getMainHelper().getscrOrientation() == Configuration.ORIENTATION_PORTRAIT &&
 											!mm.getInputHandler().getTiltSensor().isEnabled()
 										)
