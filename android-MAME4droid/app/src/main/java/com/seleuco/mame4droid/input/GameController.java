@@ -293,9 +293,11 @@ public class GameController implements IController {
 					Emulator.setValue(Emulator.EXIT_GAME, 0);
 				}
 			}
-		} else if (v == OPTION_VALUE) {
-			if (event.getAction() == KeyEvent.ACTION_UP)
+		} else if (v == OPTION_VALUE ) {
+			if (event.getAction() == KeyEvent.ACTION_UP && !Emulator.isInOptions()) {
+				Emulator.setInOptions(true);
 				mm.showDialog(DialogHelper.DIALOG_OPTIONS);
+			}
 		} else {
 			int i = value / emulatorInputValues.length;
 			setContollerData(i, event, v,digital_data);
@@ -382,7 +384,8 @@ public class GameController implements IController {
 						}
 					}
 				} else if (v == OPTION_VALUE) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
+					if (event.getAction() == KeyEvent.ACTION_UP  && !Emulator.isInOptions()) {
+						Emulator.setInOptions(true);
 						mm.showDialog(DialogHelper.DIALOG_OPTIONS);
 					}
 				} else {

@@ -76,6 +76,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 	protected ListPreference mPrefPortraitMode;
     protected ListPreference mPrefLandsMode;
 	protected ListPreference mPrefOverlay;
+	protected ListPreference mPrefOrientation;
     protected ListPreference mPrefControllerType;
     protected ListPreference mPrefAnalogDZ;
     protected ListPreference mPrefGamepadDZ;
@@ -111,6 +112,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
         mPrefLandsMode = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_LANDSCAPE_SCALING_MODE);
 
 		mPrefOverlay = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_OVERLAY);
+		mPrefOrientation = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_ORIENTATION);
 
         mPrefControllerType = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_CONTROLLER_TYPE);
         mPrefAnalogDZ = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_ANALOG_DZ);
@@ -147,6 +149,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 	        mPrefPortraitMode.setSummary("Current value is '" + mPrefPortraitMode.getEntry()+"'");
 	        mPrefLandsMode.setSummary("Current value is '" + mPrefLandsMode.getEntry()+"'");
 			mPrefOverlay.setSummary("Current value is '" + mPrefOverlay.getEntry()+"'");
+		    mPrefOrientation.setSummary("Current value is '" + mPrefOrientation.getEntry()+"'");
 
 	        mPrefControllerType.setSummary("Current value is '" + mPrefControllerType.getEntry()+"'");
 
@@ -197,6 +200,10 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 			else if(key.equals(PrefsHelper.PREF_OVERLAY))
 			{
 				mPrefOverlay.setSummary("Current value is '" + mPrefOverlay.getEntry()+"'");
+			}
+			else if(key.equals(PrefsHelper.PREF_ORIENTATION))
+			{
+				mPrefOrientation.setSummary("Current value is '" + mPrefOrientation.getEntry()+"'");
 			}
 	        else if(key.equals(PrefsHelper.PREF_CONTROLLER_TYPE))
 	        {

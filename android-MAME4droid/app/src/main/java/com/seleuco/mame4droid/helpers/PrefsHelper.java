@@ -144,6 +144,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     final static public String PREF_GLOBAL_USE_NOTCH = "PREF_GLOBAL_USE_NOTCH";
 	final static public String PREF_GLOBAL_SIMPLE_UI = "PREF_GLOBAL_SIMPLE_UI";
 	final static public String PREF_OVERLAY = "PREF_OVERLAY";
+	final static public String PREF_ORIENTATION = "PREF_ORIENTATION";
 
     final static public String PREF_MAME_DEFAULTS = "PREF_MAME_DEFAULTS";
 	final static public String PREF_LIGHTGUN_LONGPRESS = "PREF_LIGHTGUN_LONGPRESS";
@@ -231,7 +232,11 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		return getSharedPreferences().getString(PREF_OVERLAY, PrefsHelper.PREF_OVERLAY_NONE);
 	}
 
-    public boolean isPortraitTouchController() {
+	public int getOrientationMode() {
+		return Integer.valueOf(getSharedPreferences().getString(PREF_ORIENTATION, "0")).intValue();
+	}
+
+	public boolean isPortraitTouchController() {
         return getSharedPreferences().getBoolean(PREF_PORTRAIT_TOUCH_CONTROLLER, true);
     }
 

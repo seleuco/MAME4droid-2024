@@ -306,6 +306,13 @@
 			android:defaultValue="False" />
 
 		<com.seleuco.mame4droid.prefs.ListPrefWithWarn
+			android:title='Screen orientation'
+			android:key="PREF_ORIENTATION"
+			android:entries="@array/pref_orientation_options"
+			android:entryValues="@array/pref_orientation_values"
+			android:defaultValue="0" />
+
+		<com.seleuco.mame4droid.prefs.ListPrefWithWarn
 			android:title='Overlay effect'
 			android:key="PREF_OVERLAY"
 			android:entries="@array/pref_overlay_options"
@@ -357,7 +364,7 @@
 			android:defaultValue="1" />
 
         <com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_DOUBLE_BUFFER"
-			android:title="Double buffer" android:summary="Avoids flickering on older devices at the expense of input latency"
+			android:title="Double buffer" android:summary="Avoids flickering at the expense of input latency"
 			android:defaultValue="True" />
 
 		<com.seleuco.mame4droid.prefs.ListPrefWithWarn android:entries="@array/pref_low_norm_or_hight_options"

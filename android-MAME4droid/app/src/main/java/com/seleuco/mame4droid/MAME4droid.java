@@ -47,6 +47,7 @@ package com.seleuco.mame4droid;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -170,6 +171,20 @@ public class MAME4droid extends Activity {
 
 
     public void inflateViews() {
+
+		if(getPrefsHelper().getOrientationMode()!=0) {
+			int mode = 0;
+			switch (getPrefsHelper().getOrientationMode()){
+				case 1 : mode = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;break;
+				case 2 : mode = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;break;
+				case 3 : mode = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;break;
+				case 4 : mode = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;break;
+				case 5 : mode = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;break;
+				case 6 : mode = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;break;
+			}
+
+			this.setRequestedOrientation(mode);
+		}
 
         if (getPrefsHelper().isNotchUsed()) {
             getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;

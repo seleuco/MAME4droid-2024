@@ -270,6 +270,26 @@
 		<item>2</item>
 	</string-array>
 
+	<string-array name="pref_orientation_options">
+		<item>Auto</item>
+		<item>Landscape Sensor</item>
+		<item>Landscape</item>
+		<item>Landscape Reverse</item>
+		<item>Portrait Sensor</item>
+		<item>Portrait</item>
+		<item>Portrait Reverse</item>
+	</string-array>
+
+	<string-array name="pref_orientation_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+	</string-array>
+
 
 	<string-array name="pref_overlay_options">
 		<item>none</item>

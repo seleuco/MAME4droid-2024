@@ -356,7 +356,8 @@ public class TouchController implements IController {
 											} catch (InterruptedException ignored) {
 											}
 											Emulator.setValue(Emulator.EXIT_GAME, 0);
-										} else if (iv.getValue() == BTN_OPTION) {
+										} else if (iv.getValue() == BTN_OPTION && actionEvent != MotionEvent.ACTION_MOVE && !Emulator.isInOptions()) {
+											Emulator.setInOptions(true);
 											mm.showDialog(DialogHelper.DIALOG_OPTIONS);
 										}
 									} else if (mm.getPrefsHelper().getControllerType() == PrefsHelper.PREF_DIGITAL_DPAD

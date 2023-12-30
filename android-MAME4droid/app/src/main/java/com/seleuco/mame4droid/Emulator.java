@@ -207,6 +207,11 @@ public class Emulator {
 	public static void setSaveorload(boolean value){saveorload=value;}
 	public static boolean isSaveorload(){return saveorload;};
 
+	private static boolean inOptions = false;
+	public static void setInOptions(boolean value){
+		inOptions =value;}
+	public static boolean isInOptions(){return inOptions;};
+
     private static boolean needsRestart = false;
 
     public static void setNeedRestart(boolean value) {
@@ -485,13 +490,13 @@ public class Emulator {
             } catch (Throwable e) {
             }
         }
-
+/*
         try {
             Thread.sleep(60);//ensure threads stop
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+*/
     }
 
     public static void resume() {

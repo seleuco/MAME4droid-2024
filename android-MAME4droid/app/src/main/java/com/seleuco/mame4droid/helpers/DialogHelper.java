@@ -241,13 +241,15 @@ public class DialogHelper {
 				CharSequence[] items3 = {"Exit", "Load State", "Save State", "Help", "Settings", "Keyboard"};
 				CharSequence[] items4 = {"Exit", "Help", "Settings", "Keyboard"};
 
+				boolean saveload = Emulator.isInGameButNotInMenu() && Emulator.getValue(Emulator.PAUSE)!=1;
+
 				final int a = id == DIALOG_FULLSCREEN ? 0 : 1;
-				final int b = Emulator.isInGame() ? 0 : 2;
+				final int b =  saveload ? 0 : 2;
 
 				if (a == 1)
 					builder.setTitle("Choose an option from the menu.");
 
-				CharSequence[] items = Emulator.isInGame() ? (id == DIALOG_OPTIONS ? items1 : items3) : (id == DIALOG_OPTIONS ? items2 : items4);
+				CharSequence[] items = saveload ? (id == DIALOG_OPTIONS ? items1 : items3) : (id == DIALOG_OPTIONS ? items2 : items4);
 
 				boolean notKeyboard = !mm.getPrefsHelper().isVirtualKeyboardEnabled() || mm.getInputHandler().getKeyboard().isKeyboardConnected();
 
@@ -279,18 +281,20 @@ public class DialogHelper {
 								Emulator.setValue(Emulator.EXIT_GAME, 0);
 							}
 						} else if (item == 1 - a && b == 0) {
+							Emulator.resume();
 							Emulator.setValue(Emulator.LOADSTATE, 1);
 							Emulator.setSaveorload(true);
-							Emulator.resume();
+							//Emulator.resume();
 							try {
 								Thread.sleep(PRESS_WAIT);
 							} catch (InterruptedException e) {
 							}
 							Emulator.setValue(Emulator.LOADSTATE, 0);
 						} else if (item == 2 - a && b == 0) {
+							Emulator.resume();
 							Emulator.setValue(Emulator.SAVESTATE, 1);
 							Emulator.setSaveorload(true);
-							Emulator.resume();
+							//Emulator.resume();
 							try {
 								Thread.sleep(PRESS_WAIT);
 							} catch (InterruptedException e) {
@@ -304,6 +308,7 @@ public class DialogHelper {
 							((IEmuView) mm.getEmuView()).showSoftKeyboard();
 							Emulator.resume();
 						}
+						Emulator.setInOptions(false);
 
 						DialogHelper.savedDialog = DIALOG_NONE;
 						mm.removeDialog(DIALOG_OPTIONS);
@@ -314,11 +319,12 @@ public class DialogHelper {
 					@Override
 					public void onCancel(DialogInterface dialog) {
 						DialogHelper.savedDialog = DIALOG_NONE;
-						Emulator.resume();
 						if (a != 0)
 							mm.removeDialog(DIALOG_OPTIONS);
 						else
 							mm.removeDialog(DIALOG_FULLSCREEN);
+						Emulator.resume();
+						Emulator.setInOptions(false);
 					}
 				});
 				dialog = builder.create();
