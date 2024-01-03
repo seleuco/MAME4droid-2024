@@ -98,7 +98,9 @@ public class Emulator {
     final static public int SAVESTATE = 17;
     final static public int LOADSTATE = 18;
 
-    final static public int EMU_RESOLUTION = 20;
+	final static public int OSD_RESOLUTION = 20;
+    final static public int EMU_RESOLUTION = 21;
+
     final static public int DOUBLE_BUFFER = 23;
     final static public int PXASP1 = 24;
 

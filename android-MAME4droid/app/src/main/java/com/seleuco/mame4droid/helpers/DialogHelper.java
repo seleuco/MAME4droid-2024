@@ -251,7 +251,7 @@ public class DialogHelper {
 
 				CharSequence[] items = saveload ? (id == DIALOG_OPTIONS ? items1 : items3) : (id == DIALOG_OPTIONS ? items2 : items4);
 
-				boolean notKeyboard = !mm.getPrefsHelper().isVirtualKeyboardEnabled() || mm.getInputHandler().getKeyboard().isKeyboardConnected();
+				boolean notKeyboard = !mm.getPrefsHelper().isVirtualKeyboardEnabled() || mm.getInputHandler().getKeyboard().isKeyboardConnected() || mm.getMainHelper().isAndroidTV();
 
 				if(notKeyboard)
 					items = Arrays.copyOf(items, items.length-1);

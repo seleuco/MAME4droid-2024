@@ -96,8 +96,8 @@ void my_osd_interface::update(bool skip_redraw)
     {
         //vis_width = MAX(640,myosd_display_width);
         //vis_height = MAX(480,myosd_display_height);
-        vis_width = myosd_display_width;
-        vis_height = myosd_display_height;
+        vis_width = myosd_display_width_osd;
+        vis_height = myosd_display_height_osd;
     }
 
     // check for a change in the min-size of render target *or* size of the vis screen

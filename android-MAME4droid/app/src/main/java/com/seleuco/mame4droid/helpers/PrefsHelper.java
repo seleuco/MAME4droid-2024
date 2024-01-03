@@ -62,7 +62,8 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
     final static public String PREF_GLOBAL_VIDEO_RENDER_MODE = "PREF_GLOBAL_VIDEO_RENDER_MODE";
 
-    final static public String PREF_EMU_RESOLUTION = "PREF_EMU_RESOLUTION";
+    final static public String PREF_EMU_RESOLUTION = "PREF_EMU_RESOLUTION_2";
+	final static public String PREF_EMU_RESOLUTION_OSD = "PREF_EMU_RESOLUTION_OSD";
     final static public String PREF_EMU_SOUND = "PREF_EMU_SOUND";
     final static public String PREF_EMU_SHOW_FPS = "PREF_EMU_SHOW_FPS";
 	final static public String PREF_EMU_AUTO_FRAMESKIP = "PREF_EMU_AUTO_FRAMESKIP";
@@ -276,6 +277,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     public int getEmulatedResolution() {
         return Integer.valueOf(getSharedPreferences().getString(PREF_EMU_RESOLUTION, "1")).intValue();
     }
+
+	public int getOSDResolution() {
+		return Integer.valueOf(getSharedPreferences().getString(PREF_EMU_RESOLUTION_OSD, "0")).intValue();
+	}
 
     public boolean isWarnOnExit() {
         return getSharedPreferences().getBoolean(PREF_GLOBAL_WARN_ON_EXIT, true);

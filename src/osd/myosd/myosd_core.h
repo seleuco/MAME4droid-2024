@@ -269,6 +269,8 @@ enum {
     MYOSD_MAME_VERSION_STRING,       // GET: MAME version string (ie "0.139u1 (date)")
     MYOSD_DISPLAY_WIDTH,        // SET: maximum width and height of "screen" to display
     MYOSD_DISPLAY_HEIGHT,
+    MYOSD_DISPLAY_WIDTH_OSD,        // SET: maximum width and height of "screen" to display (OSD)
+    MYOSD_DISPLAY_HEIGHT_OSD,
     MYOSD_FPS,                  // GET, SET: show framerate
     MYOSD_SPEED,                // GET, SET: emulation speed (100 = 100%)
     MYOSD_VERSION,                //SET: version

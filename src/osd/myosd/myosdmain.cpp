@@ -45,6 +45,8 @@
 //============================================================
 int myosd_display_width;
 int myosd_display_height;
+int myosd_display_width_osd;
+int myosd_display_height_osd;
 extern int myosd_fps;
 
 //============================================================
@@ -218,6 +220,12 @@ extern "C" void myosd_set(int var, intptr_t value)
         case MYOSD_DISPLAY_HEIGHT:
             myosd_display_height = value;
             break;
+        case MYOSD_DISPLAY_WIDTH_OSD:
+            myosd_display_width_osd = value;
+            break;
+        case MYOSD_DISPLAY_HEIGHT_OSD:
+            myosd_display_height_osd = value;
+            break;
         case MYOSD_FPS:
             myosd_fps = value;
             break;
@@ -235,7 +243,7 @@ extern "C" void myosd_set(int var, intptr_t value)
 //============================================================
 
 my_osd_interface::my_osd_interface(emu_options &options, myosd_callbacks &callbacks)
-: m_machine(nullptr),m_target(nullptr), m_options(options), m_verbose(false), m_callbacks(callbacks)
+: m_machine(nullptr),m_options(options), m_verbose(false), m_target(nullptr), m_callbacks(callbacks)
 {
     osd_output::push(this);
 

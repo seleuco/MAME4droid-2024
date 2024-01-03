@@ -284,7 +284,9 @@ public class MainHelper {
 
     public void copyFiles() {
 
-        try {
+		ProgressWidget pw = null;
+
+		try {
 
             String roms_dir = mm.getMainHelper().getInstallationDIR();
 
@@ -296,7 +298,7 @@ public class MainHelper {
             fm.mkdirs();
             fm.createNewFile();
 
-			ProgressWidget pw = new ProgressWidget(mm,"Installing files...","Please wait.");
+			pw = new ProgressWidget(mm,"Installing files...","Please wait.");
 			pw.init();
 
             // Create a ZipInputStream to read the zip file
@@ -347,6 +349,7 @@ public class MainHelper {
 			}
 
 			pw.end();
+			pw=null;
 
             String dir = this.getInstallationDIR();
             if (!dir.endsWith("/")) dir += "/";
@@ -371,6 +374,8 @@ public class MainHelper {
 
         } catch (Exception e) {
             e.printStackTrace();
+			if(pw!=null)
+				pw.end();
         }
     }
 
@@ -467,6 +472,9 @@ public class MainHelper {
 
         Emulator.setValue(Emulator.EMU_RESOLUTION,
                 prefsHelper.getEmulatedResolution());
+
+		Emulator.setValue(Emulator.OSD_RESOLUTION,
+			prefsHelper.getOSDResolution());
 
 		Emulator.setValue(Emulator.WARN_ON_EXIT,
 			prefsHelper.isWarnOnExit() ? 1 : 0);
@@ -768,10 +776,10 @@ galaxy sde	   --> 2560x1600 16:10
             mm.getDialogHelper()
                     .setInfoMsg(
                             "When MAME4droid is first run, it will create a folder structure for you on the internal memory of your Android device. This folder contains all the other folders MAME uses as well as some basic configuration files."
-                                    + "Since MAME4droid does not come with game ROM files, you will need to copy them to the selected or 'Android/data/com.seleuco.mame4droid/files/roms' folder (" +
-                                    "the one that applies) yourself. These should be properly named, ZIPped MAME v1.39u1 ROMs files with the filenames in all lower case.\n\n Important: You should define or map your Android TV game controller on 'options/settings/input/External controller/define Keys' to avoid this help screen constantly showing if the controller is not auto detected.\n\n"
+                                    + "Since MAME4droid does not come with game ROM files, you will need to copy them to the selected or '/storage/emulated/0/Android/media/com.seleuco.mame4d2024/roms' folder (" +
+                                    "the one that applies) yourself. These should be properly named, ZIPped MAME v0.261 ROMs files with the filenames in all lower case.\n\nImportant: You should define or map your Android TV game controller on 'options/settings/input/External controller/define Keys' to avoid this help screen constantly showing if the controller is not auto detected.\n\n"
                                     + "Controls: Buttons A,B,C,D,E,F on the controller map to buttons Button MAME 1 to 6 buttons."
-                                    + "Coin button inserts coin/adds credit.START button starts 1P game.START+UP starts 2P game. START+RIGHT starts 3P game. START+DOWN starts 4P game.SELECT+UP inserts 2P credits. SELECT+RIGHT inserts 3P credits. SELECT+DOWN inserts 4P credits."
+                                    + " Coin button inserts coin/adds credit.START button starts 1P game. A+START is fast forward. B+START is toggle UI controls. START+A+B is service mode. SELECT+A+B is soft reset. Use SELECT(coin) or START for UI navigation."
                                     + "R1 + START loads a save state. L1 + START saves a save state. START + SELECT when gaming accesses the game's MAME menu (dip switches, etc)...");
             mm.showDialog(DialogHelper.DIALOG_INFO);
         } else {
@@ -993,9 +1001,12 @@ galaxy sde	   --> 2560x1600 16:10
                 edit.putBoolean(PrefsHelper.PREF_LANDSCAPE_BITMAP_FILTERING,
                         true);
 
-                edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "4"); //TODO AJUSTAR
+                edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "1");
+				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "4"); //TODO AJUSTAR
 
-                // edit.putString("", "");
+				//edit.putString(PrefsHelper.PREF_ORIENTATION, "4");
+
+				// edit.putString("", "");
                 edit.commit();
             }
             deviceDetected = DEVICE_ANDROIDTV;
@@ -1057,6 +1068,7 @@ galaxy sde	   --> 2560x1600 16:10
 
     public boolean isAndroidTV() {
         try {
+
             android.app.UiModeManager uiModeManager = (android.app.UiModeManager) mm
                     .getSystemService(Context.UI_MODE_SERVICE);
             if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION)

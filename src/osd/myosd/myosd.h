@@ -33,6 +33,8 @@
 //============================================================
 extern int myosd_display_width;
 extern int myosd_display_height;
+extern int myosd_display_width_osd;
+extern int myosd_display_height_osd;
 
 //============================================================
 //  OPTIONS

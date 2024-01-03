@@ -73,6 +73,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 
 	protected ListPreference mPrefGlobalVideoRenderMode;
 	protected ListPreference mPrefResolution;
+	protected ListPreference mPrefOSDResolution;
 	protected ListPreference mPrefPortraitMode;
     protected ListPreference mPrefLandsMode;
 	protected ListPreference mPrefOverlay;
@@ -108,6 +109,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 
 		mPrefGlobalVideoRenderMode = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_GLOBAL_VIDEO_RENDER_MODE);
 		mPrefResolution = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_EMU_RESOLUTION);
+		mPrefOSDResolution = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_EMU_RESOLUTION_OSD);
         mPrefPortraitMode = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_PORTRAIT_SCALING_MODE);
         mPrefLandsMode = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_LANDSCAPE_SCALING_MODE);
 
@@ -146,6 +148,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 			getPreferenceScreen().findPreference(PrefsHelper.PREF_FORCE_ALTGLPATH).setEnabled(enable);
 
 	        mPrefResolution.setSummary("Current value is '" + mPrefResolution.getEntry()+"'");
+		    mPrefOSDResolution.setSummary("Current value is '" + mPrefOSDResolution.getEntry()+"'");
 	        mPrefPortraitMode.setSummary("Current value is '" + mPrefPortraitMode.getEntry()+"'");
 	        mPrefLandsMode.setSummary("Current value is '" + mPrefLandsMode.getEntry()+"'");
 			mPrefOverlay.setSummary("Current value is '" + mPrefOverlay.getEntry()+"'");
@@ -219,6 +222,10 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 	        {
 	        	mPrefResolution.setSummary("Current value is '" + mPrefResolution.getEntry()+"'");
 	        }
+			else if(key.equals(PrefsHelper.PREF_EMU_RESOLUTION_OSD))
+			{
+				mPrefOSDResolution.setSummary("Current value is '" + mPrefOSDResolution.getEntry()+"'");
+			}
 	        else if(key.equals(PrefsHelper.PREF_ANALOG_DZ))
 	        {
 	        	mPrefAnalogDZ.setSummary("Current value is '" + mPrefAnalogDZ.getEntry()+"'");

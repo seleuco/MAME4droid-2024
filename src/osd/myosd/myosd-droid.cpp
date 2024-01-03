@@ -38,9 +38,12 @@ static int myosd_droid_inMenu = 0;
 //video
 static int myosd_droid_video_width = 1;
 static int myosd_droid_video_height = 1;
+static int myosd_droid_resolution = 1;
+static int myosd_droid_resolution_osd = 1;
 static int myosd_droid_res_width = 1;
 static int myosd_droid_res_height = 1;
-static int myosd_droid_resolution = 1;
+static int myosd_droid_res_width_osd = 1;
+static int myosd_droid_res_height_osd = 1;
 static int myosd_droid_res_width_native = 1;
 static int myosd_droid_res_height_native = 1;
 static int myosd_droid_dbl_buffer = 1;
@@ -315,6 +318,9 @@ void myosd_droid_setMyValue(int key, int i, int value) {
             break;
         case com_seleuco_mame4droid_Emulator_EMU_RESOLUTION:
             myosd_droid_resolution = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_OSD_RESOLUTION:
+            myosd_droid_resolution_osd = value;
             break;
         case com_seleuco_mame4droid_Emulator_DOUBLE_BUFFER:
             myosd_droid_dbl_buffer = value;
@@ -741,6 +747,7 @@ static void droid_init(void) {
         __android_log_print(ANDROID_LOG_DEBUG, "MAME4droid.so", "init");
 
         int reswidth = 640, resheight = 480;
+        int reswidth_osd = 640, resheight_osd = 480;
 
         switch (myosd_droid_resolution)
         {
@@ -757,24 +764,41 @@ static void droid_init(void) {
             case 10:{reswidth = myosd_droid_res_width_native;resheight = myosd_droid_res_height_native;break;}//fullscreen
         }
 
+        switch (myosd_droid_resolution_osd)
+        {
+            case 0:{reswidth_osd = reswidth;resheight_osd = resheight;break;}
+            case 1:{reswidth_osd = 640;resheight_osd = 480;break;}//640x480 (4/3)
+            case 2:{reswidth_osd = 800;resheight_osd = 600;break;}//800x600 (4/3)
+            case 3:{reswidth_osd = 1024;resheight_osd = 768;break;}//1024x768 (4/3)
+            case 4:{reswidth_osd = 1280;resheight_osd = 720;break;}//1280x720 (16/9)
+            case 5:{reswidth_osd = 1440;resheight_osd = 1080;break;}//1440x1080 (4/3)
+            case 6:{reswidth_osd = 1920;resheight_osd = 1080;break;}//1920x1080 (16/9)
+            case 7:{reswidth_osd = (myosd_droid_res_height_native/2) * 4/3.0f ;resheight_osd = myosd_droid_res_height_native/2;break;}//fullscreen/2 (4/3)
+            case 8:{reswidth_osd = myosd_droid_res_width_native/2;resheight_osd = myosd_droid_res_height_native/2;break;}//fullscreen/2
+            case 9:{reswidth_osd = myosd_droid_res_height_native * 4/3.0f ;resheight_osd = myosd_droid_res_height_native;break;}//fullscreen (4/3)
+            case 10:{reswidth_osd = myosd_droid_res_width_native;resheight_osd = myosd_droid_res_height_native;break;}//fullscreen
+        }
+
         myosd_droid_res_width = reswidth;
         myosd_droid_res_height = resheight;
+        myosd_droid_res_width_osd = reswidth_osd;
+        myosd_droid_res_height_osd = resheight_osd;
 
-        if (reswidth < 640)reswidth = 640;
-        if (resheight < 480)resheight = 480;
+        int efective_reswidth = MAX(MAX(reswidth,reswidth_osd),640);
+        int efective_resheight = MAX(MAX(resheight,resheight_osd),480);
 
         if (screenbuffer1 == nullptr)
-            screenbuffer1 = (unsigned char *) malloc(reswidth * resheight * PIXEL_PITCH);
+            screenbuffer1 = (unsigned char *) malloc(efective_reswidth * efective_resheight * PIXEL_PITCH);
 
         if(myosd_droid_dbl_buffer && screenbuffer2==NULL)
-            screenbuffer2 = (unsigned char *)malloc(reswidth * resheight * PIXEL_PITCH);
+            screenbuffer2 = (unsigned char *)malloc(efective_reswidth * efective_resheight * PIXEL_PITCH);
 
         myosd_screen_ptr  = myosd_droid_dbl_buffer ? screenbuffer2 : screenbuffer1;
 
         if (initVideo_callback != nullptr)
-               initVideo_callback((void *) screenbuffer1, reswidth, resheight, PIXEL_PITCH);
+               initVideo_callback((void *) screenbuffer1, efective_reswidth, efective_resheight, PIXEL_PITCH);
 
-        droid_set_video_mode(myosd_droid_res_width, myosd_droid_res_height);
+        droid_set_video_mode(myosd_droid_res_width_osd, myosd_droid_res_height_osd);
 
         droid_init_input();
 
@@ -1022,6 +1046,8 @@ int myosd_droid_main(int argc, char **argv) {
 
     myosd_set(MYOSD_DISPLAY_WIDTH, myosd_droid_res_width);
     myosd_set(MYOSD_DISPLAY_HEIGHT, myosd_droid_res_height);
+    myosd_set(MYOSD_DISPLAY_WIDTH_OSD, myosd_droid_res_width_osd);
+    myosd_set(MYOSD_DISPLAY_HEIGHT_OSD, myosd_droid_res_height_osd);
 
     static char *args[255];
     int n = 0;
