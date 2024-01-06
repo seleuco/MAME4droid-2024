@@ -132,8 +132,8 @@ public class MAME4droid extends Activity {
 
         safHelper = new SAFHelper(this);
 
-        if (getPrefsHelper().getSAF_Uri() != null) {
-            String uri = getPrefsHelper().getSAF_Uri();
+		String uri = getPrefsHelper().getSAF_Uri();
+        if (uri != null) {
             safHelper.setURI(uri);
         }
 
@@ -244,6 +244,8 @@ public class MAME4droid extends Activity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+		Log.d("EMULATOR", "onConfigurationChanged " + this);
+
         super.onConfigurationChanged(newConfig);
 
         overridePendingTransition(0, 0);

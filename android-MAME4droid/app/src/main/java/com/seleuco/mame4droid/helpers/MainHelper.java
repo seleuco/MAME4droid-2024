@@ -214,7 +214,7 @@ public class MainHelper {
         if (res_dir.exists() == false) {
             if (!res_dir.mkdirs()) {
                 mm.getDialogHelper().setErrorMsg(
-                        "Can't find/create: '" + dir + "' Is it writeable?.\nReverting...");
+                        "Can't find/create: '" + dir + "' Is it writable?.\nReverting...");
                 mm.showDialog(DialogHelper.DIALOG_ERROR_WRITING);
                 return false;
             } else {
@@ -227,7 +227,7 @@ public class MainHelper {
         if (sav_dir.exists() == false) {
             if (!sav_dir.mkdirs()) {
                 mm.getDialogHelper().setErrorMsg(
-                        "Can't find/create: '" + str_sav_dir + "' Is it writeable?.\nReverting...");
+                        "Can't find/create: '" + str_sav_dir + "' Is it writable?.\nReverting...");
                 mm.showDialog(DialogHelper.DIALOG_ERROR_WRITING);
                 return false;
             } else {
@@ -235,7 +235,21 @@ public class MainHelper {
             }
         }
 
-        createdInstallationDir = created;
+		String str_dummy_file = dir + "saves/dummy.txt";
+		File dummy_file = new File(str_dummy_file);
+		if(!dummy_file.exists())
+		{
+			try {
+				dummy_file.createNewFile();
+			} catch (IOException e) {
+				mm.getDialogHelper().setErrorMsg(
+					"Can't find/create: '" + dummy_file + "' Is it writable?.\nReverting...");
+				mm.showDialog(DialogHelper.DIALOG_ERROR_WRITING);
+				return false;
+			}
+		}
+
+		createdInstallationDir = created;
 
         mm.getPrefsHelper().setOldInstallationDIR(dir);
 
@@ -367,6 +381,11 @@ public class MainHelper {
 
 			mm.runOnUiThread(new Runnable() {
 				public void run() {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
 					mm.showDialog(DialogHelper.DIALOG_INFO);
 				}
 			});
@@ -448,6 +467,9 @@ public class MainHelper {
 
         Emulator.setValue(Emulator.SHOW_FPS,
                 prefsHelper.isFPSShowed() ? 1 : 0);
+
+		Emulator.setValue(Emulator.ZOOM_TO_WINDOW,
+			prefsHelper.isZoomToWindow() ? 1 : 0);
 
 		Emulator.setValue(Emulator.AUTO_FRAMESKIP,
 			prefsHelper.isAutoFrameSkip() ? 1 : 0);
@@ -833,9 +855,15 @@ galaxy sde	   --> 2560x1600 16:10
             mm.getPrefsHelper().setSAF_Uri(uri.toString());
 
 			Thread t = new Thread(new Runnable() { public void run() {
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 				mm.runMAME4droid();
 			}});
 			t.start();
+
 			//mm.runMAME4droid();
         }
     }

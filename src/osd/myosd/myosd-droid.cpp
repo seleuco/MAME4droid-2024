@@ -32,8 +32,9 @@
 
 static int lib_inited = 0;
 
+static int myosd_droid_inMenu = 1;
 static int myosd_droid_inGame = 0;
-static int myosd_droid_inMenu = 0;
+static int myosd_droid_running = 0;
 
 //video
 static int myosd_droid_video_width = 1;
@@ -96,6 +97,7 @@ static std::string myosd_droid_statepath;
 //misc
 static int myosd_droid_warn_on_exit = 1;
 static int myosd_droid_show_fps = 1;
+static int myosd_droid_zoom_to_window = 1;
 static std::string myosd_droid_selected_game;
 static std::string myosd_droid_rom_name;
 static std::string myosd_droid_overlay_effect;
@@ -119,7 +121,7 @@ static int myosd_droid_vector_flicker = 0;
 
 //SAF
 int myosd_droid_using_saf = 0;
-int myosd_droid_reload = 1;
+//int myosd_droid_reload = 1;
 int myosd_droid_savestatesinrompath = 0;
 std::string myosd_droid_safpath;
 
@@ -240,7 +242,7 @@ static void droid_pause(int doPause){
         myosd_droid_pause = 0;
         __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause previous paused %d...",doPause);
     } else {
-        if(myosd_droid_inGame) {
+        if(myosd_droid_inGame && myosd_droid_running) {
 
             //keyboard[MYOSD_KEY_PAUSE] = 0x80;
 
@@ -273,6 +275,9 @@ void myosd_droid_setMyValue(int key, int i, int value) {
     switch (key) {
         case com_seleuco_mame4droid_Emulator_SHOW_FPS:
             myosd_droid_show_fps = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_ZOOM_TO_WINDOW:
+            myosd_droid_zoom_to_window = value;
             break;
         case com_seleuco_mame4droid_Emulator_AUTO_FRAMESKIP:
             myosd_droid_auto_frameskip = value;
@@ -880,14 +885,16 @@ static void droid_video_init_cb(int min_width, int min_height) {
     droid_set_video_mode(min_width, min_height);
 }
 
-static void droid_video_draw_cb(int in_game, int in_menu) {
+static void droid_video_draw_cb(int in_game, int in_menu, int running) {
 
     myosd_set(MYOSD_FPS, myosd_droid_show_fps);
+    myosd_set(MYOSD_ZOOM_TO_WINDOW, myosd_droid_zoom_to_window);
 
     myosd_droid_inGame = in_game;
     myosd_droid_inMenu = in_menu;
+    myosd_droid_running = running;
 
-    //__android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "inGame %d inMenu %d",in_game,in_menu);
+    //__android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "inGame %d inMenu %d running %d",in_game,in_menu,running);
 
     droid_dump_video();
 }
@@ -1074,7 +1081,7 @@ int myosd_droid_main(int argc, char **argv) {
         args[n] = (char *) "-noconfirm_quit";n++;
     }
 
-    if(!myosd_droid_safpath.empty())
+    if(myosd_droid_using_saf && !myosd_droid_safpath.empty())
     {
         std::string rp = myosd_droid_safpath+std::string(";./roms");
         args[n]= (char *)"-rompath"; n++;args[n]=(char *)rp.c_str(); n++;

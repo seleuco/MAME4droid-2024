@@ -44,10 +44,16 @@
 
 package com.seleuco.mame4droid;
 
+import android.content.Context;
+import android.opengl.GLES31;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
@@ -75,7 +81,43 @@ public class GLRenderer implements Renderer {
     protected MAME4droid mm = null;
 
     protected boolean warn = false;
+/*
+	private int program = 0;
+	private int fragmentShader = 0;
+	private int vertexShader = 0;
+	private float[] position = {500.0f, 500.0f};
 
+
+	public static int compileShader(Context context, int type, String fileName) {
+		int shader = GLES31.glCreateShader(type);
+		GLES31.glShaderSource(shader, readFromAssets(context, fileName));
+		GLES31.glCompileShader(shader);
+		int[] compileStatus = new int[1];
+		GLES31.glGetShaderiv(shader, GLES31.GL_COMPILE_STATUS, compileStatus, 0);
+		if (compileStatus[0] == 0) {
+			GLES31.glDeleteShader(shader);
+			throw new RuntimeException("Error compiling shader: " + GLES31.glGetShaderInfoLog(shader));
+		}
+		return shader;
+	}
+
+	private static String readFromAssets(Context context, String fileName) {
+		try {
+			InputStream inputStream = context.getAssets().open(fileName);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+			StringBuilder stringBuilder = new StringBuilder();
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				stringBuilder.append(line).append("\n");
+			}
+			bufferedReader.close();
+			inputStream.close();
+			return stringBuilder.toString();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+*/
     public void setMAME4droid(MAME4droid mm) {
         this.mm = mm;
         if (mm == null) return;
@@ -138,6 +180,15 @@ public class GLRenderer implements Renderer {
 
         gl.glEnable(GL10.GL_BLEND);
 
+/*
+		//vertexShader = compileShader(mm, GLES31.GL_VERTEX_SHADER, "vertex_shader.glsl");
+		fragmentShader = compileShader(mm, GLES31.GL_FRAGMENT_SHADER, "shader.glsl");
+		program = GLES31.glCreateProgram();
+		//GLES31.glAttachShader(program, vertexShader);
+		GLES31.glAttachShader(program, fragmentShader);
+		GLES31.glLinkProgram(program);
+		GLES31.glUseProgram(program);
+*/
         emuTextureInit = false;
     }
 

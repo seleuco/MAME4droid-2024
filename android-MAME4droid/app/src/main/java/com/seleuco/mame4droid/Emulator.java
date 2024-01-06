@@ -60,6 +60,7 @@ import android.widget.Toast;
 
 import com.seleuco.mame4droid.helpers.DialogHelper;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
+import com.seleuco.mame4droid.helpers.SAFHelper;
 import com.seleuco.mame4droid.input.TouchController;
 import com.seleuco.mame4droid.views.EmulatorViewGL;
 
@@ -100,6 +101,8 @@ public class Emulator {
 
 	final static public int OSD_RESOLUTION = 20;
     final static public int EMU_RESOLUTION = 21;
+
+	final static public int ZOOM_TO_WINDOW = 22;
 
     final static public int DOUBLE_BUFFER = 23;
     final static public int PXASP1 = 24;
@@ -534,7 +537,13 @@ public class Emulator {
                 init(libPath, resPath, Math.max(sz.getWidth(),sz.getHeight()), Math.min(sz.getWidth(),sz.getHeight()));
                 final String versionName = mm.getMainHelper().getVersion();
                 Emulator.setValueStr(Emulator.VERSION, versionName);
-                Emulator.setValue(Emulator.USING_SAF, mm.getSAFHelper().isUsingSAF() ? 1 : 0);
+
+				boolean isUsingSaf = mm.getPrefsHelper().getROMsDIR() != null && mm.getPrefsHelper().getROMsDIR().length() != 0;
+				if(isUsingSaf) {
+					Emulator.setValue(Emulator.USING_SAF, 1);
+					Emulator.setValueStr(Emulator.SAF_PATH, mm.getPrefsHelper().getROMsDIR());
+				}
+
                 Intent intent = mm.getIntent();
                 String action = intent.getAction();
                 //Uri pkg = null;
@@ -592,8 +601,6 @@ public class Emulator {
                     } else {
 
                         Emulator.setValueStr(Emulator.ROM_NAME, fileName);
-						if (mm.getPrefsHelper().getROMsDIR() != null && mm.getPrefsHelper().getROMsDIR().length() != 0)
-						    Emulator.setValueStr(Emulator.SAF_PATH, mm.getPrefsHelper().getROMsDIR());
                         System.out.println("XX name: " + fileName);
                         System.out.println("XX path: " + path);
                         extROM = true;
@@ -605,9 +612,6 @@ public class Emulator {
                             }
                         });
                     }
-                } else {
-                    if (mm.getPrefsHelper().getROMsDIR() != null && mm.getPrefsHelper().getROMsDIR().length() != 0)
-                        Emulator.setValueStr(Emulator.SAF_PATH, mm.getPrefsHelper().getROMsDIR());
                 }
 
                 mm.getMainHelper().updateEmuValues();

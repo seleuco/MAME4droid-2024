@@ -109,6 +109,10 @@ public class EmulatorViewGL extends GLSurfaceView implements IEmuView {
         this.setFocusable(true);
         this.setFocusableInTouchMode(true);
         this.requestFocus();
+
+		//setEGLContextClientVersion(2);
+		//setEGLContextClientVersion(1);
+
         render = new GLRenderer();
         //setDebugFlags(DEBUG_CHECK_GL_ERROR | DEBUG_LOG_GL_CALLS);
         setRenderer(render);

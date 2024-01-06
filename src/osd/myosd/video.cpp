@@ -28,6 +28,7 @@
 // myosd_screen_ptr - needed 4 SW renderer
 uint8_t *myosd_screen_ptr;
 int myosd_fps;
+int myosd_zoom_to_window;
 
 //============================================================
 //  video_init
@@ -79,25 +80,31 @@ void my_osd_interface::update(bool skip_redraw)
 
     mame_machine_manager::instance()->ui().set_show_fps(myosd_fps);
 
-    bool in_game = &(machine().system()) != &GAME_NAME(___empty);
-    //bool in_menu = in_game && machine().phase() == machine_phase::RUNNING && machine().ui().is_menu_active();
-    bool in_menu = machine().phase() == machine_phase::RUNNING && machine().ui().is_menu_active();
+    bool in_game = /*machine().phase() == machine_phase::RUNNING &&*/ &(machine().system()) != &GAME_NAME(___empty);
+    bool in_menu = /*machine().phase() == machine_phase::RUNNING &&*/ machine().ui().is_menu_active();
+    bool running = machine().phase() == machine_phase::RUNNING;
 
     int vis_width, vis_height;
     int min_width, min_height;
     target()->compute_minimum_size(min_width, min_height);
     //target()->compute_visible_area(MAX(640,myosd_display_width), MAX(480,myosd_display_height), 1.0, target()->orientation(), vis_width, vis_height);
 
-    if(in_game) {
+    if(in_game && myosd_zoom_to_window) {
+
         target()->compute_visible_area(myosd_display_width, myosd_display_height, 1.0,
                                        target()->orientation(), vis_width, vis_height);
     }
     else
     {
-        //vis_width = MAX(640,myosd_display_width);
-        //vis_height = MAX(480,myosd_display_height);
-        vis_width = myosd_display_width_osd;
-        vis_height = myosd_display_height_osd;
+        if(in_game)
+        {
+            vis_width = myosd_display_width;
+            vis_height = myosd_display_height;
+        }
+        else {
+            vis_width = myosd_display_width_osd;
+            vis_height = myosd_display_height_osd;
+        }
     }
 
     // check for a change in the min-size of render target *or* size of the vis screen
@@ -125,7 +132,7 @@ void my_osd_interface::update(bool skip_redraw)
     software_renderer<uint32_t, 0,0,0, 0,8,16>::draw_primitives(*primlist, myosd_screen_ptr,  vis_width, vis_height, pitch);
     primlist->release_lock();
 
-    m_callbacks.video_draw(in_game, in_menu);
+    m_callbacks.video_draw(in_game, in_menu, running);
 }
 
 

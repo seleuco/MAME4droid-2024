@@ -290,8 +290,9 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 
     public boolean genericMotion(MotionEvent event) {
 
-		if(gameController.isEnabled())
-			return gameController.genericMotion(event,digital_data);
+		if(gameController.isEnabled()) {
+			return gameController.genericMotion(event, digital_data);
+		}
 
         return false;
     }

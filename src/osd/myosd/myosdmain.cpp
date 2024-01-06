@@ -48,6 +48,7 @@ int myosd_display_height;
 int myosd_display_width_osd;
 int myosd_display_height_osd;
 extern int myosd_fps;
+extern int myosd_zoom_to_window;
 
 //============================================================
 //  OPTIONS
@@ -228,6 +229,9 @@ extern "C" void myosd_set(int var, intptr_t value)
             break;
         case MYOSD_FPS:
             myosd_fps = value;
+            break;
+        case MYOSD_ZOOM_TO_WINDOW:
+            myosd_zoom_to_window = value;
             break;
         case MYOSD_SPEED:
             //myosd_speed = value;

@@ -133,13 +133,13 @@ public class DialogHelper {
 				String message = "";
 
 				message += "Where do you have stored or want to store your ROM files?\n\n" +
-					"By default, an empty internal folder will be used (but you should manually copy your ROMs files there). You can also select a folder with ROMs files from your external storage which will "
+					"By default, an empty internal folder will be used (but you should manually copy your ROMs files there using a PC). You can also select a folder with ROMs files from your external storage which will "
 					+ "need to be authorized in the next step so MAME4droid can read the ROMS from it.\n\n" +
-					"Also, if you select an external storage folder, your ROMs files will not be deleted when the app is uninstalled.";
+					"Also, if you select an external storage folder, your ROMs files will not be deleted when the app is uninstalled and you can use an Android file manager to move your ROMs there without needing a PC.";
 
 				builder.setMessage(message)
 					.setCancelable(false)
-					.setPositiveButton("Default", new DialogInterface.OnClickListener() {
+					.setPositiveButton("Internal", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							DialogHelper.savedDialog = DIALOG_NONE;
 							mm.removeDialog(DIALOG_ROMs);
@@ -261,7 +261,7 @@ public class DialogHelper {
 					public void onClick(DialogInterface dialog, int item) {
 
 						if (item == 0 && a == 0) {
-							if (Emulator.isInMenu()) {
+							//if (Emulator.isInMenu()) {
 								Emulator.setValue(Emulator.EXIT_GAME, 1);
 								Emulator.resume();
 								try {
@@ -269,6 +269,7 @@ public class DialogHelper {
 								} catch (InterruptedException e) {
 								}
 								Emulator.setValue(Emulator.EXIT_GAME, 0);
+							/*
 							} else if (!Emulator.isInGame())
 								mm.showDialog(DialogHelper.DIALOG_EXIT);
 							else {
@@ -280,6 +281,7 @@ public class DialogHelper {
 								}
 								Emulator.setValue(Emulator.EXIT_GAME, 0);
 							}
+							 */
 						} else if (item == 1 - a && b == 0) {
 							Emulator.resume();
 							Emulator.setValue(Emulator.LOADSTATE, 1);
@@ -318,13 +320,15 @@ public class DialogHelper {
 				builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
 					@Override
 					public void onCancel(DialogInterface dialog) {
+
+						Emulator.resume();
+						Emulator.setInOptions(false);
+
 						DialogHelper.savedDialog = DIALOG_NONE;
 						if (a != 0)
 							mm.removeDialog(DIALOG_OPTIONS);
 						else
 							mm.removeDialog(DIALOG_FULLSCREEN);
-						Emulator.resume();
-						Emulator.setInOptions(false);
 					}
 				});
 				dialog = builder.create();

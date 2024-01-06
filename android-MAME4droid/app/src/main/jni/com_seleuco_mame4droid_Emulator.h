@@ -49,6 +49,8 @@ extern "C" {
 #define com_seleuco_mame4droid_Emulator_OSD_RESOLUTION 20L
 #undef com_seleuco_mame4droid_Emulator_EMU_RESOLUTION
 #define com_seleuco_mame4droid_Emulator_EMU_RESOLUTION 21L
+#undef com_seleuco_mame4droid_Emulator_ZOOM_TO_WINDOW
+#define com_seleuco_mame4droid_Emulator_ZOOM_TO_WINDOW 22L
 #undef com_seleuco_mame4droid_Emulator_DOUBLE_BUFFER
 #define com_seleuco_mame4droid_Emulator_DOUBLE_BUFFER 23L
 #undef com_seleuco_mame4droid_Emulator_PXASP1

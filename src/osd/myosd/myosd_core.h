@@ -272,6 +272,7 @@ enum {
     MYOSD_DISPLAY_WIDTH_OSD,        // SET: maximum width and height of "screen" to display (OSD)
     MYOSD_DISPLAY_HEIGHT_OSD,
     MYOSD_FPS,                  // GET, SET: show framerate
+    MYOSD_ZOOM_TO_WINDOW,                  // GET, SET: show framerate
     MYOSD_SPEED,                // GET, SET: emulation speed (100 = 100%)
     MYOSD_VERSION,                //SET: version
 };
@@ -312,7 +313,7 @@ typedef struct {
     void (*game_exit)(void);
 
     void (*video_init)(int width, int height);
-    void (*video_draw)(int inGame, int inMenu);
+    void (*video_draw)(int inGame, int inMenu, int running);
     void (*video_exit)(void);
 
     void (*input_init)(myosd_input_state* input, size_t state_size);

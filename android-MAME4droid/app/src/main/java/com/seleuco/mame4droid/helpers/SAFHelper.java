@@ -73,7 +73,7 @@ public class SAFHelper {
 
     protected MAME4droid mm = null;
 
-    Uri uri = null;
+	static Uri uri = null;
     static protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se destruye
     static protected Hashtable<String,ArrayList<String>> dirFiles = null;
 
@@ -83,12 +83,6 @@ public class SAFHelper {
 
 	// protected ArrayList<String> fileNames = null;
     //int idxCurName = 0;
-
-    public boolean isUsingSAF() {
-		boolean b =  uri != null;
-		Log.d("SAF","isUsingSAF:"+b);
-        return b;
-    }
 
     public void setURI(String uriStr) {
 		Log.d("SAF","set SAF uri:"+uriStr);
@@ -123,30 +117,28 @@ public class SAFHelper {
 	public int closeDir(int id) {
 		int res = 0;
 
-		if (dirFiles == null) {//safety
-			listUriFiles(true);
+		if(openDirs!=null) {
+			DirEnt dirEnt = openDirs.get(id);
+			if (dirEnt != null) {
+				openDirs.remove(id);
+				res = 1;
+			}
 		}
+		else res = 1;
 
-		DirEnt dirEnt = openDirs.get(id);
-		if (dirEnt != null){
-			openDirs.remove(id);
-			res = 1;
-		}
 		return res;
 	}
 
     public String getNextDirName(int id) {
 		String name = null;
 
-		if (dirFiles == null) {//safety
-			listUriFiles(true);
-		}
-
-		DirEnt dirEnt = openDirs.get(id);
-		if (dirEnt != null){
-		    if(dirEnt.fileNameIdx < dirEnt.fileNames.size()){
-				name = (String)dirEnt.fileNames.get(dirEnt.fileNameIdx);
-				dirEnt.fileNameIdx++;
+		if(openDirs!=null) {
+			DirEnt dirEnt = openDirs.get(id);
+			if (dirEnt != null) {
+				if (dirEnt.fileNameIdx < dirEnt.fileNames.size()) {
+					name = (String) dirEnt.fileNames.get(dirEnt.fileNameIdx);
+					dirEnt.fileNameIdx++;
+				}
 			}
 		}
         return name;

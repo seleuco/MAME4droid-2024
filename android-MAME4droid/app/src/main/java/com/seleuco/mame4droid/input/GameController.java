@@ -275,6 +275,7 @@ public class GameController implements IController {
 
 		if (v == EXIT_VALUE) {
 			if (event.getAction() == KeyEvent.ACTION_UP) {
+				/*
 				if (Emulator.isInMenu()) {
 					Emulator.setValue(Emulator.EXIT_GAME, 1);
 					try {
@@ -285,13 +286,14 @@ public class GameController implements IController {
 				} else if (!Emulator.isInGame()) {
 					mm.showDialog(DialogHelper.DIALOG_EXIT);
 				} else {
+				*/
 					Emulator.setValue(Emulator.EXIT_GAME, 1);
 					try {
 						Thread.sleep(InputHandler.PRESS_WAIT);
 					} catch (InterruptedException e) {
 					}
 					Emulator.setValue(Emulator.EXIT_GAME, 0);
-				}
+				//}
 			}
 		} else if (v == OPTION_VALUE ) {
 			if (event.getAction() == KeyEvent.ACTION_UP && !Emulator.isInOptions()) {
@@ -365,13 +367,14 @@ public class GameController implements IController {
 			if (v != -1) {
 				if (v == EXIT_VALUE) {
 					if (event.getAction() == KeyEvent.ACTION_UP) {
-						if (Emulator.isInMenu()) {
+						//if (Emulator.isInMenu()) {
 							Emulator.setValue(Emulator.EXIT_GAME, 1);
 							try {
 								Thread.sleep(InputHandler.PRESS_WAIT);
 							} catch (InterruptedException ignored) {
 							}
 							Emulator.setValue(Emulator.EXIT_GAME, 0);
+						/*
 						} else if (!Emulator.isInGame()) {
 							mm.showDialog(DialogHelper.DIALOG_EXIT);
 						} else {
@@ -382,6 +385,7 @@ public class GameController implements IController {
 							}
 							Emulator.setValue(Emulator.EXIT_GAME, 0);
 						}
+						 */
 					}
 				} else if (v == OPTION_VALUE) {
 					if (event.getAction() == KeyEvent.ACTION_UP  && !Emulator.isInOptions()) {
