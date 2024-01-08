@@ -284,8 +284,8 @@ public class GLRenderer implements Renderer {
 
     synchronized public void onDrawFrame(GL10 gl) {
         // Log.v("mm","onDrawFrame called "+shortBuffer);
-        gl.glClearColor(255, 255, 255, 1.0f);
-        //gl.glClearColor(0, 0, 0, 1.0f);
+        //gl.glClearColor(255, 255, 255, 1.0f);
+        gl.glClearColor(0, 0, 0, 1.0f);
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
         /*while(target != -1){

@@ -73,9 +73,9 @@ public class SAFHelper {
 
     protected MAME4droid mm = null;
 
-	static Uri uri = null;
-    static protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se destruye
-    static protected Hashtable<String,ArrayList<String>> dirFiles = null;
+	/*static*/ Uri uri = null;
+    /*static*/ protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se destruye
+    /*static*/ protected Hashtable<String,ArrayList<String>> dirFiles = null;
 
 	protected Hashtable<Integer,DirEnt> openDirs = new Hashtable<Integer, DirEnt>();
 

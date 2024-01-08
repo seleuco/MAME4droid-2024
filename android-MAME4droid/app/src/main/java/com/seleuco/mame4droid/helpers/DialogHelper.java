@@ -187,7 +187,7 @@ public class DialogHelper {
 				break;
 			case DIALOG_EXIT:
 
-				builder.setMessage("Are you sure you want to exit?")
+				builder.setMessage("Are you sure you want to exit from app?")
 					.setCancelable(false)
 					.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
@@ -261,7 +261,11 @@ public class DialogHelper {
 					public void onClick(DialogInterface dialog, int item) {
 
 						if (item == 0 && a == 0) {
+
+							mm.showDialog(DialogHelper.DIALOG_EXIT);
+
 							//if (Emulator.isInMenu()) {
+							    /*
 								Emulator.setValue(Emulator.EXIT_GAME, 1);
 								Emulator.resume();
 								try {
@@ -269,6 +273,8 @@ public class DialogHelper {
 								} catch (InterruptedException e) {
 								}
 								Emulator.setValue(Emulator.EXIT_GAME, 0);
+								*/
+
 							/*
 							} else if (!Emulator.isInGame())
 								mm.showDialog(DialogHelper.DIALOG_EXIT);

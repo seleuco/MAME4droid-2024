@@ -1,8 +1,15 @@
 package com.seleuco.mame4droid.progress;
 
-import android.app.ProgressDialog;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.seleuco.mame4droid.MAME4droid;
+import com.seleuco.mame4droid.R;
 
 public class ProgressWidget {
 
@@ -12,44 +19,63 @@ public class ProgressWidget {
 	protected String initMsg = null;
 	protected long initTime;
 	protected long lastTime;
-	protected ProgressDialog progressDialog = null;
+	protected TextView textView = null;
+	protected LinearLayout parent = null;
 	protected boolean init = false;
+	protected boolean added = false;
 
-	protected int atLeastTime = 0;
+	protected int orientation;
 
-	public ProgressWidget(MAME4droid mm, String title, String initMsg, int atLeastTime){
+	public ProgressWidget(MAME4droid mm, String title, String initMsg){
 		this.mm = mm;
 		this.title = title;
 		this.initMsg = initMsg;
-		this.atLeastTime = atLeastTime;
 	}
 
-	public ProgressWidget(MAME4droid mm, String title, String initMsg){
-		this(mm,title,initMsg,0);
-	}
 	public void init(){
 
 		initTime = lastTime = System.currentTimeMillis();
 
 		init = true;
+
+		orientation = mm.getRequestedOrientation();
+
+		mm.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
 		mm.runOnUiThread(new Runnable() {
 			public void run() {
-				progressDialog = progressDialog = ProgressDialog.show(mm, title,
-					initMsg, true, false);
+
+				FrameLayout frame = mm.findViewById(R.id.EmulatorFrame);
+
+				textView = new TextView(mm);
+
+				parent = new LinearLayout(mm);
+				parent.setLayoutParams(
+					new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+				parent.setOrientation(LinearLayout.HORIZONTAL);
+				parent.setGravity(Gravity.CENTER);
+
+				textView.setBackgroundResource(R.drawable.border_shape);
+				textView.setTextColor(Color.WHITE);
+
+				parent.addView(textView);
+				frame.addView(parent);
+
+				textView.setText(title+":"+initMsg);
+
+				added = true;
 			}
 		});
 	}
 	public void notifyText(String msg){
 		long currTime = System.currentTimeMillis();
 
-		if(currTime - initTime < atLeastTime)
-			return;
-
-		if(currTime - lastTime > 40 && progressDialog !=null) {
+		if(currTime - lastTime > 40 && textView !=null) {
 			mm.runOnUiThread(new Runnable() {
 				public void run() {
 					try {
-						progressDialog.setMessage(msg);
+						textView.setText(msg);
+
 					}catch(NullPointerException e){}
 					lastTime = System.currentTimeMillis();
 				}
@@ -59,29 +85,25 @@ public class ProgressWidget {
 
 	public void end() {
 
-		if(!init) return;
+		if (!init) return;
 
-		while (progressDialog == null) {
+		while (!added) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 			}
 		}
 
-		if(progressDialog.isShowing())
-		{
+		mm.runOnUiThread(new Runnable() {
+			public void run() {
 
-			long lastTime = System.currentTimeMillis();
-			if(lastTime - initTime < atLeastTime) //at least show this time
-			{
-				try {
-					Thread.sleep(atLeastTime - ( lastTime - initTime));
-				} catch (InterruptedException e) {
-				}
+				FrameLayout frame = mm.findViewById(R.id.EmulatorFrame);
+				frame.removeView(parent);
+				textView = null;
+				parent = null;
+				mm.setRequestedOrientation(orientation);
 			}
-			progressDialog.dismiss();
-		}
+		});
 
-		progressDialog = null;
 	}
 }
