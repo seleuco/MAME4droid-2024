@@ -132,11 +132,6 @@ public class MAME4droid extends Activity {
 
         safHelper = new SAFHelper(this);
 
-		String uri = getPrefsHelper().getSAF_Uri();
-        if (uri != null) {
-            safHelper.setURI(uri);
-        }
-
         inputHandler = new InputHandler(this);
 
         mainHelper.detectDevice();
@@ -146,6 +141,11 @@ public class MAME4droid extends Activity {
         Emulator.setMAME4droid(this);
 
         mainHelper.updateMAME4droid();
+
+		String uri = getPrefsHelper().getSAF_Uri();
+		if (uri != null) {
+			safHelper.setURI(uri);
+		}
 
         initMame4droid();
     }

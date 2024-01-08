@@ -73,9 +73,9 @@ public class SAFHelper {
 
     protected MAME4droid mm = null;
 
-	/*static*/ Uri uri = null;
-    /*static*/ protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se destruye
-    /*static*/ protected Hashtable<String,ArrayList<String>> dirFiles = null;
+	static Uri uri = null;
+    static protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se recrea
+    static protected Hashtable<String,ArrayList<String>> dirFiles = null;
 
 	protected Hashtable<Integer,DirEnt> openDirs = new Hashtable<Integer, DirEnt>();
 
@@ -244,7 +244,8 @@ public class SAFHelper {
 
         if (uri == null) {
             Log.e("SAF", "SAF URI NOT SET!!!");
-            return true;
+			throw new RuntimeException("SAF URI NOT SET!!!");
+            //return true;
         }
 
         String id = DocumentsContract.getTreeDocumentId(uri);

@@ -61,7 +61,7 @@ public class ProgressWidget {
 				parent.addView(textView);
 				frame.addView(parent);
 
-				textView.setText(title+":"+initMsg);
+				textView.setText(title+" "+initMsg);
 
 				added = true;
 			}

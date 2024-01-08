@@ -542,6 +542,7 @@ public class Emulator {
 				if(isUsingSaf) {
 					Emulator.setValue(Emulator.USING_SAF, 1);
 					Emulator.setValueStr(Emulator.SAF_PATH, mm.getPrefsHelper().getROMsDIR());
+					mm.getSAFHelper().listUriFiles(true);
 				}
 
                 Intent intent = mm.getIntent();
