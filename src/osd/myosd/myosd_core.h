@@ -313,7 +313,7 @@ typedef struct {
     void (*game_exit)(void);
 
     void (*video_init)(int width, int height);
-    void (*video_draw)(int inGame, int inMenu, int running);
+    void (*video_draw)(int skip_redraw, int inGame, int inMenu, int running);
     void (*video_exit)(void);
 
     void (*input_init)(myosd_input_state* input, size_t state_size);

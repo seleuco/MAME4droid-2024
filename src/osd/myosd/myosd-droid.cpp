@@ -87,6 +87,8 @@ static int android_to_mame_key[ANDROID_NUM_KEYS];
 
 static pthread_mutex_t mouse_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t pause_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t pause_update_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t  pause_update_var   = PTHREAD_COND_INITIALIZER;
 
 //saveload
 static int myosd_droid_savestate = 0;
@@ -107,10 +109,12 @@ static int myosd_droid_skip_gameinfo = 0;
 static int myosd_droid_disable_drc = 1;
 static int myosd_droid_enable_drc_use_c = 1;
 static int myosd_droid_simple_ui = 0;
-static int myosd_droid_prev_pause = 0;
 static int myosd_droid_pause = 0;
 static int myosd_droid_do_pause = 0;
 static int myosd_droid_do_resume = 0;
+static int myosd_droid_is_paused_in_update = 0;
+static int myosd_droid_doing_paused_in_update = 0;
+static int myosd_droid_is_paused_in_emu = 0;
 
 static int myosd_one_processor = 0;
 static int myosd_droid_no_dzsat = 0;
@@ -218,54 +222,85 @@ void myosd_droid_initMyOSD(const char *path, int nativeWidth, int nativeHeight) 
     myosd_droid_res_height_native = nativeHeight;
 }
 
-static void droid_pause(int doPause){
+static void droid_myosd_check_pause(void){
+
+    pthread_mutex_lock( &pause_update_mutex );
+
+    while(myosd_droid_is_paused_in_update)
+    {
+        myosd_droid_doing_paused_in_update = 1;
+        pthread_cond_wait( &pause_update_var, &pause_update_mutex );
+    }
+    myosd_droid_doing_paused_in_update = 0;
+
+    pthread_mutex_unlock( &pause_update_mutex );
+}
+
+static void droid_change_pause_in_update(int value){
+
+    pthread_mutex_lock( &pause_update_mutex );
+
+    myosd_droid_is_paused_in_update = value;
+
+    if(!myosd_droid_is_paused_in_update)
+        pthread_cond_signal( &pause_update_var );
+
+    pthread_mutex_unlock( &pause_update_mutex );
+
+    if(myosd_droid_is_paused_in_update){
+        auto const now = std::chrono::steady_clock::now();
+        auto const max = std::chrono::milliseconds(1000)+now;
+        while (!myosd_droid_doing_paused_in_update && std::chrono::steady_clock::now() < max) {
+            usleep(1);
+        };
+    }
+}
+
+static void droid_change_pause_in_emu(int value){
+
+    if (value) {
+        myosd_droid_do_pause = 1;
+        myosd_droid_is_paused_in_emu = 1;
+        auto const now = std::chrono::steady_clock::now();
+        auto const max = std::chrono::milliseconds(1000)+now;
+        while (!myosd_is_paused() && std::chrono::steady_clock::now() < max) {
+            usleep(1);
+        };
+    } else {
+        myosd_droid_do_resume = 1;
+        auto const now = std::chrono::steady_clock::now();
+        auto const max = std::chrono::milliseconds(1000)+now;
+        while (myosd_is_paused() && std::chrono::steady_clock::now() < max) {
+            usleep(1);
+        };
+        myosd_droid_is_paused_in_emu = 0;
+    }
+}
+
+static void droid_pause(int doPause) {
 
     pthread_mutex_lock(&pause_mutex);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause %d",doPause);
-    int isPaused = 0;
+    __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause %d", doPause);
 
-    if(myosd_droid_inGame)
-      isPaused = (myosd_is_paused() ? 1 : 0);
+    int isPaused = (myosd_is_paused() ? 1 : 0);
 
-    if(myosd_droid_pause && doPause) {
-        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause already paused...");
-    }
-    else if(!myosd_droid_pause && !doPause) {
-        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause already resumed...");
-    }else if (isPaused && doPause ) {
-        myosd_droid_prev_pause = 1;
-        myosd_droid_pause = 1;
-        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause previous paused %d...",doPause);
-    } else if (myosd_droid_prev_pause && !doPause) {
-        myosd_droid_prev_pause = 0;
-        myosd_droid_pause = 0;
-        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause previous paused %d...",doPause);
+    if ((myosd_droid_inGame && myosd_droid_running && !myosd_droid_is_paused_in_update && !isPaused)
+        || myosd_droid_is_paused_in_emu
+            ) {
+
+        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause in emu %d...", doPause);
+
+        droid_change_pause_in_emu(doPause);
+
     } else {
-        if(myosd_droid_inGame && myosd_droid_running) {
+        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause in update %d...",doPause);
 
-            //keyboard[MYOSD_KEY_PAUSE] = 0x80;
-
-            if(doPause)
-            {
-                myosd_droid_do_pause = 1;
-                while(!myosd_is_paused()){usleep(1);};
-                //usleep(60*1000);
-            }
-            else
-            {
-                myosd_droid_do_resume = 1;
-                while(myosd_is_paused()){usleep(1);};
-                //usleep(60*1000);
-            }
-
-            //keyboard[MYOSD_KEY_PAUSE] = 0x00;
-
-            //myosd_pause(doPause ? true : false);//this way makes LUA engine sig fault
-        }
-        myosd_droid_pause = doPause;
-        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause pausing %d...",doPause);
+        droid_change_pause_in_update(doPause);
     }
+
+    myosd_droid_pause = doPause;
+    __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "doPause pausing %d...", doPause);
 
     pthread_mutex_unlock(&pause_mutex);
 }
@@ -404,11 +439,11 @@ void myosd_droid_setMyValueStr(int key, int i, const char *value) {
     //__android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "setMyValueStr  %d,%d:%s",key,i,value);
     switch (key) {
         case com_seleuco_mame4droid_Emulator_SAF_PATH: {
-            myosd_droid_safpath = value;
+            myosd_droid_safpath = std::string(value);
             break;
         }
         case com_seleuco_mame4droid_Emulator_ROM_NAME: {
-            myosd_droid_rom_name = value;
+            myosd_droid_rom_name = std::string(value);
             break;
         }
         case com_seleuco_mame4droid_Emulator_VERSION: {
@@ -416,7 +451,7 @@ void myosd_droid_setMyValueStr(int key, int i, const char *value) {
             break;
         }
         case com_seleuco_mame4droid_Emulator_OVERLAY_EFECT: {
-            myosd_droid_overlay_effect = value;
+            myosd_droid_overlay_effect = std::string(value);
             break;
         }
         default:;
@@ -885,7 +920,7 @@ static void droid_video_init_cb(int min_width, int min_height) {
     droid_set_video_mode(min_width, min_height);
 }
 
-static void droid_video_draw_cb(int in_game, int in_menu, int running) {
+static void droid_video_draw_cb(int skip_redraw, int in_game, int in_menu, int running) {
 
     myosd_set(MYOSD_FPS, myosd_droid_show_fps);
     myosd_set(MYOSD_ZOOM_TO_WINDOW, myosd_droid_zoom_to_window);
@@ -896,7 +931,10 @@ static void droid_video_draw_cb(int in_game, int in_menu, int running) {
 
     //__android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "inGame %d inMenu %d running %d",in_game,in_menu,running);
 
-    droid_dump_video();
+    if(!skip_redraw)
+       droid_dump_video();
+
+    droid_myosd_check_pause();
 }
 
 static void droid_video_exit_cb() {
@@ -1056,142 +1094,142 @@ int myosd_droid_main(int argc, char **argv) {
     myosd_set(MYOSD_DISPLAY_WIDTH_OSD, myosd_droid_res_width_osd);
     myosd_set(MYOSD_DISPLAY_HEIGHT_OSD, myosd_droid_res_height_osd);
 
-    static char *args[255];
+    static const char *args[255];
     int n = 0;
-    args[n] = (char *) "mame4x";
+    args[n] = "mame4x";
     n++;
 
     if(!myosd_droid_rom_name.empty())
     {
-        args[n]=(char *)myosd_droid_rom_name.c_str(); n++;
+        args[n]= myosd_droid_rom_name.c_str(); n++;
     }
 
     if(myosd_droid_simple_ui) {
-        args[n] = (char *) "-ui";
+        args[n] = "-ui";
         n++;
-        args[n] = (char *) "simple";
+        args[n] = "simple";
         n++;
     }
 
     if(myosd_droid_warn_on_exit) {
-        args[n] = (char *) "-confirm_quit";n++;
+        args[n] = "-confirm_quit";n++;
     }
     else
     {
-        args[n] = (char *) "-noconfirm_quit";n++;
+        args[n] = "-noconfirm_quit";n++;
     }
 
     if(myosd_droid_using_saf && !myosd_droid_safpath.empty())
     {
-        std::string rp = myosd_droid_safpath+std::string(";./roms");
-        args[n]= (char *)"-rompath"; n++;args[n]=(char *)rp.c_str(); n++;
+        static std::string rp = myosd_droid_safpath+std::string(";./roms");
+        args[n]= "-rompath"; n++;args[n]=rp.c_str(); n++;
 
-        std::string ap = myosd_droid_safpath+std::string("/artwork;./artwork");
-        args[n]= (char *)"-artpath"; n++;args[n]=(char *)ap.c_str(); n++;
+        static std::string ap = myosd_droid_safpath+std::string("/artwork;./artwork");
+        args[n]= "-artpath"; n++;args[n]=ap.c_str(); n++;
 
-        std::string sp = myosd_droid_safpath+std::string("/samples;./samples");
-        args[n]= (char *)"-samplepath"; n++;args[n]=(char *)sp.c_str(); n++;
+        static std::string sp = myosd_droid_safpath+std::string("/samples;./samples");
+        args[n]= "-samplepath"; n++;args[n]=sp.c_str(); n++;
 
-        std::string swp = myosd_droid_safpath+std::string("/sofware;./sofware");
-        args[n]= (char *)"-swpath"; n++;args[n]=(char *)swp.c_str(); n++;
+        static std::string swp = myosd_droid_safpath+std::string("/sofware;./sofware");
+        args[n]= "-swpath"; n++;args[n]=swp.c_str(); n++;
 
         if(myosd_droid_savestatesinrompath)
         {
-            std::string sta = myosd_droid_safpath+std::string("/sta");
-            args[n]= (char *)"-state_directory"; n++;args[n]=(char *)sta.c_str(); n++;
+            static std::string sta = myosd_droid_safpath+std::string("/sta");
+            args[n]= "-state_directory"; n++;args[n]=sta.c_str(); n++;
         }
     }
 
     if(!myosd_droid_overlay_effect.empty()) {
-        args[n] = (char *) "-effect";
+        args[n] = "-effect";
         n++;
-        args[n] = (char *) myosd_droid_overlay_effect.c_str();
+        args[n] =  myosd_droid_overlay_effect.c_str();
         n++;
     }
 
     if(myosd_one_processor) {
-        args[n] = (char *) "-numprocessors";
+        args[n] = "-numprocessors";
         n++;
-        args[n] = (char *) "1"; //thats way dkong works
+        args[n] = "1"; //thats way dkong works
         n++;
     }
 
-    args[n] = (char *) "-ui_active";
+    args[n] = "-ui_active";
     n++;
 
-    args[n] = (char *) "-natural";
+    args[n] = "-natural";
     n++;
 
-    args[n] = (char *) "-nocoin_lockout";
+    args[n] = "-nocoin_lockout";
     n++;
 
     if(myosd_droid_cheats) {
-        args[n] = (char *) "-cheat";
+        args[n] = "-cheat";
         n++;
     }
 
     if(myosd_droid_skip_gameinfo) {
-        args[n] = (char *) "-skip_gameinfo";
+        args[n] = "-skip_gameinfo";
         n++;
     }
 
     if(myosd_droid_disable_drc) {
-        args[n] = (char *) "-nodrc";
+        args[n] = "-nodrc";
         n++;
     }
 
     if(!myosd_droid_disable_drc && myosd_droid_enable_drc_use_c) {
-        args[n] = (char *) "-drc_use_c";
+        args[n] = "-drc_use_c";
         n++;
     }
 
     if(myosd_droid_vector_beam2x) {
 
         //-beam_width_min 0.75 -beam_width_max 2.5 -beam_intensity_weight 1.75
-        args[n] = (char *) "-beam_width_min";n++;
-        args[n] = (char *) "2.0";n++;
-        args[n] = (char *) "-beam_width_max";n++;
-        args[n] = (char *) "3.9";n++;
-        args[n] = (char *) "-beam_intensity_weight";n++;
-        args[n] = (char *) "0.75";n++;
+        args[n] = "-beam_width_min";n++;
+        args[n] = "2.0";n++;
+        args[n] = "-beam_width_max";n++;
+        args[n] = "3.9";n++;
+        args[n] = "-beam_intensity_weight";n++;
+        args[n] = "0.75";n++;
     }
 
     if(myosd_droid_vector_flicker) {
-        args[n] = (char *) "-flicker";n++;
-        args[n] = (char *) "0.4";n++;
+        args[n] = "-flicker";n++;
+        args[n] = "0.4";n++;
     }
 
     if(myosd_droid_sound_value==-1)
     {
-        args[n] = (char *) "-sound";n++;
-        args[n] = (char *) "none";n++;
+        args[n] = "-sound";n++;
+        args[n] = "none";n++;
     }
     else
     {
-        std::string value = std::to_string(myosd_droid_sound_value);
-        args[n] = (char *) "-samplerate";n++;
-        args[n] = (char *) value.c_str();n++;
+        static std::string value = std::to_string(myosd_droid_sound_value);
+        args[n] = "-samplerate";n++;
+        args[n] = value.c_str();n++;
     }
 
     if(myosd_droid_auto_frameskip)
     {
-        args[n] = (char *) "-afs";n++;
+        args[n] = "-afs";n++;
     }
 
     if(myosd_droid_no_dzsat)
     {
-        args[n] = (char *) "-jdz";n++;
-        args[n] = (char *) "0.0";n++;
-        args[n] = (char *) "-jsat";n++;
-        args[n] = (char *) "1.0";n++;
+        args[n] = "-jdz";n++;
+        args[n] = "0.0";n++;
+        args[n] = "-jsat";n++;
+        args[n] = "1.0";n++;
     }
 
     if(0)
     {
-        args[n] = (char *) "-v";n++;
+        args[n] =  "-v";n++;
     }
 
-    myosd_main(n, args, &callbacks, sizeof(callbacks));
+    myosd_main(n, (char**)args, &callbacks, sizeof(callbacks));
 
     droid_deinit();
 

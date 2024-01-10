@@ -38,7 +38,8 @@ public class ProgressWidget {
 
 		init = true;
 
-		orientation = mm.getRequestedOrientation();
+		//orientation = mm.getRequestedOrientation();
+		orientation = mm.getMainHelper().getScreenOrientation();
 
 		mm.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 

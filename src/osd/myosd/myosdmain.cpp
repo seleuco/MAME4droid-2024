@@ -130,14 +130,6 @@ extern "C" void myosd_pause(bool pause)
     if(osdInterface!= nullptr && osdInterface->isMachine() )
     {
         pause ? osdInterface->machine().pause() : osdInterface->machine().resume();
-
-        /*
-        auto machine = &osdInterface->machine();
-        if(machine)
-        {
-            pause ? machine.pause() : machine.resume();
-        }
-         */
     }
 }
 

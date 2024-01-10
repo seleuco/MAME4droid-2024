@@ -52,6 +52,7 @@ import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.util.Log;
 
+import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.MAME4droid;
 import com.seleuco.mame4droid.progress.ProgressWidget;
 
@@ -71,7 +72,7 @@ class DirEnt{
 
 public class SAFHelper {
 
-    protected MAME4droid mm = null;
+    static protected MAME4droid mm = null;
 
 	static Uri uri = null;
     static protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se recrea

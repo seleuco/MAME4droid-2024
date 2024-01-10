@@ -63,6 +63,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -1194,6 +1195,19 @@ galaxy sde	   --> 2560x1600 16:10
 		Log.d("SIZE","Window size is width:"+size.getWidth()+" height:"+size.getHeight());
 
 		return size;
+	}
+
+	public int getScreenOrientation(){
+		int orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+		switch (mm.getPrefsHelper().getOrientationMode()){
+			case 1 : orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;break;
+			case 2 : orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;break;
+			case 3 : orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;break;
+			case 4 : orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;break;
+			case 5 : orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;break;
+			case 6 : orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;break;
+		}
+		return orientation;
 	}
 
 }

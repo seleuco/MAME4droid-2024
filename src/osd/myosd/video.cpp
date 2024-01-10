@@ -74,65 +74,67 @@ void my_osd_interface::update(bool skip_redraw)
 {
     osd_printf_verbose("my_osd_interface::update\n");
 
-    // if skipping this redraw, bail
-    if (skip_redraw || m_callbacks.video_draw == nullptr || m_video_none)
+    if(m_callbacks.video_draw == nullptr)
         return;
-
-    mame_machine_manager::instance()->ui().set_show_fps(myosd_fps);
 
     bool in_game = /*machine().phase() == machine_phase::RUNNING &&*/ &(machine().system()) != &GAME_NAME(___empty);
     bool in_menu = /*machine().phase() == machine_phase::RUNNING &&*/ machine().ui().is_menu_active();
     bool running = machine().phase() == machine_phase::RUNNING;
+    mame_machine_manager::instance()->ui().set_show_fps(myosd_fps);
 
-    int vis_width, vis_height;
-    int min_width, min_height;
-    target()->compute_minimum_size(min_width, min_height);
-    //target()->compute_visible_area(MAX(640,myosd_display_width), MAX(480,myosd_display_height), 1.0, target()->orientation(), vis_width, vis_height);
+    // if skipping this redraw, bail
+    if (!skip_redraw && !m_video_none) {
 
-    if(in_game && myosd_zoom_to_window) {
+        int vis_width, vis_height;
+        int min_width, min_height;
+        target()->compute_minimum_size(min_width, min_height);
+        //target()->compute_visible_area(MAX(640,myosd_display_width), MAX(480,myosd_display_height), 1.0, target()->orientation(), vis_width, vis_height);
 
-        target()->compute_visible_area(myosd_display_width, myosd_display_height, 1.0,
-                                       target()->orientation(), vis_width, vis_height);
-    }
-    else
-    {
-        if(in_game)
-        {
-            vis_width = myosd_display_width;
-            vis_height = myosd_display_height;
+        if (in_game && myosd_zoom_to_window) {
+
+            target()->compute_visible_area(myosd_display_width, myosd_display_height, 1.0,
+                                           target()->orientation(), vis_width, vis_height);
+        } else {
+            if (in_game) {
+                vis_width = myosd_display_width;
+                vis_height = myosd_display_height;
+            } else {
+                vis_width = myosd_display_width_osd;
+                vis_height = myosd_display_height_osd;
+            }
         }
-        else {
-            vis_width = myosd_display_width_osd;
-            vis_height = myosd_display_height_osd;
+
+        // check for a change in the min-size of render target *or* size of the vis screen
+        if (/*min_width != m_min_width || min_height != m_min_height |*/ vis_width != m_vis_width ||
+                                                                         vis_height !=
+                                                                         m_vis_height) {
+
+            m_min_width = min_width;
+            m_min_height = min_height;
+            m_vis_width = vis_width;
+            m_vis_height = vis_height;
+
+            if (m_callbacks.video_init != nullptr) {
+                m_callbacks.video_init(vis_width, vis_height);
+            }
         }
+
+        target()->set_bounds(vis_width, vis_height);
+
+        render_primitive_list *primlist = &target()->get_primitives();
+
+        int const pitch = vis_width;
+        //int const pitch = m_min_width;
+
+        primlist->acquire_lock();
+        //bgr888
+        software_renderer<uint32_t, 0, 0, 0, 0, 8, 16>::draw_primitives(*primlist, myosd_screen_ptr,
+                                                                        vis_width, vis_height,
+                                                                        pitch);
+        primlist->release_lock();
     }
 
-    // check for a change in the min-size of render target *or* size of the vis screen
-    if (/*min_width != m_min_width || min_height != m_min_height |*/ vis_width != m_vis_width || vis_height != m_vis_height) {
-
-        m_min_width = min_width;
-        m_min_height = min_height;
-        m_vis_width = vis_width;
-        m_vis_height = vis_height;
-
-        if (m_callbacks.video_init != nullptr) {
-            m_callbacks.video_init( vis_width, vis_height);
-        }
-    }
-
-    target()->set_bounds(vis_width, vis_height);
-
-    render_primitive_list *primlist = &target()->get_primitives();
-
-    int const pitch = vis_width;
-    //int const pitch = m_min_width;
-
-    primlist->acquire_lock();
-    //bgr888
-    software_renderer<uint32_t, 0,0,0, 0,8,16>::draw_primitives(*primlist, myosd_screen_ptr,  vis_width, vis_height, pitch);
-    primlist->release_lock();
-
-    m_callbacks.video_draw(in_game, in_menu, running);
+    m_callbacks.video_draw(skip_redraw || m_video_none, in_game, in_menu, running);
 }
 
 
