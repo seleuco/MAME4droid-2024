@@ -73,6 +73,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_EMU_DISABLE_DRC = "PREF_EMU_DISABLE_DRC_2";
 	final static public String PREF_EMU_DRC_USR_C = "PREF_EMU_DRC_USR_C";
 	final static public String PREF_EMU_ONE_PROCESSOR = "PREF_EMU_ONE_PROCESSOR";
+	final static public String PREF_MAMEINI = "PREF_MAMEINI";
 
     final static public String PREF_GLOBAL_AUTOSAVE = "PREF_GLOBAL_AUTOSAVE";
     final static public String PREF_GLOBAL_DEBUG = "PREF_GLOBAL_DEBUG";
@@ -584,6 +585,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
 	public boolean isOverrideDZandSAT() {
 		return getSharedPreferences().getBoolean(PREF_NODEADZONEANDSAT, true);
+	}
+
+	public boolean isUsedMAMEini() {
+		return getSharedPreferences().getBoolean(PREF_MAMEINI, false);
 	}
 
     public boolean isVectorBeam2x() {

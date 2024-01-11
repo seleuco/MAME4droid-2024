@@ -389,6 +389,10 @@
                 android:title="Installation path"
                 android:defaultValue=""/>
 
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_MAMEINI"
+			android:title="Use mame.ini for paths" android:summary="Use mame.ini instead of the values established by the emulator automatically to define the paths of the ROMs and other resources in external storage. Enabling this option can prevent you from seeing your ROMs if you don't know what you are doing"
+			android:defaultValue="False" />
+
         <com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_FORCE_ALTGLPATH"
 			android:title="Alternate OpenGL path" android:summary="Enable alternate OpenGL render path. Could be faster than default path but not work on some devices (like overlay rendering)"
 			android:defaultValue="False" />

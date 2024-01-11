@@ -83,6 +83,8 @@ extern "C" {
 #define com_seleuco_mame4droid_Emulator_ONE_PROCESSOR 67L
 #undef com_seleuco_mame4droid_Emulator_NODEADZONEANDSAT
 #define com_seleuco_mame4droid_Emulator_NODEADZONEANDSAT 68L
+#undef com_seleuco_mame4droid_Emulator_MAMEINI
+#define com_seleuco_mame4droid_Emulator_MAMEINI 69L
 #undef com_seleuco_mame4droid_Emulator_SAF_PATH
 #define com_seleuco_mame4droid_Emulator_SAF_PATH 1L
 #undef com_seleuco_mame4droid_Emulator_ROM_NAME

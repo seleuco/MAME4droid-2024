@@ -128,6 +128,7 @@ int myosd_droid_using_saf = 0;
 //int myosd_droid_reload = 1;
 int myosd_droid_savestatesinrompath = 0;
 std::string myosd_droid_safpath;
+int myosd_droid_using_mameini=1;
 
 //sound
 static int soundInit = 0;
@@ -405,6 +406,9 @@ void myosd_droid_setMyValue(int key, int i, int value) {
             break;
         case com_seleuco_mame4droid_Emulator_NODEADZONEANDSAT:
             myosd_droid_no_dzsat = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_MAMEINI:
+            myosd_droid_using_mameini = value;
             break;
     }
 }
@@ -1119,7 +1123,7 @@ int myosd_droid_main(int argc, char **argv) {
         args[n] = "-noconfirm_quit";n++;
     }
 
-    if(myosd_droid_using_saf && !myosd_droid_safpath.empty())
+    if(!myosd_droid_using_mameini && myosd_droid_using_saf && !myosd_droid_safpath.empty())
     {
         static std::string rp = myosd_droid_safpath+std::string(";./roms");
         args[n]= "-rompath"; n++;args[n]=rp.c_str(); n++;

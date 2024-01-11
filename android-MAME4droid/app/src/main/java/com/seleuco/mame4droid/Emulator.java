@@ -126,6 +126,7 @@ public class Emulator {
 
 	final static public int ONE_PROCESSOR = 67;
 	final static public int NODEADZONEANDSAT = 68;
+	final static public int MAMEINI = 69;
 
 	//set str
     final static public int SAF_PATH = 1;

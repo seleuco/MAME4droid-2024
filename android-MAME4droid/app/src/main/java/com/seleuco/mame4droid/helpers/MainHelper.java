@@ -508,6 +508,8 @@ public class MainHelper {
 		Emulator.setValue(Emulator.NODEADZONEANDSAT, mm.getPrefsHelper()
 			.isOverrideDZandSAT() ? 1 : 0);
 
+		Emulator.setValue(Emulator.MAMEINI, mm.getPrefsHelper()
+			.isUsedMAMEini() ? 1 : 0);
 
         Emulator.setValue(Emulator.VBEAM2X, mm.getPrefsHelper()
                 .isVectorBeam2x() ? 1 : 0);
