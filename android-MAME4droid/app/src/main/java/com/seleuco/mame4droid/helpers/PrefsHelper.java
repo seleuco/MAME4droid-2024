@@ -1,7 +1,7 @@
 /*
  * This file is part of MAME4droid.
  *
- * Copyright (C) 2015 David Valdeita (Seleuco)
+ * Copyright (C) 2024 David Valdeita (Seleuco)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     final static public String PREF_GLOBAL_VIDEO_RENDER_MODE = "PREF_GLOBAL_VIDEO_RENDER_MODE";
 
     final static public String PREF_EMU_RESOLUTION = "PREF_EMU_RESOLUTION_2";
-	final static public String PREF_EMU_RESOLUTION_OSD = "PREF_EMU_RESOLUTION_OSD";
+	final static public String PREF_EMU_RESOLUTION_OSD = "PREF_EMU_RESOLUTION_OSD_2";
     final static public String PREF_EMU_SOUND = "PREF_EMU_SOUND";
     final static public String PREF_EMU_SHOW_FPS = "PREF_EMU_SHOW_FPS";
 	final static public String PREF_ZOOM_TO_WINDOW = "PREF_ZOOM_TO_WINDOW";
@@ -77,8 +77,11 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
     final static public String PREF_GLOBAL_AUTOSAVE = "PREF_GLOBAL_AUTOSAVE";
     final static public String PREF_GLOBAL_DEBUG = "PREF_GLOBAL_DEBUG";
-
     final static public String PREF_GLOBAL_WARN_ON_EXIT = "PREF_GLOBAL_WARN_ON_EXIT";
+
+	final static public String PREF_SHADERS_ENABLED = "PREF_SHADERS_ENABLED";
+	final static public String PREF_SHADER_EFFECT = "PREF_SHADER_EFFECT";
+	final static public String PREF_SHADER_IN_FRONTEND = "PREF_SHADER_IN_FRONTEND";
 
     final static public String PREF_PORTRAIT_SCALING_MODE = "PREF_PORTRAIT_SCALING_MODE";
     final static public String PREF_PORTRAIT_TOUCH_CONTROLLER = "PREF_PORTRAIT_TOUCH_CONTROLLER";
@@ -152,6 +155,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     final static public String PREF_MAME_DEFAULTS = "PREF_MAME_DEFAULTS";
 	final static public String PREF_LIGHTGUN_LONGPRESS = "PREF_LIGHTGUN_LONGPRESS";
     final static public String PREF_BOTTOM_RELOAD = "PREF_BOTTOM_RELOAD";
+
 
     final static public int LOW = 1;
     final static public int NORMAL = 2;
@@ -281,7 +285,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     }
 
 	public int getOSDResolution() {
-		return Integer.valueOf(getSharedPreferences().getString(PREF_EMU_RESOLUTION_OSD, "0")).intValue();
+		return Integer.valueOf(getSharedPreferences().getString(PREF_EMU_RESOLUTION_OSD, "1")).intValue();
 	}
 
     public boolean isWarnOnExit() {
@@ -655,4 +659,17 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
     public boolean isFakeID() {
         return getSharedPreferences().getBoolean(PREF_INPUT_FAKE_ID, false);
     }
+
+	public String getShaderEffectSelected() {
+		return getSharedPreferences().getString(PREF_SHADER_EFFECT, "-1");
+	}
+
+	public boolean isShadersEnabled() {
+		return getSharedPreferences().getBoolean(PREF_SHADERS_ENABLED, false);
+	}
+
+	public boolean isShadersUsedInFrontend() {
+		return getSharedPreferences().getBoolean(PREF_SHADER_IN_FRONTEND, false);
+	}
+
 }

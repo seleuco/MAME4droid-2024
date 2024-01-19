@@ -1,7 +1,7 @@
 /*
  * This file is part of MAME4droid.
  *
- * Copyright (C) 2015 David Valdeita (Seleuco)
+ * Copyright (C) 2024 David Valdeita (Seleuco)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,13 +46,16 @@ package com.seleuco.mame4droid.helpers;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -95,7 +98,7 @@ import com.seleuco.mame4droid.input.GameController;
 import com.seleuco.mame4droid.input.InputHandler;
 import com.seleuco.mame4droid.input.TouchController;
 import com.seleuco.mame4droid.prefs.UserPreferences;
-import com.seleuco.mame4droid.progress.ProgressWidget;
+import com.seleuco.mame4droid.widgets.WarnWidget;
 import com.seleuco.mame4droid.views.IEmuView;
 import com.seleuco.mame4droid.views.InputView;
 
@@ -298,7 +301,7 @@ public class MainHelper {
 
     public void copyFiles() {
 
-		ProgressWidget pw = null;
+		WarnWidget pw = null;
 
 		try {
 
@@ -312,7 +315,7 @@ public class MainHelper {
             fm.mkdirs();
             fm.createNewFile();
 
-			pw = new ProgressWidget(mm,"Installing files...","Please wait.");
+			pw = new WarnWidget(mm,"Installing files...","Please wait.");
 			pw.init();
 
             // Create a ZipInputStream to read the zip file
@@ -884,8 +887,8 @@ galaxy sde	   --> 2560x1600 16:10
             widthSize = MeasureSpec.getSize(widthMeasureSpec);
             heightSize = MeasureSpec.getSize(heightMeasureSpec);
         } else {
-            int emu_w = Emulator.getEmulatedWidth();
-            int emu_h = Emulator.getEmulatedHeight();
+            int emu_w = Emulator.getEmulatedVisWidth();
+            int emu_h = Emulator.getEmulatedVisHeight();
 
             if (scaleType == PrefsHelper.PREF_SCALE_INTEGER) {
 
@@ -952,11 +955,11 @@ galaxy sde	   --> 2560x1600 16:10
                 scale = Math.min((float) widthSize / (float) w,
                         (float) heightSize / (float) h);
 
-            w = (int) (w * scale);
-            h = (int) (h * scale);
+           w = (int) (w * scale);
+           h = (int) (h * scale);
 
-            widthSize = Math.min(w, widthSize);
-            heightSize = Math.min(h, heightSize);
+           widthSize = Math.min(w, widthSize);
+           heightSize = Math.min(h, heightSize);
 
             if (heightSize == 0)
                 heightSize = 1;
@@ -964,31 +967,35 @@ galaxy sde	   --> 2560x1600 16:10
                 widthSize = 1;
 
 			Log.d("onMeasure", "scale: "+scale +" emu_width:"+emu_w+" emu_height: "+emu_h+" newWidth:"+w+" newHeight: "+h);
-/*
-            float desiredAspect = (float) emu_w / (float) emu_h;
-            float actualAspect = (float) (widthSize / heightSize);
 
-            if (Math.abs(actualAspect - desiredAspect) > 0.0000001) {
+			if( mm.getPrefsHelper().getEmulatedResolution()==0 /*auto*/) {
 
-                boolean done = false;
+				float desiredAspect = (float) emu_w / (float) emu_h;
 
-                // Try adjusting emu_width to be proportional to emu_height
-                int newWidth = (int) (desiredAspect * heightSize);
+				float actualAspect = (float)widthSize / (float)heightSize;
 
-                if (newWidth <= widthSize) {
-                    widthSize = newWidth;
-                    done = true;
-                }
+				if (Math.abs(actualAspect - desiredAspect) > 0.0000001) {
 
-                // Try adjusting emu_height to be proportional to emu_width
-                if (!done) {
-                    int newHeight = (int) (widthSize / desiredAspect);
-                    if (newHeight <= heightSize) {
-                        heightSize = newHeight;
-                    }
-                }
-            }
-*/
+					boolean done = false;
+
+					// Try adjusting emu_width to be proportional to emu_height
+					int newWidth = (int) (desiredAspect * heightSize);
+
+					if (newWidth <= widthSize) {
+						widthSize = newWidth;
+						done = true;
+					}
+
+					// Try adjusting emu_height to be proportional to emu_width
+					if (!done) {
+						int newHeight = (int) (widthSize / desiredAspect);
+						if (newHeight <= heightSize) {
+							heightSize = newHeight;
+						}
+					}
+				}
+
+			}
         }
 
         ArrayList<Integer> l = new ArrayList<Integer>();
@@ -1032,7 +1039,7 @@ galaxy sde	   --> 2560x1600 16:10
                         true);
 
                 edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "1");
-				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "4"); //TODO AJUSTAR
+				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "4");
 
 				//edit.putString(PrefsHelper.PREF_ORIENTATION, "4");
 
@@ -1210,6 +1217,40 @@ galaxy sde	   --> 2560x1600 16:10
 			case 6 : orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;break;
 		}
 		return orientation;
+	}
+
+	public ArrayList<ArrayList<String>> readShaderCfg(String path){
+		ArrayList<ArrayList<String>> data = new ArrayList<>();
+
+		if(path!=null) {
+
+			try(BufferedReader br = new BufferedReader(new FileReader(path+"/shaders.cfg"))) {
+				StringBuilder sb = new StringBuilder();
+				String line = br.readLine();
+
+				while (line != null) {
+					sb.append(line);
+					sb.append(System.lineSeparator());
+					line = br.readLine();
+					if(line!=null) {
+						line = line.trim();
+						if (line.length()==0)
+							continue;
+						if (line.startsWith("#"))
+							continue;
+						ArrayList<String> a = new ArrayList<>();
+						StringTokenizer tokens = new StringTokenizer(line, ";");
+						while (tokens.hasMoreTokens()) {
+							a.add(tokens.nextToken());
+						}
+						data.add(a);
+					}
+				}
+			} catch (IOException e) {
+			}
+		}
+
+		return data;
 	}
 
 }

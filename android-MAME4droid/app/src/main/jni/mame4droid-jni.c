@@ -179,7 +179,7 @@ void myJNI_dumpVideo()
    (*env)->CallStaticVoidMethod(env, cEmulator,  android_dumpVideo, videoBuffer);
 }
 
-void myJNI_changeVideo(int newWidth, int newHeight)
+void myJNI_changeVideo(int newWidth, int newHeight, int newVisWidth, int newVisHeight)
 {
     JNIEnv *env;
     (*jVM)->GetEnv(jVM, (void**) &env, JNI_VERSION_1_4);
@@ -188,7 +188,7 @@ void myJNI_changeVideo(int newWidth, int newHeight)
     __android_log_print(ANDROID_LOG_DEBUG, "mame4droid-jni", "changeVideo");
 #endif
 
-    (*env)->CallStaticVoidMethod(env, cEmulator, android_changeVideo, (jint)newWidth,(jint)newHeight);
+    (*env)->CallStaticVoidMethod(env, cEmulator, android_changeVideo, (jint)newWidth,(jint)newHeight,(jint)newVisWidth,(jint)newVisHeight );
 }
 
 void myJNI_closeAudio()
@@ -415,7 +415,7 @@ int JNI_OnLoad(JavaVM* vm, void* reserved)
         return -1;
     }
 
-    android_changeVideo= (*env)->GetStaticMethodID(env,cEmulator,"changeVideo","(II)V");
+    android_changeVideo= (*env)->GetStaticMethodID(env,cEmulator,"changeVideo","(IIII)V");
 
     if(android_changeVideo==NULL)
     {

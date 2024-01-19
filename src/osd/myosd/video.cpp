@@ -87,27 +87,50 @@ void my_osd_interface::update(bool skip_redraw)
 
         int vis_width, vis_height;
         int min_width, min_height;
-        target()->compute_minimum_size(min_width, min_height);
+
+        //__android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "video min_width:%d min_height:%d",min_width,min_height);
+
         //target()->compute_visible_area(MAX(640,myosd_display_width), MAX(480,myosd_display_height), 1.0, target()->orientation(), vis_width, vis_height);
 
-        if (in_game && myosd_zoom_to_window) {
+        bool autores = myosd_display_width == 0 && myosd_display_height == 0;
 
-            target()->compute_visible_area(myosd_display_width, myosd_display_height, 1.0,
-                                           target()->orientation(), vis_width, vis_height);
+        if (in_game && (myosd_zoom_to_window || autores)) {
+
+            if (!autores) {
+
+                target()->compute_visible_area(myosd_display_width, myosd_display_height, 1.0,
+                                               target()->orientation(), vis_width, vis_height);
+
+                min_width = vis_width;
+                min_height = vis_height;
+            } else {
+
+                target()->compute_minimum_size( min_width, min_height);
+                if(min_width>640)min_width=640;
+                if(min_height>480)min_height=480;
+
+                target()->set_keepaspect(true);
+
+                target()->compute_visible_area(min_width, min_height, 1.0,
+                                               target()->orientation(), vis_width, vis_height);
+
+                target()->set_keepaspect(false);
+
+            }
+
         } else {
             if (in_game) {
-                vis_width = myosd_display_width;
-                vis_height = myosd_display_height;
+                min_width = vis_width = myosd_display_width;
+                min_height = vis_height = myosd_display_height;
             } else {
-                vis_width = myosd_display_width_osd;
-                vis_height = myosd_display_height_osd;
+                min_width = vis_width = myosd_display_width_osd;
+                min_height = vis_height = myosd_display_height_osd;
             }
         }
 
         // check for a change in the min-size of render target *or* size of the vis screen
-        if (/*min_width != m_min_width || min_height != m_min_height |*/ vis_width != m_vis_width ||
-                                                                         vis_height !=
-                                                                         m_vis_height) {
+        if (min_width != m_min_width || min_height != m_min_height
+             || vis_width != m_vis_width || vis_height != m_vis_height) {
 
             m_min_width = min_width;
             m_min_height = min_height;
@@ -115,22 +138,23 @@ void my_osd_interface::update(bool skip_redraw)
             m_vis_height = vis_height;
 
             if (m_callbacks.video_init != nullptr) {
-                m_callbacks.video_init(vis_width, vis_height);
+                m_callbacks.video_init(min_width, min_height, vis_width, vis_height);
             }
         }
 
-        target()->set_bounds(vis_width, vis_height);
+        target()->set_bounds(min_width, min_height);
 
         render_primitive_list *primlist = &target()->get_primitives();
 
-        int const pitch = vis_width;
-        //int const pitch = m_min_width;
+        int const pitch = min_width;
 
         primlist->acquire_lock();
         //bgr888
         software_renderer<uint32_t, 0, 0, 0, 0, 8, 16>::draw_primitives(*primlist, myosd_screen_ptr,
-                                                                        vis_width, vis_height,
+                                                                        min_width,
+                                                                        min_height,
                                                                         pitch);
+
         primlist->release_lock();
     }
 

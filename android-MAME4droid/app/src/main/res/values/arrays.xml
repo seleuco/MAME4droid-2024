@@ -159,7 +159,7 @@
 	</string-array>
 
 	<string-array name="pref_resolution_options">
-		<item>400x300 (4/3)</item>
+		<item>Auto (Original Machine)</item>
 		<item>640x480 (4/3)</item>
 		<item>800x600 (4/3)</item>
 		<item>1024x768 (4/3)</item>
@@ -187,7 +187,7 @@
 
 
 	<string-array name="pref_osd_resolution_options">
-		<item>Same as emulated</item>
+		<item>400x300 (4/3)</item>
 		<item>640x480 (4/3)</item>
 		<item>800x600 (4/3)</item>
 		<item>1024x768 (4/3)</item>

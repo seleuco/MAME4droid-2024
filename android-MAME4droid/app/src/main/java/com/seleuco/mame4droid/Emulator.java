@@ -1,7 +1,7 @@
 /*
  * This file is part of MAME4droid.
  *
- * Copyright (C) 2015 David Valdeita (Seleuco)
+ * Copyright (C) 2024 David Valdeita (Seleuco)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@
 package com.seleuco.mame4droid;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -60,9 +61,10 @@ import android.widget.Toast;
 
 import com.seleuco.mame4droid.helpers.DialogHelper;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
-import com.seleuco.mame4droid.helpers.SAFHelper;
 import com.seleuco.mame4droid.input.TouchController;
+import com.seleuco.mame4droid.render.IGLRenderer;
 import com.seleuco.mame4droid.views.EmulatorViewGL;
+import com.seleuco.mame4droid.widgets.WarnWidget;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -187,6 +189,8 @@ public class Emulator {
 
     private static int emu_width = 320;
     private static int emu_height = 240;
+	private static int emu_visWidth = 320;
+	private static int emu_visHeight = 240;
 
 
     private static AudioTrack audioTrack = null;
@@ -228,16 +232,6 @@ public class Emulator {
         return needsRestart;
     }
 
-    private static boolean warnResChanged = false;
-
-    public static boolean isWarnResChanged() {
-        return warnResChanged;
-    }
-
-    public static void setWarnResChanged(boolean warnResChanged) {
-        Emulator.warnResChanged = warnResChanged;
-    }
-
     private static boolean paused = true;
 
     public static boolean isPaused() {
@@ -270,9 +264,15 @@ public class Emulator {
         return emu_width;
     }
 
-    public static int getEmulatedHeight() {
-        return emu_height;
-    }
+    public static int getEmulatedHeight() {return emu_height;}
+
+	public static int getEmulatedVisWidth() {
+		return emu_visWidth;
+	}
+
+	public static int getEmulatedVisHeight() {
+		return emu_visHeight;
+	}
 
     public static boolean isDebug() {
         return isDebug;
@@ -362,24 +362,24 @@ public class Emulator {
     }
 
     //synchronized
-    static public void changeVideo(final int newWidth, final int newHeight) {
+    static public void changeVideo(final int newWidth, final int newHeight, int newVisWidth, int newVisHeight) {
 
-		Log.d("Thread Video", "changeVideo emu_width:"+emu_width+" emu_height: "+emu_height+" newWidth:"+newWidth+" newHeight: "+newHeight);
+		Log.d("Thread Video", "changeVideo emu_width:"+emu_width+" emu_height: "+emu_height+" newWidth:"+newWidth+" newHeight: "+newHeight+" newVisWidth:"+newVisWidth+" newVisHeight: "+newVisHeight );
         synchronized (lock1) {
 
             mm.getInputHandler().resetInput();
-
-            warnResChanged = emu_width != newWidth || emu_height != newHeight;
 
             //if(emu_width!=newWidth || emu_height!=newHeight)
             //{
             emu_width = newWidth;
             emu_height = newHeight;
+			emu_visWidth = newVisWidth;
+			emu_visHeight = newVisHeight;
 
             mtx.setScale((float) (window_width / (float) emu_width), (float) (window_height / (float) emu_height));
 
             if (videoRenderMode == PrefsHelper.PREF_RENDER_GL) {
-                GLRenderer r = (GLRenderer) ((EmulatorViewGL) mm.getEmuView()).getRender();
+                IGLRenderer r = (IGLRenderer) ((EmulatorViewGL) mm.getEmuView()).getRender();
                 if (r != null) r.changedEmulatedSize();
             } else {
 				Log.e("Thread Video", "Error renderer not supported");
@@ -392,10 +392,6 @@ public class Emulator {
 
                     //Toast.makeText(mm, "changeVideo newWidth:"+newWidth+" newHeight:"+newHeight+" newVisWidth:"+newVisWidth+" newVisHeight:"+newVisHeight,Toast.LENGTH_SHORT).show();
                     mm.overridePendingTransition(0, 0);
-					/*
-                    if (warnResChanged && videoRenderMode == PrefsHelper.PREF_RENDER_GL && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                        mm.getEmuView().setVisibility(View.INVISIBLE);
-					*/
 
                     mm.getMainHelper().updateMAME4droid();
                     if (mm.getEmuView().getVisibility() != View.VISIBLE)
@@ -426,13 +422,17 @@ public class Emulator {
 					if(mm.getPrefsHelper().isTiltSensorEnabled())
 						text = "Tilt sensor is enabled!";
 					else if(mm.getPrefsHelper().isTouchLightgun())
-						text = "Touch lightgun is enabled!";
+						text = "Touch lightgun is auto enabled!";
 					else if(mm.getPrefsHelper().isTouchGameMouse())
-						text = "Touch mouse is enabled!";
+						text = "Touch mouse is auto enabled!";
 
+					/*
 					int duration = Toast.LENGTH_SHORT;
 					Toast toast = Toast.makeText(mm, text, duration);
 					toast.show();
+					*/
+					new WarnWidget.WarnWidgetHelper(mm,text.toString(),3,Color.YELLOW,true);
+
 					Log.d("initInput","virtual device: "+text);
 				}
 
@@ -607,12 +607,17 @@ public class Emulator {
                         System.out.println("XX path: " + path);
                         extROM = true;
                         final String name = fileName;
+						String msg = "Launching: " + name + "\nMAME4droid 2024 " + versionName+" by D.Valdeita (Seleuco)";
+						/*
                         mm.runOnUiThread(new Runnable() {
                             public void run() {
                                 //Toast.makeText(mm, Html.fromHtml("<background color='#0000FF' ><b>" + "MAME4droid (0.139) " + versionName + ".<br>Launching: " + name + "</b></font>"), Toast.LENGTH_LONG).show();
                                 Toast.makeText(mm, "Launching: " + name + "\nMAME4droid 2024 " + versionName, Toast.LENGTH_LONG).show();
                             }
                         });
+						 */
+
+						new WarnWidget.WarnWidgetHelper(mm,msg,3, Color.GREEN,true);
                     }
                 }
 

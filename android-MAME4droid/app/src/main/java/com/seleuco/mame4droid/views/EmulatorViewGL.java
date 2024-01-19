@@ -1,7 +1,7 @@
 /*
  * This file is part of MAME4droid.
  *
- * Copyright (C) 2015 David Valdeita (Seleuco)
+ * Copyright (C) 2024 David Valdeita (Seleuco)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,17 +50,16 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-import android.util.Log;
 
 import com.seleuco.mame4droid.Emulator;
-import com.seleuco.mame4droid.GLRenderer;
+import com.seleuco.mame4droid.render.GLRendererES10;
+import com.seleuco.mame4droid.render.GLRendererES32;
 import com.seleuco.mame4droid.MAME4droid;
-import com.seleuco.mame4droid.R;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
+import com.seleuco.mame4droid.render.IGLRenderer;
 
 public class EmulatorViewGL extends GLSurfaceView implements IEmuView {
 
@@ -68,7 +67,7 @@ public class EmulatorViewGL extends GLSurfaceView implements IEmuView {
 
     protected MAME4droid mm = null;
 
-    protected GLRenderer render = null;
+	protected Renderer render = null;
 
 	protected boolean showKeyboard = false;
 
@@ -91,17 +90,16 @@ public class EmulatorViewGL extends GLSurfaceView implements IEmuView {
 
     public void setMAME4droid(MAME4droid mm) {
         this.mm = mm;
-        render.setMAME4droid(mm);
+		init();
+		((IGLRenderer)render).setMAME4droid(mm);
     }
 
     public EmulatorViewGL(Context context) {
         super(context);
-        init();
     }
 
     public EmulatorViewGL(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     protected void init() {
@@ -110,10 +108,17 @@ public class EmulatorViewGL extends GLSurfaceView implements IEmuView {
         this.setFocusableInTouchMode(true);
         this.requestFocus();
 
-		//setEGLContextClientVersion(2);
-		//setEGLContextClientVersion(1);
+		if(mm.getPrefsHelper().isShadersEnabled())
+		{
+			setEGLContextClientVersion(3);
+			render = new GLRendererES32();
+		}
+		else
+		{
+			setEGLContextClientVersion(1);
+			render = new GLRendererES10();
+		}
 
-        render = new GLRenderer();
         //setDebugFlags(DEBUG_CHECK_GL_ERROR | DEBUG_LOG_GL_CALLS);
         setRenderer(render);
         setRenderMode(RENDERMODE_WHEN_DIRTY);

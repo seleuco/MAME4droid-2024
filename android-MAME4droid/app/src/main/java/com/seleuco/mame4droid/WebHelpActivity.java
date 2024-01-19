@@ -1,7 +1,7 @@
 /*
  * This file is part of MAME4droid.
  *
- * Copyright (C) 2015 David Valdeita (Seleuco)
+ * Copyright (C) 2024 David Valdeita (Seleuco)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class WebHelpActivity extends Activity {
-	
+
 	WebView lWebView = null;
 
 	@Override
@@ -68,7 +68,7 @@ public class WebHelpActivity extends Activity {
 		String path = null;//"/storage/emulated/0/ROMs/MAME4droid/";
 		setContentView(R.layout.webhelp);
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) { 
+		if (extras != null) {
 		    path = extras.getString("INSTALLATION_PATH");
 		}
 		lWebView = (WebView)this.findViewById(R.id.webView);
@@ -79,7 +79,7 @@ public class WebHelpActivity extends Activity {
         lWebView.setBackgroundColor(Color.DKGRAY);
         if(!path.endsWith("/"))
         	path+="/";
-        
+
         //lWebView.loadUrl("file:///" +  path +"help/index.htm");
         lWebView.loadUrl("file:///android_asset/index.htm");
 
@@ -122,19 +122,19 @@ public class WebHelpActivity extends Activity {
             });
         }
 
-        lWebView.requestFocus();        
+        lWebView.requestFocus();
 	}
 
 
-	
+
     public void onBackPressed() {
-    	 
+
         if (this.lWebView.canGoBack())
             this.lWebView.goBack();
         else
             super.onBackPressed();
-        
-        lWebView.requestFocus(); 
+
+        lWebView.requestFocus();
     }
-    	
+
 }

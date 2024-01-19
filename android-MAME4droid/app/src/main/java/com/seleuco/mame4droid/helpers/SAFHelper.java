@@ -52,9 +52,8 @@ import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.util.Log;
 
-import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.MAME4droid;
-import com.seleuco.mame4droid.progress.ProgressWidget;
+import com.seleuco.mame4droid.widgets.WarnWidget;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -80,7 +79,7 @@ public class SAFHelper {
 
 	protected Hashtable<Integer,DirEnt> openDirs = new Hashtable<Integer, DirEnt>();
 
-	protected ProgressWidget pw = null;
+	protected WarnWidget pw = null;
 
 	// protected ArrayList<String> fileNames = null;
     //int idxCurName = 0;
@@ -235,7 +234,7 @@ public class SAFHelper {
 
     public boolean listUriFiles(Boolean reload) {
 
-		pw = new ProgressWidget(mm,"Caching SAF files...","Reading, please wait.");
+		pw = new WarnWidget(mm,"Caching SAF files...","Reading, please wait.");
 		pw.init();
 
         if (fileIDs != null && !reload) return true;

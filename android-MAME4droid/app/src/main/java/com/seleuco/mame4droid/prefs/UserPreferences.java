@@ -1,7 +1,7 @@
 /*
  * This file is part of MAME4droid.
  *
- * Copyright (C) 2015 David Valdeita (Seleuco)
+ * Copyright (C) 2024 David Valdeita (Seleuco)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,13 +46,16 @@ package com.seleuco.mame4droid.prefs;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -63,6 +66,7 @@ import android.preference.PreferenceScreen;
 
 import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.R;
+import com.seleuco.mame4droid.helpers.MainHelper;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
 import com.seleuco.mame4droid.input.ControlCustomizer;
 import com.seleuco.mame4droid.input.GameController;
@@ -95,6 +99,8 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 
     protected ListPreference mPrefNavbar;
     protected EditTextPreference mPrefInstPath;
+
+	protected ListPreference mPrefShader;
 
 
 
@@ -134,6 +140,8 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 
 		mPrefNavbar = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_GLOBAL_NAVBAR_MODE);
 		mPrefInstPath = (EditTextPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_INSTALLATION_DIR);
+		mPrefShader= (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_SHADER_EFFECT);
+		populateShaders(mPrefShader);
 	}
 
 
@@ -144,8 +152,6 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 	        // Setup the initial values
 	        //mCheckBoxPreference.setSummary(sharedPreferences.getBoolean(key, false) ? "Disable this setting" : "Enable this setting");
 	        mPrefGlobalVideoRenderMode.setSummary("Current value is '" + mPrefGlobalVideoRenderMode.getEntry()+"'");
-			enable = Integer.valueOf(mPrefGlobalVideoRenderMode.getValue()).intValue() ==PrefsHelper.PREF_RENDER_GL;
-			getPreferenceScreen().findPreference(PrefsHelper.PREF_FORCE_ALTGLPATH).setEnabled(enable);
 
 	        mPrefResolution.setSummary("Current value is '" + mPrefResolution.getEntry()+"'");
 		    mPrefOSDResolution.setSummary("Current value is '" + mPrefOSDResolution.getEntry()+"'");
@@ -169,11 +175,10 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 	        mPrefSoundEngine.setSummary("Current value is '" + mPrefSoundEngine.getEntry()+"'");
 	        mPrefNavbar.setSummary("Current value is '" + mPrefNavbar.getEntry()+"'");
 			mPrefInstPath.setSummary("Current value is '" + mPrefInstPath.getText()+"'");
+		    mPrefShader.setSummary("Current value is '" + mPrefShader.getEntry()+"'");
 
 	        // Set up a listener whenever a key changes
 	        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
-
 
 	    }
 
@@ -216,7 +221,6 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 	        {
 				mPrefGlobalVideoRenderMode.setSummary("Current value is '" + mPrefGlobalVideoRenderMode.getEntry()+"'");
 				boolean enable = Integer.valueOf(mPrefGlobalVideoRenderMode.getValue()).intValue() ==PrefsHelper.PREF_RENDER_GL;
-				getPreferenceScreen().findPreference(PrefsHelper.PREF_FORCE_ALTGLPATH).setEnabled(enable);
 	        }
 	        else if(key.equals(PrefsHelper.PREF_EMU_RESOLUTION))
 	        {
@@ -278,7 +282,30 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 		    {
 		    	mPrefInstPath.setSummary("Current value is '" + mPrefInstPath.getText()+"'");
 		    }
+			else if(key.equals(PrefsHelper.PREF_SHADER_EFFECT))
+			{
+				mPrefShader.setSummary("Current value is '" + mPrefShader.getEntry()+"'");
+			}
+			else if(key.equals(PrefsHelper.PREF_SHADERS_ENABLED))
+			{
+				SharedPreferences.Editor edit = sharedPreferences.edit();
+				boolean enable = sharedPreferences.getBoolean(PrefsHelper.PREF_SHADERS_ENABLED,false);
 
+				android.app.UiModeManager u = (android.app.UiModeManager) this.getSystemService(Context.UI_MODE_SERVICE);
+				boolean androidTv  = u.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
+
+				if(enable){
+					edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "0");
+					if(!androidTv)
+					  edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "0");
+				}
+				else{
+					edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "1");
+					if(!androidTv)
+					   edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "1");
+				}
+				edit.commit();
+			}
 	    }
 
 		@Override
@@ -409,5 +436,38 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 				return;
 			}
 			finish();
+		}
+
+		protected void populateShaders(ListPreference lp){
+
+			CharSequence[] cs = null;
+			CharSequence[] csv = null;
+
+			MainHelper mh = new MainHelper(null);
+
+			String path = getPreferenceScreen().getSharedPreferences().getString(
+				PrefsHelper.PREF_INSTALLATION_DIR, "");
+
+			ArrayList<ArrayList<String>> data = mh.readShaderCfg(path);
+
+			int n = data.size();
+
+			cs = new String[n + 1];
+			csv = new String[n + 1];
+
+			cs[0] = "No effect";
+			csv[0] = "-1";
+
+			int i = 0;
+			while (i < n) {
+				ArrayList<String> s = data.get(i);
+				if(s.size() >= 2) {
+					csv[i + 1] = s.get(0);
+					cs[i + 1] = s.get(1);
+				}
+				i++;
+			}
+			lp.setEntries(cs);
+			lp.setEntryValues(csv);
 		}
 }

@@ -143,7 +143,7 @@ static void (*dumpVideo_callback)(void) = nullptr;
 static void (*initVideo_callback)(void *buffer, int width, int height, int pitch) = nullptr;
 
 static void
-(*changeVideo_callback)(int newWidth, int newHeight) = nullptr;
+(*changeVideo_callback)(int newWidth, int newHeight, int newVisWidth, int newVisHeight) = nullptr;
 
 static void (*openSound_callback)(int rate, int stereo) = nullptr;
 
@@ -167,7 +167,7 @@ static void (*safCloseDir_callback)(int dirId) = nullptr;
 void myosd_droid_setVideoCallbacks(
         void (*init_video_java)(void *, int, int, int),
         void (*dump_video_java)(void),
-        void (*change_video_java)(int, int)) {
+        void (*change_video_java)(int, int, int, int)) {
 
     __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "setVideoCallbacks");
 
@@ -673,9 +673,9 @@ static void droid_dump_video(void) {
 
 }
 
-static void droid_set_video_mode(int width, int height) {
+static void droid_set_video_mode(int width, int height, int vis_width, int vis_height) {
 
-    __android_log_print(ANDROID_LOG_DEBUG, "MAME4droid.so", "droid_set_video_mode: %d %d ", width, height);
+    __android_log_print(ANDROID_LOG_DEBUG, "MAME4droid.so", "droid_set_video_mode: %d %d %d %d", width, height, vis_width, vis_height);
 
     if (width == 0)width = 1;
     if (height == 0)height = 1;
@@ -685,7 +685,9 @@ static void droid_set_video_mode(int width, int height) {
 
     if (changeVideo_callback != nullptr)
         changeVideo_callback(myosd_droid_video_width,
-                             myosd_droid_video_height);
+                             myosd_droid_video_height,
+                             vis_width, vis_height
+                             );
 
     droid_dump_video();
 }
@@ -795,7 +797,7 @@ static void droid_init(void) {
 
         switch (myosd_droid_resolution)
         {
-            case 0:{reswidth = 400;resheight = 300;break;}//400x300 (4/3)
+            case 0:{reswidth = 0;resheight = 0;break;}//400x300 (4/3)
             case 1:{reswidth = 640;resheight = 480;break;}//640x480 (4/3)
             case 2:{reswidth = 800;resheight = 600;break;}//800x600 (4/3)
             case 3:{reswidth = 1024;resheight = 768;break;}//1024x768 (4/3)
@@ -810,7 +812,7 @@ static void droid_init(void) {
 
         switch (myosd_droid_resolution_osd)
         {
-            case 0:{reswidth_osd = reswidth;resheight_osd = resheight;break;}
+            case 0:{reswidth_osd = 400;resheight_osd = 300;break;}
             case 1:{reswidth_osd = 640;resheight_osd = 480;break;}//640x480 (4/3)
             case 2:{reswidth_osd = 800;resheight_osd = 600;break;}//800x600 (4/3)
             case 3:{reswidth_osd = 1024;resheight_osd = 768;break;}//1024x768 (4/3)
@@ -842,7 +844,8 @@ static void droid_init(void) {
         if (initVideo_callback != nullptr)
                initVideo_callback((void *) screenbuffer1, efective_reswidth, efective_resheight, PIXEL_PITCH);
 
-        droid_set_video_mode(myosd_droid_res_width_osd, myosd_droid_res_height_osd);
+        droid_set_video_mode(myosd_droid_res_width_osd, myosd_droid_res_height_osd,
+                             myosd_droid_res_width_osd, myosd_droid_res_height_osd);
 
         droid_init_input();
 
@@ -920,8 +923,8 @@ static void droid_output_cb(int channel, const char *text) {
     }
 }
 
-static void droid_video_init_cb(int min_width, int min_height) {
-    droid_set_video_mode(min_width, min_height);
+static void droid_video_init_cb(int width, int height,int vis_width, int vis_height) {
+    droid_set_video_mode(width, height,vis_width,vis_height);
 }
 
 static void droid_video_draw_cb(int skip_redraw, int in_game, int in_menu, int running) {
@@ -1134,7 +1137,7 @@ int myosd_droid_main(int argc, char **argv) {
         static std::string sp = myosd_droid_safpath+std::string("/samples;./samples");
         args[n]= "-samplepath"; n++;args[n]=sp.c_str(); n++;
 
-        static std::string swp = myosd_droid_safpath+std::string("/sofware;./sofware");
+        static std::string swp = myosd_droid_safpath+std::string("/software;./software");
         args[n]= "-swpath"; n++;args[n]=swp.c_str(); n++;
 
         if(myosd_droid_savestatesinrompath)
@@ -1226,6 +1229,12 @@ int myosd_droid_main(int argc, char **argv) {
         args[n] = "0.0";n++;
         args[n] = "-jsat";n++;
         args[n] = "1.0";n++;
+    }
+
+    if(myosd_droid_resolution==0 || myosd_droid_resolution_osd==0)
+    {
+        args[n] = "-uifont";n++;
+        args[n] = "uismall.bdf";n++;
     }
 
     if(0)
