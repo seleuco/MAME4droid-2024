@@ -108,20 +108,19 @@ public class EmulatorViewGL extends GLSurfaceView implements IEmuView {
         this.setFocusableInTouchMode(true);
         this.requestFocus();
 
-		if(mm.getPrefsHelper().isShadersEnabled())
-		{
-			setEGLContextClientVersion(3);
-			render = new GLRendererES32();
-		}
-		else
-		{
-			setEGLContextClientVersion(1);
-			render = new GLRendererES10();
-		}
+		if(mm!=null) {
+			if (mm.getPrefsHelper().isShadersEnabled()) {
+				setEGLContextClientVersion(3);
+				render = new GLRendererES32();
+			} else {
+				setEGLContextClientVersion(1);
+				render = new GLRendererES10();
+			}
 
-        //setDebugFlags(DEBUG_CHECK_GL_ERROR | DEBUG_LOG_GL_CALLS);
-        setRenderer(render);
-        setRenderMode(RENDERMODE_WHEN_DIRTY);
+			//setDebugFlags(DEBUG_CHECK_GL_ERROR | DEBUG_LOG_GL_CALLS);
+			setRenderer(render);
+			setRenderMode(RENDERMODE_WHEN_DIRTY);
+		}
         //setRenderMode(RENDERMODE_CONTINUOUSLY);
     }
 

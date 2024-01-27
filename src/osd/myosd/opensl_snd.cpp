@@ -72,7 +72,7 @@ unsigned short dequeue(unsigned char *p,unsigned size){
 
 		if(emptyQueue())
 		{
-	    	        memset(p,0,size);
+            memset(p,0,size);
 			return size;
 		}
 

@@ -190,6 +190,8 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 
 		Log.v("mm", "glContext major:"+vers[0]+" minor:"+vers[1]);
 
+		//new WarnWidget.WarnWidgetHelper(mm,"OpenGL ES: major:"+vers[0]+" minor:"+vers[1],10, Color.GREEN,false);
+
 		GLES32.glDisable(GLES32.GL_BLEND);
 		GLES32.glDisable(GLES32.GL_CULL_FACE);
 		GLES32.glDisable(GLES32.GL_DEPTH_TEST);
@@ -409,7 +411,8 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 				ShaderConf c = (ShaderConf)shaderConfs.get(effectProgramId);
 				if(c!=null) {
 					filter = c.smooth ? FILTER_ON : FILTER_OFF;
-					isEffectProgramFailed = !createEffectShader(c.fileName,c.version);
+					int version = mm.getPrefsHelper().isShadersAs30() ? 3 : c.version;
+					isEffectProgramFailed = !createEffectShader(c.fileName,version);
 				}
 				else
 				{

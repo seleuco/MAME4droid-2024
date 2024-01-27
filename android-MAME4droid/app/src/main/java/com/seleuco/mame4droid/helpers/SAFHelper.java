@@ -46,6 +46,7 @@ package com.seleuco.mame4droid.helpers;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -234,7 +235,7 @@ public class SAFHelper {
 
     public boolean listUriFiles(Boolean reload) {
 
-		pw = new WarnWidget(mm,"Caching SAF files...","Reading, please wait.");
+		pw = new WarnWidget(mm,"Caching SAF files."," Reading, please wait...", Color.WHITE,false,false);
 		pw.init();
 
         if (fileIDs != null && !reload) return true;

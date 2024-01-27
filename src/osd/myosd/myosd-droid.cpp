@@ -118,6 +118,8 @@ static int myosd_droid_is_paused_in_emu = 0;
 
 static int myosd_one_processor = 0;
 static int myosd_droid_no_dzsat = 0;
+static int myosd_speed_hacks = 0;
+static int myosd_droid_init_game = 0;
 
 //vector options
 static int myosd_droid_vector_beam2x = 1;
@@ -410,6 +412,9 @@ void myosd_droid_setMyValue(int key, int i, int value) {
         case com_seleuco_mame4droid_Emulator_MAMEINI:
             myosd_droid_using_mameini = value;
             break;
+        case com_seleuco_mame4droid_Emulator_SPEED_HACKS:
+            myosd_speed_hacks = value;
+            break;
     }
 }
 
@@ -502,8 +507,8 @@ void myosd_droid_setDigitalData(int i, unsigned long value) {
 void myosd_droid_setAnalogData(int i, float v1, float v2) {
 
     if(i == 8) {
-        lightgun_x[i] = v1;
-        lightgun_y[i] = v2;
+        lightgun_x[0] = v1;
+        lightgun_y[0] = v2;
     } else {
         if(myosd_droid_pxasp1 && !myosd_droid_inMenu && myosd_droid_num_of_joys<=1)
         {
@@ -932,6 +937,13 @@ static void droid_video_draw_cb(int skip_redraw, int in_game, int in_menu, int r
     myosd_set(MYOSD_FPS, myosd_droid_show_fps);
     myosd_set(MYOSD_ZOOM_TO_WINDOW, myosd_droid_zoom_to_window);
 
+    if(myosd_droid_init_game && running) {
+        if (myosd_speed_hacks && in_game) {
+            myosd_speed_hack();
+        }
+        myosd_droid_init_game = 0;
+    }
+
     myosd_droid_inGame = in_game;
     myosd_droid_inMenu = in_menu;
     myosd_droid_running = running;
@@ -959,6 +971,7 @@ static void droid_input_init_cb(myosd_input_state *input, size_t state_size) {
     myosd_droid_num_ways      = input->num_ways;
     myosd_droid_light_gun     = input->num_lightgun != 0;
     myosd_droid_mouse     = input->num_mouse != 0;
+    myosd_droid_init_game = 1;
 
 
     /*

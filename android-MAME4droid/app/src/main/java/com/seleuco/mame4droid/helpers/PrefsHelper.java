@@ -74,6 +74,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_EMU_DRC_USR_C = "PREF_EMU_DRC_USR_C";
 	final static public String PREF_EMU_ONE_PROCESSOR = "PREF_EMU_ONE_PROCESSOR";
 	final static public String PREF_MAMEINI = "PREF_MAMEINI";
+	final static public String PREF_SPEED_HACKS = "PREF_SPEED_HACKS";
 
     final static public String PREF_GLOBAL_AUTOSAVE = "PREF_GLOBAL_AUTOSAVE";
     final static public String PREF_GLOBAL_DEBUG = "PREF_GLOBAL_DEBUG";
@@ -82,6 +83,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_SHADERS_ENABLED = "PREF_SHADERS_ENABLED";
 	final static public String PREF_SHADER_EFFECT = "PREF_SHADER_EFFECT";
 	final static public String PREF_SHADER_IN_FRONTEND = "PREF_SHADER_IN_FRONTEND";
+	final static public String PREF_SHADER_30 = "PREF_SHADER_30";
 
     final static public String PREF_PORTRAIT_SCALING_MODE = "PREF_PORTRAIT_SCALING_MODE";
     final static public String PREF_PORTRAIT_TOUCH_CONTROLLER = "PREF_PORTRAIT_TOUCH_CONTROLLER";
@@ -595,6 +597,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		return getSharedPreferences().getBoolean(PREF_MAMEINI, false);
 	}
 
+	public boolean isSpeedHacks() {
+		return getSharedPreferences().getBoolean(PREF_SPEED_HACKS, false);
+	}
+
     public boolean isVectorBeam2x() {
         return getSharedPreferences().getBoolean(PREF_BEAM2X, true);
     }
@@ -670,6 +676,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
 	public boolean isShadersUsedInFrontend() {
 		return getSharedPreferences().getBoolean(PREF_SHADER_IN_FRONTEND, false);
+	}
+
+	public boolean isShadersAs30() {
+		return getSharedPreferences().getBoolean(PREF_SHADER_30, false);
 	}
 
 }

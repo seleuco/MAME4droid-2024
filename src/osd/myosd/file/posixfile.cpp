@@ -238,7 +238,7 @@ std::error_condition osd_file::open(std::string const &path, std::uint32_t openf
 
     //__android_log_print(ANDROID_LOG_DEBUG, "mame4", "---> Opn file Path %s ",path.c_str());
 
-    if(myosd_droid_using_saf == 1 && path.find(myosd_droid_safpath) == 0) {
+    if(myosd_droid_using_saf == 1 && path.find(myosd_droid_safpath)!=std::string::npos && path.find(myosd_droid_safpath) == 0) {
         const char *mode = "r";
         if (openflags & OPEN_FLAG_WRITE)
         {

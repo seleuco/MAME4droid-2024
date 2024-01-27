@@ -213,9 +213,16 @@ class Modified extends LinearLayout {
 
 			if (GameController.keyMapping[position] != -1 /*&& InputHandler.keyMapping[position] > 0*/)
 			{
+				String label = "???";
+
+				int idx = GameController.getKeyCodeFromKeyCodeWithDeviceID(GameController.keyMapping[position]);
+
+				if(idx < ListKeys.androidKeysLabels.length)
+				   label = ListKeys.androidKeysLabels[idx];
+
 				textView2.setText(String.format("%d : %s"
 						, GameController.getDeviceIdFromKeyCodeWithDeviceID(GameController.keyMapping[position])
-						,  ListKeys.androidKeysLabels[ GameController.getKeyCodeFromKeyCodeWithDeviceID(GameController.keyMapping[position]) ]
+						, label
 						)
 		        );
 				//textView2.setText(ListKeys.androidKeysLabels[InputHandler.keyMapping[position]]);

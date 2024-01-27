@@ -142,6 +142,35 @@ extern "C" bool myosd_is_paused()
     return false;
 }
 
+extern "C" void myosd_speed_hack()
+{
+    int cpu_overclock = 100;
+    if (osdInterface != nullptr && osdInterface->isMachine()) {
+        device_enumerator iter(osdInterface->machine().root_device());
+        for (device_t &device: iter) {
+            if (dynamic_cast<cpu_device *>(&device) != nullptr) {
+                cpu_device *firstcpu = downcast<cpu_device *>(&device);
+
+                std::string name = std::string(firstcpu->name());
+                __android_log_print(ANDROID_LOG_DEBUG, "hacks", "%s", name.c_str());
+                if (name.find("R4600") != std::string::npos || name.find("TMS3") != std::string::npos) {
+                    cpu_overclock = 60;
+                }
+                else if (name.find("SH-2") != std::string::npos)
+                {
+                    cpu_overclock = 55;
+                }
+                else
+                {
+                    cpu_overclock = 90;
+                }
+                firstcpu->set_clock_scale((float) cpu_overclock * 0.01f);
+                break;
+            }
+        }
+    }
+}
+
 //============================================================
 //  myosd_pushEvent
 //============================================================

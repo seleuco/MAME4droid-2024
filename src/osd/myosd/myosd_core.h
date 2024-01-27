@@ -297,6 +297,7 @@ typedef struct {
 
 extern void myosd_pause(bool pause);
 extern bool myosd_is_paused();
+extern void myosd_speed_hack();
 extern void myosd_pushEvent(myosd_inputevent event);
 extern intptr_t myosd_get(int var);
 extern void myosd_set(int var, intptr_t value);

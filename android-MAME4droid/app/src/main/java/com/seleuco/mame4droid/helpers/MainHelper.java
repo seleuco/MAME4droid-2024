@@ -70,6 +70,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -315,7 +316,7 @@ public class MainHelper {
             fm.mkdirs();
             fm.createNewFile();
 
-			pw = new WarnWidget(mm,"Installing files...","Please wait.");
+			pw = new WarnWidget(mm,"Installing files, ","please wait...", Color.WHITE,false,true);
 			pw.init();
 
             // Create a ZipInputStream to read the zip file
@@ -513,6 +514,9 @@ public class MainHelper {
 
 		Emulator.setValue(Emulator.MAMEINI, mm.getPrefsHelper()
 			.isUsedMAMEini() ? 1 : 0);
+
+		Emulator.setValue(Emulator.SPEED_HACKS, mm.getPrefsHelper()
+			.isSpeedHacks() ? 1 : 0);
 
         Emulator.setValue(Emulator.VBEAM2X, mm.getPrefsHelper()
                 .isVectorBeam2x() ? 1 : 0);

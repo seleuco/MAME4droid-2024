@@ -16,15 +16,9 @@ public class WarnWidget {
 	public static class WarnWidgetHelper extends Thread{
 		WarnWidget warnWidget;
 		int time;
-		public WarnWidgetHelper(MAME4droid mm, String msg,int time){
-			warnWidget = new WarnWidget(mm, "", msg);
-			this.time = time;
-			warnWidget.init();
-			this.start();
-		}
 
 		public WarnWidgetHelper(MAME4droid mm, String msg,int time,int color, boolean bottom){
-			warnWidget = new WarnWidget(mm, "", msg,color,bottom);
+			warnWidget = new WarnWidget(mm, "", msg,color,bottom,false);
 			this.time = time;
 			warnWidget.init();
 			this.start();
@@ -57,18 +51,13 @@ public class WarnWidget {
 
 	protected int orientation;
 
-	public WarnWidget(MAME4droid mm, String title, String initMsg){
-		this.mm = mm;
-		this.title = title;
-		this.initMsg = initMsg;
-		color = Color.WHITE;
-	}
-
-	public WarnWidget(MAME4droid mm, String title, String initMsg,int color,boolean bottom ){
-	   this(mm, title, initMsg);
+	public WarnWidget(MAME4droid mm, String title, String initMsg,int color,boolean bottom, boolean lock) {
+	   this.mm = mm;
+	   this.title = title;
+	   this.initMsg = initMsg;
 	   this.color = color;
-	   this.lockOrientation = false;
 	   this.bottom = bottom;
+		this.lockOrientation = lock;
 	}
 
 	public void init(){

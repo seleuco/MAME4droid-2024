@@ -24,12 +24,16 @@
 			android:entryValues="@array/pref_osd_resolution_values"
 			android:defaultValue="1" />
 
-		<CheckBoxPreference android:key="PREF_ZOOM_TO_WINDOW"
-			android:title="Zoom to window" android:summary="Automatically zooms the emulated display so that portrait and landscape games use the entire device window. Disable if you use artwork to zoom into the screen area in MAME video options using fixed orientation and wide resolutions"
-			android:defaultValue="true" />
-
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_ONE_PROCESSOR"
 			android:title="Only one processor" android:summary="Enable it so that games that use discrete sound like dkong don't hung. Disable it to get a great improvement in 3D games that are capable of taking advantage of several threads"
+			android:defaultValue="true" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_SPEED_HACKS"
+			android:title="Speed hacks" android:summary="Enable it to get better performance in games like K.Instinct, M.Kombat or CPS3. You should only enable it to play those games because other games may work poorly or not work."
+			android:defaultValue="False" />
+
+		<CheckBoxPreference android:key="PREF_ZOOM_TO_WINDOW"
+			android:title="Zoom to window" android:summary="Automatically zooms the emulated display so that portrait and landscape games use the entire device window. Disable if you use artwork to zoom into the screen area in MAME video options using fixed orientation and wide resolutions"
 			android:defaultValue="true" />
 
 	    <com.seleuco.mame4droid.prefs.ListPrefWithWarn
@@ -330,6 +334,11 @@
 				android:title="Use shader in frontend" android:summary="Use the shaders effects also in the ROMs manager"
 				android:defaultValue="False" />
 
+			<CheckBoxPreference android:key="PREF_SHADER_30"
+				android:dependency="PREF_SHADERS_ENABLED"
+				android:title="Force shaders as 3.0" android:summary="Force shaders to use 3.0 shader language for better accuracy, but some shaders may fail on older devices"
+				android:defaultValue="False" />
+
 		</PreferenceScreen>
 
     <PreferenceScreen android:key="general" android:title="General"
@@ -372,7 +381,7 @@
 			android:defaultValue="false" />
 
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_GLOBAL_SIMPLE_UI"
-			android:title="Use simple UI" android:summary="Use the MAME simple UI instead of the cabinet one"
+			android:title="Use simple UI" android:summary="Use the MAME simple UI instead of the cabinet one. Simple UI will show you 20 random games but you can search for any by typing with the keyboard"
 			android:defaultValue="false" />
 
 		<CheckBoxPreference android:key="PREF_GLOBAL_SCALE_BEYOND"

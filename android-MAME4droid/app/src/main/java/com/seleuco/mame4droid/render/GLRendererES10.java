@@ -44,6 +44,7 @@
 
 package com.seleuco.mame4droid.render;
 
+import android.graphics.Color;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
 import android.widget.Toast;
@@ -256,7 +257,7 @@ public class GLRendererES10 implements Renderer, IGLRenderer {
 			createEmuTexture(gl);
 		} catch (OutOfMemoryError e) {
 			if (!warn)
-				new WarnWidget.WarnWidgetHelper(mm,"Not enough memory to create texture!",5);
+				new WarnWidget.WarnWidgetHelper(mm,"Not enough memory to create texture!",5, Color.RED,true);
 			warn = true;
 			return;
 		}
