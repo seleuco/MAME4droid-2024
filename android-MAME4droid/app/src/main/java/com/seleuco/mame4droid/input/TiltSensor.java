@@ -180,7 +180,6 @@ public class TiltSensor {
                     value_x = -e.values[1];
             } catch (Throwable ee) {
             }
-            ;
 
             //low pass filter to get gravity
             if (fallback) {
@@ -202,11 +201,6 @@ public class TiltSensor {
                 if (!init) {
                     reset();
                     init = true;
-        		    /*
-        			CharSequence text = "Tilt sensor is enabled";
-        		    int duration = Toast.LENGTH_SHORT;
-        		    Toast toast = Toast.makeText(mm, text, duration);
-        		    toast.show();*/
                 }
 
                 boolean skip = (mm.getInputHandler().digital_data[0] & IController.COIN_VALUE) != 0 ||

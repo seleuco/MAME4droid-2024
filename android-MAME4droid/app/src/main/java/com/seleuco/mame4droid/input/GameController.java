@@ -44,6 +44,7 @@
 
 package com.seleuco.mame4droid.input;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.InputDevice;
@@ -56,6 +57,7 @@ import com.seleuco.mame4droid.MAME4droid;
 import com.seleuco.mame4droid.helpers.DialogHelper;
 import com.seleuco.mame4droid.helpers.MainHelper;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
+import com.seleuco.mame4droid.widgets.WarnWidget;
 
 import java.util.Arrays;
 
@@ -74,6 +76,8 @@ public class GameController implements IController {
 		D_VALUE,
 		E_VALUE,
 		F_VALUE,
+		G_VALUE,
+		H_VALUE,
 		COIN_VALUE,
 		START_VALUE,
 		EXIT_VALUE,
@@ -92,6 +96,8 @@ public class GameController implements IController {
 		KeyEvent.KEYCODE_BUTTON_Y,
 		KeyEvent.KEYCODE_BUTTON_L1,
 		KeyEvent.KEYCODE_BUTTON_R1,
+		KeyEvent.KEYCODE_BUTTON_L2,
+		KeyEvent.KEYCODE_BUTTON_R2,
 		KeyEvent.KEYCODE_BUTTON_THUMBR ,
 		KeyEvent.KEYCODE_BUTTON_THUMBL,
 		KeyEvent.KEYCODE_BACK,
@@ -111,22 +117,28 @@ public class GameController implements IController {
 		-1,
 		-1,
 		-1,
-		//////
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
-		-1,
 		-1,
 		-1,
 		//////
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		-1,
+		//////
+		-1,
+		-1,
 		-1,
 		-1,
 		-1,
@@ -756,11 +768,8 @@ public class GameController implements IController {
 		final String name = device.getName();
 
 		if (Emulator.isDebug()) {
-			mm.runOnUiThread(new Runnable() {
-				public void run() {
-					Toast.makeText(mm, "Detected input device: " + name, Toast.LENGTH_LONG).show();
-				}
-			});
+			String msg = "Detected input device: " + name;
+			new WarnWidget.WarnWidgetHelper(mm, msg, 3, Color.GREEN, true);
 		}
 
 		CharSequence desc = "";
@@ -1293,10 +1302,7 @@ public class GameController implements IController {
 				mm.getMainHelper().updateMAME4droid();
 
 			CharSequence text = "Detected " + desc + " controller as P" + id;
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(mm, text, duration);
-			toast.show();
+			new WarnWidget.WarnWidgetHelper(mm, text.toString(), 3, Color.GREEN, true);
 
 			return id - 1;
 		} else {

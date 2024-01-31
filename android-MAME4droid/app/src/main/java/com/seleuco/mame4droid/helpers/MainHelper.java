@@ -518,6 +518,15 @@ public class MainHelper {
 		Emulator.setValue(Emulator.SPEED_HACKS, mm.getPrefsHelper()
 			.isSpeedHacks() ? 1 : 0);
 
+		Emulator.setValue(Emulator.AUTOFIRE, mm.getPrefsHelper()
+			.isAutofire() ? 1 : 0);
+
+		Emulator.setValue(Emulator.INPUTMACRO, mm.getPrefsHelper()
+			.isInputMacro() ? 1 : 0);
+
+		Emulator.setValue(Emulator.HISCORE, mm.getPrefsHelper()
+			.isHiscore() ? 1 : 0);
+
         Emulator.setValue(Emulator.VBEAM2X, mm.getPrefsHelper()
                 .isVectorBeam2x() ? 1 : 0);
         Emulator.setValue(Emulator.VFLICKER, mm.getPrefsHelper()
@@ -730,6 +739,8 @@ galaxy sde	   --> 2560x1600 16:10
 4/3    -> 1,3
  */
                 // System.out.println("--->>> "+w+" "+h+ " "+w/h+ " "+ (float)(16.0/9.0));
+
+
                 float ar = w / h;
                 if (ar >= (float) (18.0 / 9.0)) {
                     System.out.println("--->>> ULTRA WIDE");
@@ -741,29 +752,10 @@ galaxy sde	   --> 2560x1600 16:10
                     System.out.println("--->>> NORMAL");
                     inputHandler.getTouchController().readControllerValues(R.raw.controller_landscape);
                 }
+
             }
         }
-/*
-        if (Emulator.getValue(Emulator.IN_GAME) == 1
-                && (Emulator.getValue(Emulator.IN_MENU) == 0 || oldInGame == 0)
-                && (((mm.getPrefsHelper().isTouchLightgun() || mm.getPrefsHelper().isTouchGameMouse())
-			&& mm.getInputHandler()
-                .getTouchController().getState() != TouchController.STATE_SHOWING_NONE) || mm
-                .getPrefsHelper().isTiltSensor())) {
 
-            CharSequence text = "";
-			if(mm.getPrefsHelper().isTiltSensor())
-				text = "Tilt sensor is enabled!";
-			else if(mm.getPrefsHelper().isTouchLightgun())
-				text = "Touch lightgun is enabled!";
-			else if(mm.getPrefsHelper().isTouchGameMouse())
-				text = "Touch mouse is enabled!";
-
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(mm, text, duration);
-            toast.show();
-        }
-*/
         oldInGame = Emulator.getValue(Emulator.IN_GAME);
 
         if (state != TouchController.STATE_SHOWING_CONTROLLER
@@ -808,7 +800,7 @@ galaxy sde	   --> 2560x1600 16:10
                     .setInfoMsg(
                             "When MAME4droid is first run, it will create a folder structure for you on the internal memory of your Android device. This folder contains all the other folders MAME uses as well as some basic configuration files."
                                     + "Since MAME4droid does not come with game ROM files, you will need to copy them to the selected or '/storage/emulated/0/Android/media/com.seleuco.mame4d2024/roms' folder (" +
-                                    "the one that applies) yourself. These should be properly named, ZIPped MAME v0.261 ROMs files with the filenames in all lower case.\n\nImportant: You should define or map your Android TV game controller on 'options/settings/input/External controller/define Keys' to avoid this help screen constantly showing if the controller is not auto detected.\n\n"
+                                    "the one that applies) yourself. These should be properly named, ZIPped MAME v0.262 ROMs files with the filenames in all lower case.\n\nImportant: You should define or map your Android TV game controller on 'options/settings/input/External controller/define Keys' to avoid this help screen constantly showing if the controller is not auto detected.\n\n"
                                     + "Controls: Buttons A,B,C,D,E,F on the controller map to buttons Button MAME 1 to 6 buttons."
                                     + " Coin button inserts coin/adds credit.START button starts 1P game. A+START is fast forward. B+START is toggle UI controls. START+A+B is service mode. SELECT+A+B is soft reset. Use SELECT(coin) or START for UI navigation."
                                     + "R1 + START loads a save state. L1 + START saves a save state. START + SELECT when gaming accesses the game's MAME menu (dip switches, etc)...");

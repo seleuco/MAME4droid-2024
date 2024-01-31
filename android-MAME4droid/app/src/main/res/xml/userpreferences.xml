@@ -32,10 +32,6 @@
 			android:title="Speed hacks" android:summary="Enable it to get better performance in games like K.Instinct, M.Kombat or CPS3. You should only enable it to play those games because other games may work poorly or not work."
 			android:defaultValue="False" />
 
-		<CheckBoxPreference android:key="PREF_ZOOM_TO_WINDOW"
-			android:title="Zoom to window" android:summary="Automatically zooms the emulated display so that portrait and landscape games use the entire device window. Disable if you use artwork to zoom into the screen area in MAME video options using fixed orientation and wide resolutions"
-			android:defaultValue="true" />
-
 	    <com.seleuco.mame4droid.prefs.ListPrefWithWarn
 			android:entries="@array/pref_sound_options"
 			android:title='Sound'
@@ -55,9 +51,25 @@
 			android:title="Cheats" android:summary="Enables the reading of the cheat database"
 			android:defaultValue="false" />
 
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_HISCORE"
+			android:title="Hiscore" android:summary="Enable it to activate hiscore MAME plugin to save and restores high scores for games that did not originally save high scores in non-volatile memory"
+			android:defaultValue="False" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_INPUTMACRO"
+			android:title="Input macro" android:summary="Enable it to allows you to trigger a sequence of emulated input actions with a key or button combination. Note: The plugin is available from MAME UI plugin options"
+			android:defaultValue="False" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_AUTOFIRE"
+			android:title="Autofire" android:summary="Enable it to allows you to simulate repeatedly pressing an emulated button by holding down a key or button combination. Note: The plugin is available from MAME UI plugin options"
+			android:defaultValue="False" />
+
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="SKIP_GAMEINFO"
 			android:title="Skip game info " android:summary="Forces to skip displaying the system info screen"
 			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="PREF_ZOOM_TO_WINDOW"
+			android:title="Zoom to window" android:summary="Automatically zooms the emulated display so that portrait and landscape games use the entire device window. Disable if you use artwork to zoom into the screen area in MAME video options using fixed orientation and wide resolutions"
+			android:defaultValue="true" />
 
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_DISABLE_DRC_2"
 			android:title="Disable DRC" android:summary="Disable DRC (dynamic recompiler) CPU core if available for more performance on ARM64 since there is not native DRC. Enable it to test DRC C backend performance or compatibility in some games that freezes or not launch"
@@ -66,12 +78,6 @@
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_DRC_USE_C"
 			android:title="DRC use C" android:summary="Force DRC to use the C code backend so ARM64 devices works"
 			android:defaultValue="true" android:dependency="PREF_EMU_DISABLE_DRC_2" />
-
-	<!--
-	   	<CheckBoxPreference android:key="PREF_GLOBAL_AUTOSAVE"
-			android:title="Autosave" android:summary="When enabled, automatically creates a save state file when exiting a game."
-			android:defaultValue="false" />
-	-->
 
 	    <PreferenceScreen android:key="vector" android:title="Vector"
 	        android:summary="Select it to open vector games options" android:persistent="false">
@@ -334,7 +340,7 @@
 				android:title="Use shader in frontend" android:summary="Use the shaders effects also in the ROMs manager"
 				android:defaultValue="False" />
 
-			<CheckBoxPreference android:key="PREF_SHADER_30"
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_SHADER_30"
 				android:dependency="PREF_SHADERS_ENABLED"
 				android:title="Force shaders as 3.0" android:summary="Force shaders to use 3.0 shader language for better accuracy, but some shaders may fail on older devices"
 				android:defaultValue="False" />
@@ -461,7 +467,7 @@
 
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="Lansdscape Display Settings">
+	<PreferenceCategory android:title="Landscape Display Settings">
 
 		<ListPreference android:entries="@array/pref_scaleMode_options"
 			android:title='Scaling mode' android:key="PREF_LANDSCAPE_SCALING_MODE"

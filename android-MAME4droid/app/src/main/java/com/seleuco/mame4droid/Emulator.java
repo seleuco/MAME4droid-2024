@@ -132,7 +132,9 @@ public class Emulator {
 	final static public int NODEADZONEANDSAT = 68;
 	final static public int MAMEINI = 69;
 	final static public int SPEED_HACKS = 70;
-
+	final static public int AUTOFIRE = 71;
+	final static public int INPUTMACRO = 72;
+	final static public int HISCORE = 73;
 	//set str
 	final static public int SAF_PATH = 1;
 	final static public int ROM_NAME = 2;

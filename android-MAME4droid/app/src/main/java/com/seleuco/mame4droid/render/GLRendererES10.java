@@ -47,7 +47,6 @@ package com.seleuco.mame4droid.render;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.MAME4droid;
@@ -64,179 +63,179 @@ import javax.microedition.khronos.opengles.GL11Ext;
 
 public class GLRendererES10 implements Renderer, IGLRenderer {
 
-    protected int emuTextureId = -1;
+	protected int emuTextureId = -1;
 
-    private final int[] mCrop;
+	private final int[] mCrop;
 
-    protected int ax = 0;
-    protected int ay = 0;
+	protected int ax = 0;
+	protected int ay = 0;
 
-    protected ByteBuffer byteBuffer = null;
-    protected boolean emuTextureInit = false;
-    protected boolean isAltPath = false;
+	protected ByteBuffer byteBuffer = null;
+	protected boolean emuTextureInit = false;
+	protected boolean isAltPath = false;
 
-    protected boolean smooth = false;
+	protected boolean smooth = false;
 
-    protected MAME4droid mm = null;
+	protected MAME4droid mm = null;
 
-    protected boolean warn = false;
+	protected boolean warn = false;
 
-    public void setMAME4droid(MAME4droid mm) {
-        this.mm = mm;
-        if (mm == null) return;
+	public void setMAME4droid(MAME4droid mm) {
+		this.mm = mm;
+		if (mm == null) return;
 
-        isAltPath = mm.getPrefsHelper().isAltGLPath();
-    }
+		isAltPath = mm.getPrefsHelper().isAltGLPath();
+	}
 
-    public GLRendererES10() {
-        mCrop = new int[4];
-    }
+	public GLRendererES10() {
+		mCrop = new int[4];
+	}
 
-    public void changedEmulatedSize() {
-        //Log.v("mm","changedEmulatedSize "+shortBuffer+" "+Emulator.getScreenBuffer());
-        if (Emulator.getScreenBuffer() == null) return;
-        byteBuffer = Emulator.getScreenBuffer();
-        emuTextureInit = false;
-    }
+	public void changedEmulatedSize() {
+		//Log.v("mm","changedEmulatedSize "+shortBuffer+" "+Emulator.getScreenBuffer());
+		if (Emulator.getScreenBuffer() == null) return;
+		byteBuffer = Emulator.getScreenBuffer();
+		emuTextureInit = false;
+	}
 
-    private int getP2Size(GL10 gl, int size) {
-        //String exts = gl.glGetString(GL10.GL_EXTENSIONS);
-        //if(exts.indexOf("GL_ARB_texture_non_power_of_two")!=-1 )
-        //return size;
-        if (size <= 64)
-            return 64;
-        else if (size <= 128)
-            return 128;
-        else if (size <= 256)
-            return 256;
-        else if (size <= 512)
-            return 512;
-        else if (size <= 1024)
-            return 1024;
-        else if (size <= 2048)
-            return 2048;
-        else if (size <= 4096)
-            return 4096;
-        else
-            return 8192;
-    }
+	private int getP2Size(GL10 gl, int size) {
+		//String exts = gl.glGetString(GL10.GL_EXTENSIONS);
+		//if(exts.indexOf("GL_ARB_texture_non_power_of_two")!=-1 )
+		//return size;
+		if (size <= 64)
+			return 64;
+		else if (size <= 128)
+			return 128;
+		else if (size <= 256)
+			return 256;
+		else if (size <= 512)
+			return 512;
+		else if (size <= 1024)
+			return 1024;
+		else if (size <= 2048)
+			return 2048;
+		else if (size <= 4096)
+			return 4096;
+		else
+			return 8192;
+	}
 
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-        Log.v("mm", "onSurfaceCreated ");
+		Log.v("mm", "onSurfaceCreated ");
 
-        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
+		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 
-        gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-        gl.glShadeModel(GL10.GL_FLAT);
-        gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glShadeModel(GL10.GL_FLAT);
+		gl.glEnable(GL10.GL_TEXTURE_2D);
 
-        gl.glDisable(GL10.GL_DITHER);
-        gl.glDisable(GL10.GL_LIGHTING);
-        gl.glDisable(GL10.GL_BLEND);
-        gl.glDisable(GL10.GL_CULL_FACE);
-        gl.glDisable(GL10.GL_DEPTH_TEST);
-        gl.glDisable(GL10.GL_MULTISAMPLE);
+		gl.glDisable(GL10.GL_DITHER);
+		gl.glDisable(GL10.GL_LIGHTING);
+		gl.glDisable(GL10.GL_BLEND);
+		gl.glDisable(GL10.GL_CULL_FACE);
+		gl.glDisable(GL10.GL_DEPTH_TEST);
+		gl.glDisable(GL10.GL_MULTISAMPLE);
 
-        emuTextureInit = false;
-    }
+		emuTextureInit = false;
+	}
 
-    public void onSurfaceChanged(GL10 gl, int w, int h) {
-        Log.v("mm", "sizeChanged: ==> new Viewport: [" + w + "," + h + "]");
+	public void onSurfaceChanged(GL10 gl, int w, int h) {
+		Log.v("mm", "sizeChanged: ==> new Viewport: [" + w + "," + h + "]");
 
-        gl.glViewport(0, 0, w, h);
+		gl.glViewport(0, 0, w, h);
 
-        gl.glMatrixMode(GL10.GL_PROJECTION);
-        gl.glLoadIdentity();
-        gl.glOrthof(0f, w, h, 0f, -1f, 1f);
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrthof(0f, w, h, 0f, -1f, 1f);
 
-        gl.glFrontFace(GL10.GL_CCW);
+		gl.glFrontFace(GL10.GL_CCW);
 
-        gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-        emuTextureInit = false;
-    }
+		emuTextureInit = false;
+	}
 
-    protected boolean isSmooth() {
-        return Emulator.isEmuFiltering();
-    }
+	protected boolean isSmooth() {
+		return Emulator.isEmuFiltering();
+	}
 
-    private void releaseTexture(GL10 gl) {
-        if (emuTextureId != -1) {
-            gl.glDeleteTextures(1, new int[]{emuTextureId}, 0);
-        }
-    }
+	private void releaseTexture(GL10 gl) {
+		if (emuTextureId != -1) {
+			gl.glDeleteTextures(1, new int[]{emuTextureId}, 0);
+		}
+	}
 
-    public void dispose(GL10 gl) {
-        releaseTexture(gl);
-    }
+	public void dispose(GL10 gl) {
+		releaseTexture(gl);
+	}
 
-    protected void createEmuTexture(final GL10 gl) {
+	protected void createEmuTexture(final GL10 gl) {
 
-        if (gl != null) {
+		if (gl != null) {
 
-            if (emuTextureId == -1 || smooth != isSmooth()) {
-                int[] mTextureNameWorkspace = new int[1];
-                int textureId = -1;
+			if (emuTextureId == -1 || smooth != isSmooth()) {
+				int[] mTextureNameWorkspace = new int[1];
+				int textureId = -1;
 
-                if (emuTextureId != -1) {
-                    gl.glDeleteTextures(1, new int[]{emuTextureId}, 0);
-                }
+				if (emuTextureId != -1) {
+					gl.glDeleteTextures(1, new int[]{emuTextureId}, 0);
+				}
 
-                gl.glGenTextures(1, mTextureNameWorkspace, 0);
+				gl.glGenTextures(1, mTextureNameWorkspace, 0);
 
-                textureId = mTextureNameWorkspace[0];
-                gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
+				textureId = mTextureNameWorkspace[0];
+				gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
 
-                smooth = isSmooth();
+				smooth = isSmooth();
 
-                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-                        smooth ? GL10.GL_LINEAR : GL10.GL_NEAREST);
-                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-                        smooth ? GL10.GL_LINEAR : GL10.GL_NEAREST);
+				gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+					smooth ? GL10.GL_LINEAR : GL10.GL_NEAREST);
+				gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+					smooth ? GL10.GL_LINEAR : GL10.GL_NEAREST);
 
-                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+				gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+				gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
 
-                gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_REPLACE);
+				gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_REPLACE);
 
-                emuTextureId = textureId;
-                emuTextureInit = false;
-            }
+				emuTextureId = textureId;
+				emuTextureInit = false;
+			}
 
-            if (!emuTextureInit) {
-                gl.glBindTexture(GL10.GL_TEXTURE_2D, emuTextureId);
+			if (!emuTextureInit) {
+				gl.glBindTexture(GL10.GL_TEXTURE_2D, emuTextureId);
 
-                ByteBuffer tmp = ByteBuffer.allocate(getP2Size(gl, Emulator.getEmulatedWidth()) * getP2Size(gl, Emulator.getEmulatedHeight()) * 4 /* RGB*/);
-                byte a[] = tmp.array();
-                Arrays.fill(a, (byte) 0);
+				ByteBuffer tmp = ByteBuffer.allocate(getP2Size(gl, Emulator.getEmulatedWidth()) * getP2Size(gl, Emulator.getEmulatedHeight()) * 4 /* RGB*/);
+				byte[] a = tmp.array();
+				Arrays.fill(a, (byte) 0);
 
-                gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0,GL10.GL_RGBA,
-                        getP2Size(gl, Emulator.getEmulatedWidth()),
-                        getP2Size(gl, Emulator.getEmulatedHeight()),
-                        0, GL10.GL_RGBA,
-                        GL10.GL_UNSIGNED_BYTE, tmp);
+				gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA,
+					getP2Size(gl, Emulator.getEmulatedWidth()),
+					getP2Size(gl, Emulator.getEmulatedHeight()),
+					0, GL10.GL_RGBA,
+					GL10.GL_UNSIGNED_BYTE, tmp);
 
-                emuTextureInit = true;
-            }
+				emuTextureInit = true;
+			}
 
-            final int error = gl.glGetError();
-            if (error != GL10.GL_NO_ERROR) {
-                Log.e("GLRender", "createEmuTexture GLError: " + error);
-            }
-        }
-    }
+			final int error = gl.glGetError();
+			if (error != GL10.GL_NO_ERROR) {
+				Log.e("GLRender", "createEmuTexture GLError: " + error);
+			}
+		}
+	}
 
-    //long target = -1;
+	//long target = -1;
 
-    synchronized public void onDrawFrame(GL10 gl) {
-        // Log.v("mm","onDrawFrame called "+shortBuffer);
-        //gl.glClearColor(255, 255, 255, 1.0f);
-        gl.glClearColor(0, 0, 0, 1.0f);
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+	synchronized public void onDrawFrame(GL10 gl) {
+		// Log.v("mm","onDrawFrame called "+shortBuffer);
+		//gl.glClearColor(255, 255, 255, 1.0f);
+		gl.glClearColor(0, 0, 0, 1.0f);
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
         /*while(target != -1){
         	if(System.nanoTime() > target)
@@ -244,40 +243,40 @@ public class GLRendererES10 implements Renderer, IGLRenderer {
         }
         target = System.nanoTime() + 1000000000/60;*/
 
-        if (byteBuffer == null) {
-            ByteBuffer buf = Emulator.getScreenBuffer();
-            if (buf == null) return;
-            byteBuffer = buf;
-        }
+		if (byteBuffer == null) {
+			ByteBuffer buf = Emulator.getScreenBuffer();
+			if (buf == null) return;
+			byteBuffer = buf;
+		}
 
-        byteBuffer.rewind();
-        byteBuffer.order(ByteOrder.nativeOrder());
+		byteBuffer.rewind();
+		byteBuffer.order(ByteOrder.nativeOrder());
 
 		try {
 			createEmuTexture(gl);
 		} catch (OutOfMemoryError e) {
 			if (!warn)
-				new WarnWidget.WarnWidgetHelper(mm,"Not enough memory to create texture!",5, Color.RED,true);
+				new WarnWidget.WarnWidgetHelper(mm, "Not enough memory to create texture!", 5, Color.RED, true);
 			warn = true;
 			return;
 		}
 
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, emuTextureId);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, emuTextureId);
 
-        int width = Emulator.getEmulatedWidth();
-        int height = Emulator.getEmulatedHeight();
+		int width = Emulator.getEmulatedWidth();
+		int height = Emulator.getEmulatedHeight();
 
-        gl.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, width, height,
-                    GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, byteBuffer);
+		gl.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, width, height,
+			GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, byteBuffer);
 
-        mCrop[0] = 0; // u
-        mCrop[1] = height; // v
-        mCrop[2] = width; // w
-        mCrop[3] = -height; // h
+		mCrop[0] = 0; // u
+		mCrop[1] = height; // v
+		mCrop[2] = width; // w
+		mCrop[3] = -height; // h
 
-        ((GL11) gl).glTexParameteriv(GL10.GL_TEXTURE_2D, GL11Ext.GL_TEXTURE_CROP_RECT_OES, mCrop, 0);
+		((GL11) gl).glTexParameteriv(GL10.GL_TEXTURE_2D, GL11Ext.GL_TEXTURE_CROP_RECT_OES, mCrop, 0);
 
-        ((GL11Ext) gl).glDrawTexiOES(0, 0, 0, Emulator.getWindow_width(), Emulator.getWindow_height());
+		((GL11Ext) gl).glDrawTexiOES(0, 0, 0, Emulator.getWindow_width(), Emulator.getWindow_height());
 
-    }
+	}
 }

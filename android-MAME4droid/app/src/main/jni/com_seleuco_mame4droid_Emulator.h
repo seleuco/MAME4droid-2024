@@ -87,6 +87,12 @@ extern "C" {
 #define com_seleuco_mame4droid_Emulator_MAMEINI 69L
 #undef com_seleuco_mame4droid_Emulator_SPEED_HACKS
 #define com_seleuco_mame4droid_Emulator_SPEED_HACKS 70L
+#undef com_seleuco_mame4droid_Emulator_AUTOFIRE
+#define com_seleuco_mame4droid_Emulator_AUTOFIRE 71L
+#undef com_seleuco_mame4droid_Emulator_INPUTMACRO
+#define com_seleuco_mame4droid_Emulator_INPUTMACRO 72L
+#undef com_seleuco_mame4droid_Emulator_HISCORE
+#define com_seleuco_mame4droid_Emulator_HISCORE 73L
 #undef com_seleuco_mame4droid_Emulator_SAF_PATH
 #define com_seleuco_mame4droid_Emulator_SAF_PATH 1L
 #undef com_seleuco_mame4droid_Emulator_ROM_NAME

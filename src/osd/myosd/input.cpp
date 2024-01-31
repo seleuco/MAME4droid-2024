@@ -153,10 +153,10 @@ void my_osd_interface::input_init()
         joystick->add_item("E", "", ITEM_ID_BUTTON5, get_button, BTN(joy_status[i], MYOSD_L1));
         joystick->add_item("F", "", ITEM_ID_BUTTON6, get_button, BTN(joy_status[i], MYOSD_R1));
 
-        joystick->add_item("L2", "", ITEM_ID_BUTTON7, get_button, BTN(joy_status[i], MYOSD_L2));
-        joystick->add_item("R2", "", ITEM_ID_BUTTON8, get_button, BTN(joy_status[i], MYOSD_R2));
-        joystick->add_item("L3", "", ITEM_ID_BUTTON9, get_button, BTN(joy_status[i], MYOSD_L3));
-        joystick->add_item("R3", "", ITEM_ID_BUTTON10,get_button, BTN(joy_status[i], MYOSD_R3));
+        joystick->add_item("G", "", ITEM_ID_BUTTON7, get_button, BTN(joy_status[i], MYOSD_L2));
+        joystick->add_item("H", "", ITEM_ID_BUTTON8, get_button, BTN(joy_status[i], MYOSD_R2));
+        //joystick->add_item("L3", "", ITEM_ID_BUTTON9, get_button, BTN(joy_status[i], MYOSD_L3));
+        //joystick->add_item("R3", "", ITEM_ID_BUTTON10,get_button, BTN(joy_status[i], MYOSD_R3));
 
         joystick->add_item("Select", "", ITEM_ID_SELECT, get_button, BTN(joy_status[i], MYOSD_SELECT));
         joystick->add_item("Start",  "", ITEM_ID_START,  get_button, BTN(joy_status[i], MYOSD_START));
@@ -491,6 +491,12 @@ void my_osd_interface::customize_input_type_list(std::vector<input_type_entry> &
                 break;
             case IPT_BUTTON6:
                 entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON6_INDEXED(entry.player());
+                break;
+            case IPT_BUTTON7:
+                entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON7_INDEXED(entry.player());
+                break;
+            case IPT_BUTTON8:
+                entry.defseq(SEQ_TYPE_STANDARD) |= JOYCODE_BUTTON8_INDEXED(entry.player());
                 break;
 
             case IPT_UI_FAST_FORWARD: //fast forward es start+a

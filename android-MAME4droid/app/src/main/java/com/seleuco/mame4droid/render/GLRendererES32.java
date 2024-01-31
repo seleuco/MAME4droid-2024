@@ -50,20 +50,17 @@ import android.opengl.Matrix;
 
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.MAME4droid;
 import com.seleuco.mame4droid.widgets.WarnWidget;
 
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -77,15 +74,15 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 
 	private int filter = FILTER_NO_DEFINED;
 
-    protected int emuTextureId = -1;
-    protected ByteBuffer byteBuffer = null;
-    protected boolean emuTextureInit = false;
+	protected int emuTextureId = -1;
+	protected ByteBuffer byteBuffer = null;
+	protected boolean emuTextureInit = false;
 
-    protected boolean smooth = false;
+	protected boolean smooth = false;
 
-    protected MAME4droid mm = null;
+	protected MAME4droid mm = null;
 
-    protected boolean warn = false;
+	protected boolean warn = false;
 
 	private static final String TAG = "GLRendererES32";
 
@@ -107,10 +104,10 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 	private int frame_countHandle = -1;
 	private int colorHandle = -1;
 
-	private int width=0;
-	private int height=0;
+	private int width = 0;
+	private int height = 0;
 
-	private int frame=0;
+	private int frame = 0;
 
 	private int stockProgram = -1;
 
@@ -121,39 +118,40 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 
 	private boolean isEffectProgramFailed = false;
 
-	private FloatBuffer vertices;
-	private FloatBuffer texcoords;
+	private final FloatBuffer vertices;
+	private final FloatBuffer texcoords;
 
-	private FloatBuffer color;
+	//private FloatBuffer color;
 
-	float  vertexes_flipped[] = {
+	private final float[] vertexes_flipped = {
 		0, 1,
 		1, 1,
 		0, 0,
 		1, 0
 	};
 
-	float  tex_coords[] = {
+	private final float[] tex_coords = {
 		0, 0,
 		1, 0,
 		0, 1,
 		1, 1
 	};
 
-	class ShaderConf{
-		ShaderConf(String s, boolean b, int ver){
+	static class ShaderConf {
+		ShaderConf(String s, boolean b, int ver) {
 			fileName = s;
 			smooth = b;
 			version = ver;
 		}
+
 		String fileName;
 		boolean smooth;
 		int version;
 	}
 
-	LinkedHashMap shaderConfs = new LinkedHashMap<>();
+	LinkedHashMap<Object, Object> shaderConfs = new LinkedHashMap<>();
 
-	protected FloatBuffer convertFloatArrayToFloatBuffer(float[] array){
+	protected FloatBuffer convertFloatArrayToFloatBuffer(float[] array) {
 		ByteBuffer bb = ByteBuffer.allocateDirect(array.length * 4);
 		bb.order(ByteOrder.nativeOrder());
 		FloatBuffer fb = bb.asFloatBuffer();
@@ -162,33 +160,33 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 		return fb;
 	}
 
-    public void setMAME4droid(MAME4droid mm) {
-        this.mm = mm;
-        if (mm == null) return;
+	public void setMAME4droid(MAME4droid mm) {
+		this.mm = mm;
+		if (mm == null) return;
 		fillShaderConfs();
-    }
+	}
 
-    public GLRendererES32() {
+	public GLRendererES32() {
 		this.vertices = convertFloatArrayToFloatBuffer(vertexes_flipped);
 		this.texcoords = convertFloatArrayToFloatBuffer(tex_coords);
-    }
+	}
 
-    public void changedEmulatedSize() {
-        //Log.v("mm","changedEmulatedSize "+shortBuffer+" "+Emulator.getScreenBuffer());
-        if (Emulator.getScreenBuffer() == null) return;
-        byteBuffer = Emulator.getScreenBuffer();
-        emuTextureInit = false;
-    }
+	public void changedEmulatedSize() {
+		//Log.v("mm","changedEmulatedSize "+shortBuffer+" "+Emulator.getScreenBuffer());
+		if (Emulator.getScreenBuffer() == null) return;
+		byteBuffer = Emulator.getScreenBuffer();
+		emuTextureInit = false;
+	}
 
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-        Log.v("mm", "onSurfaceCreated ");
+		Log.v("mm", "onSurfaceCreated ");
 
 		int[] vers = new int[2];
 		GLES32.glGetIntegerv(GLES32.GL_MAJOR_VERSION, vers, 0);
 		GLES32.glGetIntegerv(GLES32.GL_MINOR_VERSION, vers, 1);
 
-		Log.v("mm", "glContext major:"+vers[0]+" minor:"+vers[1]);
+		Log.v("mm", "glContext major:" + vers[0] + " minor:" + vers[1]);
 
 		//new WarnWidget.WarnWidgetHelper(mm,"OpenGL ES: major:"+vers[0]+" minor:"+vers[1],10, Color.GREEN,false);
 
@@ -201,20 +199,20 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 		int vertexShader =
 			ShaderUtil.loadGLShader(TAG, mm, GLES32.GL_VERTEX_SHADER, "stock.glsl",
 				new HashMap<String, Integer>() {{
-					put("VERTEX", (Integer)1);
+					put("VERTEX", (Integer) 1);
 				}}
-				,1
+				, 1
 			);
 		int fragmentShader =
 			ShaderUtil.loadGLShader(TAG, mm, GLES32.GL_FRAGMENT_SHADER, "stock.glsl",
 				new HashMap<String, Integer>() {{
-					put("FRAGMENT", (Integer)1);
+					put("FRAGMENT", (Integer) 1);
 				}},
 				1
 			);
 
 		if (vertexShader <= 0 || fragmentShader <= 0) {
-			new WarnWidget.WarnWidgetHelper(mm,"Error creating stock shaders!",5, Color.RED,false);
+			new WarnWidget.WarnWidgetHelper(mm, "Error creating stock shaders!", 5, Color.RED, false);
 			return;
 		}
 
@@ -229,10 +227,10 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 
 		GLES32.glUseProgram(this.stockProgram);
 
-		if(GLES32.glGetError() != GLES32.GL_NO_ERROR){
-			new WarnWidget.WarnWidgetHelper(mm,"Error creating stock shader program!",3, Color.RED,false);
-		    return;
-	    }
+		if (GLES32.glGetError() != GLES32.GL_NO_ERROR) {
+			new WarnWidget.WarnWidgetHelper(mm, "Error creating stock shader program!", 3, Color.RED, false);
+			return;
+		}
 
 		quadPositionStockHandle = GLES32.glGetAttribLocation(stockProgram, "VertexCoord");
 		//Texture position handler
@@ -242,43 +240,38 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 		//View projection transformation matrix handler
 		viewProjectionMatrixStockHandle = GLES32.glGetUniformLocation(stockProgram, "MVPMatrix");
 
-        emuTextureInit = false;
-    }
+		emuTextureInit = false;
+	}
 
-    public void onSurfaceChanged(GL10 gl, int w, int h) {
-        Log.v("mm", "sizeChanged: ==> new Viewport: [" + w + "," + h + "]");
+	public void onSurfaceChanged(GL10 gl, int w, int h) {
+		Log.v("mm", "sizeChanged: ==> new Viewport: [" + w + "," + h + "]");
 
 		width = w;
 		height = h;
 
 		GLES32.glViewport(0, 0, w, h);
 
-		Matrix.orthoM(this.projectionMatrix,0,0,1,0,1,-1,1);
+		Matrix.orthoM(this.projectionMatrix, 0, 0, 1, 0, 1, -1, 1);
 
-        emuTextureInit = false;
-    }
+		emuTextureInit = false;
+	}
 
-    protected boolean isSmooth() {
-        return Emulator.isEmuFiltering();
-    }
+	protected boolean isSmooth() {
+		return Emulator.isEmuFiltering();
+	}
 
-    private void releaseTexture() {
-        if (emuTextureId != -1) {
+	public void dispose(GL10 gl) {
+		if (emuTextureId != -1)
 			GLES32.glDeleteTextures(1, new int[]{emuTextureId}, 0);
-        }
-    }
-
-    public void dispose(GL10 gl) {
-        releaseTexture();
-		if(stockProgram>=0)
+		if (stockProgram >= 0)
 			GLES32.glDeleteProgram(stockProgram);
-		if(effectProgram>=0)
+		if (effectProgram >= 0)
 			GLES32.glDeleteProgram(effectProgram);
-    }
+	}
 
-	protected boolean createEffectShader(String name,int version) {
+	protected boolean createEffectShader(String name, int version) {
 
-		if(effectProgram>=0)
+		if (effectProgram >= 0)
 			GLES32.glDeleteProgram(effectProgram);
 
 		effectProgram = -1;
@@ -286,20 +279,20 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 		int vertexShader =
 			ShaderUtil.loadGLShader(TAG, mm, GLES32.GL_VERTEX_SHADER, name,
 				new HashMap<String, Integer>() {{
-					put("VERTEX", (Integer)1);
+					put("VERTEX", (Integer) 1);
 				}}
-				,version
+				, version
 			);
 		int fragmentShader =
 			ShaderUtil.loadGLShader(TAG, mm, GLES32.GL_FRAGMENT_SHADER, name,
 				new HashMap<String, Integer>() {{
-					put("FRAGMENT", (Integer)1);
+					put("FRAGMENT", (Integer) 1);
 				}},
 				version
 			);
 
 		if (vertexShader <= 0 || fragmentShader <= 0) {
-			new WarnWidget.WarnWidgetHelper(mm,"Error creating effect shader... reverting to stock shader!",3, Color.RED,false);
+			new WarnWidget.WarnWidgetHelper(mm, "Error creating effect shader... reverting to stock shader!", 3, Color.RED, false);
 			return false;
 		}
 
@@ -316,9 +309,9 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 		GLES32.glUseProgram(this.effectProgram);
 
 		final int error = GLES32.glGetError();
-		if(error != GLES32.GL_NO_ERROR){
+		if (error != GLES32.GL_NO_ERROR) {
 			Log.e(TAG, "glError " + error);
-			new WarnWidget.WarnWidgetHelper(mm,"Error creating effect shader program!",3,Color.RED,false);
+			new WarnWidget.WarnWidgetHelper(mm, "Error creating effect shader program!", 3, Color.RED, false);
 			return false;
 		}
 
@@ -336,7 +329,7 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 		return true;
 	}
 
-    protected void createEmuTexture(int request_filter ) {
+	protected void createEmuTexture(int request_filter) {
 
 		boolean init = false;
 
@@ -375,7 +368,7 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 			GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, emuTextureId);
 
 			ByteBuffer tmp = ByteBuffer.allocate(Emulator.getEmulatedWidth() * Emulator.getEmulatedHeight() * 4 /* RGB*/);
-			byte a[] = tmp.array();
+			byte[] a = tmp.array();
 			Arrays.fill(a, (byte) 0);
 
 			//not need to align, RGBA is 4bytes and GL_UNPACK_ALIGNMEN defaults to 4
@@ -408,16 +401,14 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 
 			if (!effectId.equals(NO_EFFECT) && !effectProgramId.equals(effectId)) {
 				effectProgramId = effectId;
-				ShaderConf c = (ShaderConf)shaderConfs.get(effectProgramId);
-				if(c!=null) {
+				ShaderConf c = (ShaderConf) shaderConfs.get(effectProgramId);
+				if (c != null) {
 					filter = c.smooth ? FILTER_ON : FILTER_OFF;
 					int version = mm.getPrefsHelper().isShadersAs30() ? 3 : c.version;
-					isEffectProgramFailed = !createEffectShader(c.fileName,version);
-				}
-				else
-				{
+					isEffectProgramFailed = !createEffectShader(c.fileName, version);
+				} else {
 					isEffectProgramFailed = true;
-					new WarnWidget.WarnWidgetHelper(mm,"Not found shader configuration... reverting to stock shader!",3, Color.RED,false);
+					new WarnWidget.WarnWidgetHelper(mm, "Not found shader configuration... reverting to stock shader!", 3, Color.RED, false);
 				}
 			}
 
@@ -497,22 +488,22 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 		}
 	}
 
-	protected void fillShaderConfs(){
+	protected void fillShaderConfs() {
 
 		String path = mm.getPrefsHelper().getInstallationDIR();
-		ArrayList<ArrayList<String>>  data = mm.getMainHelper().readShaderCfg(path);
+		ArrayList<ArrayList<String>> data = mm.getMainHelper().readShaderCfg(path);
 
-		for(int i=0; i< data.size(); i++)
-		{
+		for (int i = 0; i < data.size(); i++) {
 			ArrayList<String> s = data.get(i);
-			if(s.size() < 4)
+			if (s.size() < 4)
 				continue;
 			try {
-				shaderConfs.put(s.get(0),new ShaderConf(s.get(0), Boolean.valueOf(s.get(2)), Integer.valueOf(s.get(3))));
-			}catch (Exception e){}
+				shaderConfs.put(s.get(0), new ShaderConf(s.get(0), Boolean.parseBoolean(s.get(2)), Integer.parseInt(s.get(3))));
+			} catch (Exception ignored) {
+			}
 		}
 
-		if(shaderConfs.size()==0)
-			new WarnWidget.WarnWidgetHelper(mm,"Error reading shader.cfg file!",5, Color.RED,false);
+		if (shaderConfs.size() == 0)
+			new WarnWidget.WarnWidgetHelper(mm, "Error reading shader.cfg file!", 5, Color.RED, false);
 	}
 }

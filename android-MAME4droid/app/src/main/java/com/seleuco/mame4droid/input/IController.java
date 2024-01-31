@@ -59,6 +59,8 @@ public interface IController {
 	final public static int D_VALUE = 1 << 13;
 	final public static int E_VALUE = 1 << 14;
 	final public static int F_VALUE = 1 << 15;
+	final public static int G_VALUE = 1 << 16;
+	final public static int H_VALUE = 1 << 17;
     final public static int EXIT_VALUE = 1 << 20;
     final public static int OPTION_VALUE = 1 << 21;
 
@@ -72,7 +74,7 @@ public interface IController {
     final public static int STICK_DOWN = 7;
     final public static int STICK_DOWN_RIGHT = 8;
 
-    final public static int NUM_BUTTONS = 10;
+    final public static int NUM_BUTTONS = 12;
 
     final public static int BTN_A = 2;
     final public static int BTN_B = 3;
@@ -84,6 +86,8 @@ public interface IController {
     final public static int BTN_OPTION = 7;
     final public static int BTN_COIN = 8;
     final public static int BTN_START = 9;
+	final public static int BTN_G = 10;
+	final public static int BTN_H = 11;
 
     final public static int BTN_PRESS_STATE = 0;
     final public static int BTN_NO_PRESS_STATE = 1;

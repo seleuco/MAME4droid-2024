@@ -121,6 +121,10 @@ static int myosd_droid_no_dzsat = 0;
 static int myosd_speed_hacks = 0;
 static int myosd_droid_init_game = 0;
 
+static int myosd_plugin_autofire = 0;
+static int myosd_plugin_inputmacro = 0;
+static int myosd_plugin_hiscore = 0;
+
 //vector options
 static int myosd_droid_vector_beam2x = 1;
 static int myosd_droid_vector_flicker = 0;
@@ -414,6 +418,15 @@ void myosd_droid_setMyValue(int key, int i, int value) {
             break;
         case com_seleuco_mame4droid_Emulator_SPEED_HACKS:
             myosd_speed_hacks = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_AUTOFIRE:
+            myosd_plugin_autofire = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_INPUTMACRO:
+            myosd_plugin_inputmacro = value;
+            break;
+        case com_seleuco_mame4droid_Emulator_HISCORE:
+            myosd_plugin_hiscore = value;
             break;
     }
 }
@@ -1020,11 +1033,11 @@ static void droid_input_poll_cb(bool relative_reset,
         }
     }
 
-    if(myosd_droid_keyboard_enable) {
+    //if(myosd_droid_keyboard_enable) { always needs key support as exit is handled as virtual key
         for (int i = 0; i < MYOSD_NUM_KEYS; i++) {
             input->keyboard[i] = keyboard[i];
         }
-    }
+    //}
 
     if(myosd_droid_do_pause){
         myosd_pause(true);
@@ -1248,6 +1261,21 @@ int myosd_droid_main(int argc, char **argv) {
     {
         args[n] = "-uifont";n++;
         args[n] = "uismall.bdf";n++;
+    }
+
+    if(myosd_plugin_autofire !=0 || myosd_plugin_hiscore !=0 || myosd_plugin_inputmacro !=0)
+    {
+        args[n] = "-plugin";n++;
+        static std::string plugin_list = "";
+
+        if(myosd_plugin_autofire!=0)
+            plugin_list+="autofire,";
+        if(myosd_plugin_hiscore!=0)
+            plugin_list+="hiscore,";
+        if(myosd_plugin_inputmacro!=0)
+            plugin_list+="inputmacro,";
+
+        args[n] =  plugin_list.c_str();n++;
     }
 
     if(0)

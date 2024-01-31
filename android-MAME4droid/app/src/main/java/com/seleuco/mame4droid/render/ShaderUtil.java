@@ -21,7 +21,7 @@ import java.util.TreeMap;
 public final class ShaderUtil {
 
 	public static int loadGLShader(
-		String tag, MAME4droid mm, int type, String filename, Map<String, Integer> defineValuesMap,int version) {
+		String tag, MAME4droid mm, int type, String filename, Map<String, Integer> defineValuesMap, int version) {
 		// Load shader source code.
 		String code = null;
 		try {
@@ -33,10 +33,10 @@ public final class ShaderUtil {
 
 		// Prepend any #define values specified during this run.
 		String defines = "";
-		if(version==3)
-		    defines += "#version 300 es\n";
+		if (version == 3)
+			defines += "#version 300 es\n";
 		else
-			defines +="#version 100\n";
+			defines += "#version 100\n";
 		for (Map.Entry<String, Integer> entry : defineValuesMap.entrySet()) {
 			defines += "#define " + entry.getKey() + " " + entry.getValue() + "\n";
 		}

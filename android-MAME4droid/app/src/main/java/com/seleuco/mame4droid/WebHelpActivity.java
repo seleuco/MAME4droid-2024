@@ -69,22 +69,22 @@ public class WebHelpActivity extends Activity {
 		setContentView(R.layout.webhelp);
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-		    path = extras.getString("INSTALLATION_PATH");
+			path = extras.getString("INSTALLATION_PATH");
 		}
-		lWebView = (WebView)this.findViewById(R.id.webView);
-        WebSettings webSettings = lWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        //webSettings.setBuiltInZoomControls(true);
-        //lWebView.setWebViewClient(new WebViewClient());
-        lWebView.setBackgroundColor(Color.DKGRAY);
-        if(!path.endsWith("/"))
-        	path+="/";
+		lWebView = (WebView) this.findViewById(R.id.webView);
+		WebSettings webSettings = lWebView.getSettings();
+		webSettings.setJavaScriptEnabled(true);
+		//webSettings.setBuiltInZoomControls(true);
+		//lWebView.setWebViewClient(new WebViewClient());
+		lWebView.setBackgroundColor(Color.DKGRAY);
+		if (!path.endsWith("/"))
+			path += "/";
 
-        //lWebView.loadUrl("file:///" +  path +"help/index.htm");
-        lWebView.loadUrl("file:///android_asset/index.htm");
+		//lWebView.loadUrl("file:///" +  path +"help/index.htm");
+		lWebView.loadUrl("file:///android_asset/index.htm");
 
-        // attempt to fix FileUriExposedException
-        //https://stackoverflow.com/questions/40560604/navigating-asset-based-html-files-in-webview-on-nougat
+		// attempt to fix FileUriExposedException
+		//https://stackoverflow.com/questions/40560604/navigating-asset-based-html-files-in-webview-on-nougat
         /*
         WebViewClient client = new WebViewClient(){
             @Override
@@ -94,47 +94,46 @@ public class WebHelpActivity extends Activity {
         };
         lWebView.setWebViewClient(client);
         */
-        if (android.os.Build.VERSION.SDK_INT >= 24) {
-            lWebView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest webResourceRequest) {
-                    if (webResourceRequest.getUrl().getScheme().equals("file")) {
-                        webView.loadUrl(webResourceRequest.getUrl().toString());
-                    } else {
-                        // If the URI is not pointing to a local file, open with an ACTION_VIEW Intent
-                        webView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, webResourceRequest.getUrl()));
-                    }
-                    return true; // in both cases we handle the link manually
-                }
-            });
-        } else {
-            lWebView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-                    if (Uri.parse(url).getScheme().equals("file")) {
-                        webView.loadUrl(url);
-                    } else {
-                        // If the URI is not pointing to a local file, open with an ACTION_VIEW Intent
-                        webView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    }
-                    return true; // in both cases we handle the link manually
-                }
-            });
-        }
+		if (android.os.Build.VERSION.SDK_INT >= 24) {
+			lWebView.setWebViewClient(new WebViewClient() {
+				@Override
+				public boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest webResourceRequest) {
+					if (webResourceRequest.getUrl().getScheme().equals("file")) {
+						webView.loadUrl(webResourceRequest.getUrl().toString());
+					} else {
+						// If the URI is not pointing to a local file, open with an ACTION_VIEW Intent
+						webView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, webResourceRequest.getUrl()));
+					}
+					return true; // in both cases we handle the link manually
+				}
+			});
+		} else {
+			lWebView.setWebViewClient(new WebViewClient() {
+				@Override
+				public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+					if (Uri.parse(url).getScheme().equals("file")) {
+						webView.loadUrl(url);
+					} else {
+						// If the URI is not pointing to a local file, open with an ACTION_VIEW Intent
+						webView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+					}
+					return true; // in both cases we handle the link manually
+				}
+			});
+		}
 
-        lWebView.requestFocus();
+		lWebView.requestFocus();
 	}
 
 
+	public void onBackPressed() {
 
-    public void onBackPressed() {
+		if (this.lWebView.canGoBack())
+			this.lWebView.goBack();
+		else
+			super.onBackPressed();
 
-        if (this.lWebView.canGoBack())
-            this.lWebView.goBack();
-        else
-            super.onBackPressed();
-
-        lWebView.requestFocus();
-    }
+		lWebView.requestFocus();
+	}
 
 }

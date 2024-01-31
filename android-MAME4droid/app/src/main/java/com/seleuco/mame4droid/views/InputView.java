@@ -135,6 +135,16 @@ public class InputView extends ImageView {
             btns_images[IController.BTN_F][IController.BTN_PRESS_STATE]
                     = (BitmapDrawable) mm.getResources().getDrawable(R.drawable.button_f_press);
 
+			btns_images[IController.BTN_G][IController.BTN_NO_PRESS_STATE]
+				= (BitmapDrawable) mm.getResources().getDrawable(R.drawable.button_g);
+			btns_images[IController.BTN_G][IController.BTN_PRESS_STATE]
+				= (BitmapDrawable) mm.getResources().getDrawable(R.drawable.button_g_press);
+
+			btns_images[IController.BTN_H][IController.BTN_NO_PRESS_STATE]
+				= (BitmapDrawable) mm.getResources().getDrawable(R.drawable.button_h);
+			btns_images[IController.BTN_H][IController.BTN_PRESS_STATE]
+				= (BitmapDrawable) mm.getResources().getDrawable(R.drawable.button_h_press);
+
             btns_images[IController.BTN_EXIT][IController.BTN_NO_PRESS_STATE]
                     = (BitmapDrawable) mm.getResources().getDrawable(R.drawable.button_exit);
             btns_images[IController.BTN_EXIT][IController.BTN_PRESS_STATE]

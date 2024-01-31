@@ -120,6 +120,8 @@ public class ListKeys extends ListActivity {
         "Button D",
         "Button E",
         "Button F",
+		"Button G",
+		"Button H",
         "Coin",
         "Start",
         "Exit",

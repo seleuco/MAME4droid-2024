@@ -158,7 +158,6 @@ public class TouchController implements IController {
 				return A_VALUE;
 			case 3:
 				return B_VALUE;
-
 			case 4:
 				return E_VALUE;
 			case 5:
@@ -167,24 +166,14 @@ public class TouchController implements IController {
 				return EXIT_VALUE;
 			case 7:
 				return OPTION_VALUE;
-
 			case 8:
 				return COIN_VALUE;
 			case 9:
 				return START_VALUE;
-
 			case 10:
-				return B_VALUE | C_VALUE;
-			case 11://TODO
-				if (mm.getPrefsHelper().isBplusX() && mm.getPrefsHelper().getNumButtons() >= 3) {
-					return B_VALUE | A_VALUE;
-				} else
-					return 0;
-
-			case 12:
-				return D_VALUE | C_VALUE;
-			case 13:
-				return D_VALUE | A_VALUE;
+				return G_VALUE ;
+			case 11:
+				return H_VALUE;
 		}
 		return 0;
 	}
@@ -585,6 +574,9 @@ public class TouchController implements IController {
 
 				if (b == IController.BTN_E && n < 5) handle=false;
 				if (b == IController.BTN_F && n < 5) handle=false;
+
+				if (b == IController.BTN_G && n < 5) handle=false;
+				if (b == IController.BTN_H && n < 5) handle=false;
 			}
 		}
 

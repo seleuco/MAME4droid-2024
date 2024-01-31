@@ -152,8 +152,8 @@ extern "C" void myosd_speed_hack()
                 cpu_device *firstcpu = downcast<cpu_device *>(&device);
 
                 std::string name = std::string(firstcpu->name());
-                __android_log_print(ANDROID_LOG_DEBUG, "hacks", "%s", name.c_str());
-                if (name.find("R4600") != std::string::npos || name.find("TMS3") != std::string::npos) {
+                __android_log_print(ANDROID_LOG_DEBUG, "hacks", "hacking %s", name.c_str());
+                if (name.find("R4600") != std::string::npos || name.find("TMS34010") != std::string::npos) {
                     cpu_overclock = 60;
                 }
                 else if (name.find("SH-2") != std::string::npos)
@@ -165,6 +165,7 @@ extern "C" void myosd_speed_hack()
                     cpu_overclock = 90;
                 }
                 firstcpu->set_clock_scale((float) cpu_overclock * 0.01f);
+                __android_log_print(ANDROID_LOG_DEBUG, "hacks", "hacked to %d", cpu_overclock);
                 break;
             }
         }

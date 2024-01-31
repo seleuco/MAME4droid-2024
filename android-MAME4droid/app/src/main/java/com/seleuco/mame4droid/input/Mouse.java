@@ -44,11 +44,13 @@
 
 package com.seleuco.mame4droid.input;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.MAME4droid;
+import com.seleuco.mame4droid.widgets.WarnWidget;
 
 public class Mouse implements IController {
 
@@ -70,9 +72,7 @@ public class Mouse implements IController {
 		if (!isMouseEnabled) {
 			isMouseEnabled = true;
 			CharSequence text = "Mouse is enabled!";
-			int duration = Toast.LENGTH_SHORT;
-			Toast toast = Toast.makeText(mm, text, duration);
-			toast.show();
+			new WarnWidget.WarnWidgetHelper(mm, text.toString(), 3, Color.GREEN, true);
 
 			mm.getMainHelper().updateMAME4droid();
 			mm.getInputHandler().resetInput();

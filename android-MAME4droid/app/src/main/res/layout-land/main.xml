@@ -9,6 +9,7 @@
 		android:adjustViewBounds="false" android:scaleType="fitXY"
 		android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_gravity="bottom|center_horizontal"
 		android:contentDescription="input"
+		android:background="@drawable/selector"
 		/>
 
 </FrameLayout>

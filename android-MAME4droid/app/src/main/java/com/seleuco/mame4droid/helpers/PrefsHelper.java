@@ -75,6 +75,9 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_EMU_ONE_PROCESSOR = "PREF_EMU_ONE_PROCESSOR";
 	final static public String PREF_MAMEINI = "PREF_MAMEINI";
 	final static public String PREF_SPEED_HACKS = "PREF_SPEED_HACKS";
+	final static public String PREF_HISCORE = "PREF_HISCORE";
+	final static public String PREF_INPUTMACRO = "PREF_INPUTMACRO";
+	final static public String PREF_AUTOFIRE = "PREF_AUTOFIRE";
 
     final static public String PREF_GLOBAL_AUTOSAVE = "PREF_GLOBAL_AUTOSAVE";
     final static public String PREF_GLOBAL_DEBUG = "PREF_GLOBAL_DEBUG";
@@ -601,7 +604,19 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		return getSharedPreferences().getBoolean(PREF_SPEED_HACKS, false);
 	}
 
-    public boolean isVectorBeam2x() {
+	public boolean isAutofire() {
+		return getSharedPreferences().getBoolean(PREF_AUTOFIRE, false);
+	}
+
+	public boolean isInputMacro() {
+		return getSharedPreferences().getBoolean(PREF_INPUTMACRO, false);
+	}
+
+	public boolean isHiscore() {
+		return getSharedPreferences().getBoolean(PREF_HISCORE, false);
+	}
+
+	public boolean isVectorBeam2x() {
         return getSharedPreferences().getBoolean(PREF_BEAM2X, true);
     }
 
