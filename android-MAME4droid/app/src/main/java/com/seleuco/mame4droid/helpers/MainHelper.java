@@ -84,10 +84,12 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.Size;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.WindowInsets;
 import android.view.WindowMetrics;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.seleuco.mame4droid.Emulator;
@@ -130,6 +132,8 @@ public class MainHelper {
     protected int deviceDetected = DEVICE_GENEREIC;
 
     protected int oldInGame = 0;
+
+	protected int oldState = -1;
 
     final public static int REQUEST_CODE_OPEN_DIRECTORY = 33;
 
@@ -606,8 +610,9 @@ public class MainHelper {
         Emulator.setVideoRenderMode(mm.getPrefsHelper().getVideoRenderMode());
 
         if (Emulator.isPortraitFull() != mm.getPrefsHelper()
-                .isPortraitFullscreen())
-            mm.inflateViews();
+                .isPortraitFullscreen()
+		){
+            mm.inflateViews();}
 
         View emuView = mm.getEmuView();
 
@@ -629,7 +634,7 @@ public class MainHelper {
         else
             inputHandler.getTiltSensor().disable();
 
-        int state = mm.getInputHandler().getTouchController().getState();
+		int state = mm.getInputHandler().getTouchController().getState();
 
         if (this.getscrOrientation() == Configuration.ORIENTATION_PORTRAIT) {
 
@@ -648,7 +653,20 @@ public class MainHelper {
                 // {reload();return;}
                 inputHandler.getTouchController().changeState();
 
+			int oldState = state;
+
             state = mm.getInputHandler().getTouchController().getState();
+
+			if(oldState!=state && mm.getPrefsHelper().isPortraitFullscreen()) {//fix para cambio desde settings
+				FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) emuView.getLayoutParams();
+				if(state == TouchController.STATE_SHOWING_CONTROLLER) {
+					lp.gravity = Gravity.TOP | Gravity.CENTER;
+				}
+				else
+				{
+					lp.gravity = Gravity.CENTER;
+				}
+			}
 
             if (state == TouchController.STATE_SHOWING_NONE) {
                 inputView.setVisibility(View.GONE);
@@ -771,17 +789,17 @@ galaxy sde	   --> 2560x1600 16:10
             // mm.getEmuView().setVisibility(View.INVISIBLE);
             // mm.getInputView().requestFocus();
         }
-
-        int op = inputHandler.getTouchController().getOpacity();
+/*
+        int op = mm.getMainHelper().getControllerAlpha();
         if (op != -1 && (state == TouchController.STATE_SHOWING_CONTROLLER))
             inputView.setAlpha(op);
-
-        inputView.requestLayout();
-
+*/
+		inputView.requestLayout();
         emuView.requestLayout();
 
-        inputView.invalidate();
+		inputView.invalidate();
         emuView.invalidate();
+
 
 		//Log.d("isMouse"," value:"+mm.getPrefsHelper().isTouchMouse());
     }
@@ -1247,6 +1265,17 @@ galaxy sde	   --> 2560x1600 16:10
 		}
 
 		return data;
+	}
+
+	public int getControllerAlpha() {
+		int alpha=0;
+
+		if (this.getscrOrientation() == Configuration.ORIENTATION_PORTRAIT && !mm.getPrefsHelper().isPortraitFullscreen() )
+		    alpha = 255;
+		else
+			alpha = (255 * mm.getPrefsHelper().getButtonsAlpha())/100;
+
+		return alpha;
 	}
 
 }

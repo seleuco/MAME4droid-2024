@@ -429,17 +429,17 @@ public class TouchStick implements IController {
                     mm.getMainHelper().getscrOrientation() == Configuration.ORIENTATION_PORTRAIT && Emulator.isPortraitFull()
             ) {
                 outer_img.setBounds(rStickArea);
-                outer_img.setAlpha(mm.getInputHandler().getTouchController().getOpacity());
+                outer_img.setAlpha(mm.getMainHelper().getControllerAlpha());
                 outer_img.draw(canvas);
             }
             inner_img.setBounds(stickPos);
-            inner_img.setAlpha(mm.getInputHandler().getTouchController().getOpacity());
+            inner_img.setAlpha(mm.getMainHelper().getControllerAlpha());
             inner_img.draw(canvas);
         } else if (mm.getPrefsHelper().getControllerType() == PrefsHelper.PREF_DIGITAL_STICK ||
                 (mm.getPrefsHelper().getControllerType() == PrefsHelper.PREF_ANALOG_STICK && tiltSensor.isEnabled())
         ) {
             stick_images[mm.getInputHandler().getTouchController().getStick_state()].setBounds(rStickArea);
-            stick_images[mm.getInputHandler().getTouchController().getStick_state()].setAlpha(mm.getInputHandler().getTouchController().getOpacity());
+            stick_images[mm.getInputHandler().getTouchController().getStick_state()].setAlpha(mm.getMainHelper().getControllerAlpha());
             stick_images[mm.getInputHandler().getTouchController().getStick_state()].draw(canvas);
         }
 

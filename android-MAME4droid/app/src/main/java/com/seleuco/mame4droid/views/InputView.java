@@ -260,13 +260,13 @@ public class InputView extends ImageView {
 
                 for (int j = 0; j < stick_images.length; j++) {
                     stick_images[j].setBounds(v.getRect());
-                    stick_images[j].setAlpha(mm.getInputHandler().getTouchController().getOpacity());
+                    stick_images[j].setAlpha(mm.getMainHelper().getControllerAlpha());
                 }
             } else if (v.getType() == TouchController.TYPE_BUTTON_IMG) {
                 btns_images[v.getValue()][IController.BTN_PRESS_STATE].setBounds(v.getRect());
-                btns_images[v.getValue()][IController.BTN_PRESS_STATE].setAlpha(mm.getInputHandler().getTouchController().getOpacity());
+                btns_images[v.getValue()][IController.BTN_PRESS_STATE].setAlpha(mm.getMainHelper().getControllerAlpha());
                 btns_images[v.getValue()][IController.BTN_NO_PRESS_STATE].setBounds(v.getRect());
-                btns_images[v.getValue()][IController.BTN_NO_PRESS_STATE].setAlpha(mm.getInputHandler().getTouchController().getOpacity());
+                btns_images[v.getValue()][IController.BTN_NO_PRESS_STATE].setAlpha(mm.getMainHelper().getControllerAlpha());
             }
         }
     }

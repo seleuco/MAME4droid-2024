@@ -78,7 +78,7 @@ public class TouchController implements IController {
 	final public static int TYPE_STICK_IMG = 4;
 	final public static int TYPE_BUTTON_IMG = 5;
 	final public static int TYPE_SWITCH = 6;
-	final public static int TYPE_OPACITY = 7;
+	final public static int TYPE_ALPHA = 7;
 	final public static int TYPE_ANALOG_RECT = 8;
 
 
@@ -255,21 +255,6 @@ public class TouchController implements IController {
 				return values.get(i).getOrigRect();
 		}
 		return null;
-	}
-
-	public int getOpacity() {
-
-		ArrayList<InputValue> data = null;
-		if (state == STATE_SHOWING_CONTROLLER)
-			data = values;
-		else
-			return -1;
-
-		for (InputValue v : data) {
-			if (v.getType() == TYPE_OPACITY)
-				return v.getValue();
-		}
-		return -1;
 	}
 
 	public boolean handleTouchController(MotionEvent event, int [] digital_data) {
@@ -575,8 +560,8 @@ public class TouchController implements IController {
 				if (b == IController.BTN_E && n < 5) handle=false;
 				if (b == IController.BTN_F && n < 5) handle=false;
 
-				if (b == IController.BTN_G && n < 5) handle=false;
-				if (b == IController.BTN_H && n < 5) handle=false;
+				if (b == IController.BTN_G && n < 5 && !mm.getPrefsHelper().isAlwaysGH()) handle=false;
+				if (b == IController.BTN_H && n < 5 && !mm.getPrefsHelper().isAlwaysGH()) handle=false;
 			}
 		}
 
@@ -681,7 +666,7 @@ public class TouchController implements IController {
 						iv.setSize(0, sz2, sz2, sz2);
 						break;     //down
 					case 8:
-						iv.setSize(sz, sz2, sz2, sz2);
+						iv.setSize(sz2, sz2, sz2, sz2);
 						break;//downright
 					default:
 						iv.setSize(0, 0, sz2, sz2);

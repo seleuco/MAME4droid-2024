@@ -118,6 +118,13 @@
 			android:title="Default layout" android:summary="Restore fullscreen touch control layout to default values" />
 
 		<ListPreference
+			android:entries="@array/pref_alpha_options"
+			android:title='Controller transparency (fullscreen)'
+			android:key="PREF_BUTTONS_ALPHA"
+			android:entryValues="@array/pref_alpha_values"
+			android:defaultValue="60" />
+
+		<ListPreference
 			android:entries="@array/pref_buttons_size_options"
 			android:title='Buttons size (fullscreen)'
 			android:key="PREF_BUTTONS_SIZE"
@@ -140,6 +147,10 @@
 
 		<CheckBoxPreference android:key="PREF_HIDE_STICK"
 			android:title="Hide stick" android:summary="Enable to hide stick or dpad when fullscreen"
+			android:defaultValue="false" />
+
+		<CheckBoxPreference android:key="PREF_ALWAYS_GH_BUTTONS"
+			android:title="Always show G,H buttons" android:summary="Enable it to always show G,H buttons when full screen so you can bind them MAME actions"
 			android:defaultValue="false" />
 
 		<CheckBoxPreference android:key="PREF_ANIMATED_INPUT"
@@ -463,7 +474,9 @@
 
 		<CheckBoxPreference android:key="PREF_PORTRAIT_FULLSCREEN"
 			android:title="Fullscreen" android:summary="Select to enable fullscreen portrait mode"
-			android:defaultValue="false" />
+			android:defaultValue="false"
+			android:dependency="PREF_PORTRAIT_TOUCH_CONTROLLER"
+			/>
 
 	</PreferenceCategory>
 

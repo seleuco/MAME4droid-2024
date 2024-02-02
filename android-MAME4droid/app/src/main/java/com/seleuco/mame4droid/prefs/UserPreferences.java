@@ -92,6 +92,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
     protected ListPreference mPrefStickType;
     protected ListPreference mPrefNumButtons;
     protected ListPreference mPrefSizeButtons;
+	protected ListPreference mPrefAlphaButtons;
     protected ListPreference mPrefSizeStick;
 
     protected ListPreference mPrefMainThPr;
@@ -101,8 +102,6 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
     protected EditTextPreference mPrefInstPath;
 
 	protected ListPreference mPrefShader;
-
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +131,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
         mPrefStickType = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_STICK_TYPE);
         mPrefNumButtons = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_NUMBUTTONS);
         mPrefSizeButtons = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_BUTTONS_SIZE);
+		mPrefAlphaButtons = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_BUTTONS_ALPHA);
         mPrefSizeStick = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_STICK_SIZE);
         mPrefMainThPr = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_MAIN_THREAD_PRIORITY);
         mPrefSoundEngine = (ListPreference)getPreferenceScreen().findPreference(PrefsHelper.PREF_SOUND_ENGINE);
@@ -170,6 +170,7 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 	        mPrefStickType.setSummary("Current value is '" + mPrefStickType.getEntry()+"'");
 	        mPrefNumButtons.setSummary("Current value is '" + mPrefNumButtons.getEntry()+"'");
 	        mPrefSizeButtons.setSummary("Current value is '" + mPrefSizeButtons.getEntry()+"'");
+		    mPrefAlphaButtons.setSummary("Current value is '" + mPrefAlphaButtons.getEntry()+"'");
 	        mPrefSizeStick.setSummary("Current value is '" + mPrefSizeStick.getEntry()+"'");
 	        mPrefMainThPr.setSummary("Current value is '" + mPrefMainThPr.getEntry()+"'");
 	        mPrefSoundEngine.setSummary("Current value is '" + mPrefSoundEngine.getEntry()+"'");
@@ -262,6 +263,10 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 		    {
 		    	mPrefSizeButtons.setSummary("Current value is '" + mPrefSizeButtons.getEntry()+"'");
 		    }
+			else if(key.equals(PrefsHelper.PREF_BUTTONS_ALPHA))
+			{
+				mPrefAlphaButtons.setSummary("Current value is '" + mPrefAlphaButtons.getEntry()+"'");
+			}
 		    else if(key.equals(PrefsHelper.PREF_STICK_SIZE))
 		    {
 		    	mPrefSizeStick.setSummary("Current value is '" + mPrefSizeStick.getEntry()+"'");

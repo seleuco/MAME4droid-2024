@@ -205,7 +205,8 @@ public class MAME4droid extends Activity {
 			emuView = this.findViewById(R.id.EmulatorViewGL);
 		}
 
-		if (full && prefsHelper.isPortraitTouchController()) {
+		if (full && prefsHelper.isPortraitTouchController()
+		) {
 			FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) emuView.getLayoutParams();
 			lp.gravity = Gravity.TOP | Gravity.CENTER;
 		}
