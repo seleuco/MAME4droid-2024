@@ -68,6 +68,7 @@ import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.R;
 import com.seleuco.mame4droid.helpers.MainHelper;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
+import com.seleuco.mame4droid.helpers.ScraperHelper;
 import com.seleuco.mame4droid.input.ControlCustomizer;
 import com.seleuco.mame4droid.input.GameController;
 
@@ -311,6 +312,12 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 				}
 				edit.commit();
 			}
+			else if(key.equals(PrefsHelper.PREF_SCRAPE_ICONS) ||
+				key.equals(PrefsHelper.PREF_SCRAPE_SNAPSHOTS) ||
+				key.equals(PrefsHelper.PREF_SCRAPE_ALL)){
+				ScraperHelper.reset();
+			}
+
 	    }
 
 		@Override

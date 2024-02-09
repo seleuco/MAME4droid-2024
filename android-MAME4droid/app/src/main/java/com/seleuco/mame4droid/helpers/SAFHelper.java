@@ -72,7 +72,7 @@ class DirEnt{
 
 public class SAFHelper {
 
-    static protected MAME4droid mm = null;
+    /*static*/ protected MAME4droid mm = null;
 
 	static Uri uri = null;
     static protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se recrea
@@ -96,6 +96,14 @@ public class SAFHelper {
     public SAFHelper(MAME4droid value) {
         mm = value;
     }
+
+	public ArrayList<String> getRomsFileNames(){
+		if (dirFiles == null) {//safety
+			listUriFiles(true);
+		}
+
+		return dirFiles.get("/");
+	}
 
 	public int readDir(String dirName) {
 		int res = 0;

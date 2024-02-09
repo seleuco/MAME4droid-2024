@@ -358,6 +358,44 @@
 
 		</PreferenceScreen>
 
+		<PreferenceScreen
+			android:key="scrape"
+			android:persistent="false"
+			android:summary="Select it to configure media scraping service"
+			android:title="Scraping">
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn
+				android:defaultValue="false"
+				android:key="PREF_SCRAPE_ENABLED"
+				android:summary="Enable it to do media scraping thanks to Arcade Database by motoschifo. This will download icons or snapshots belonging to your own ROMSET so that they will be displayed on the frontend. You must configure the display of images in MAME UI (in the 'show side panels' option) if is necessary. Note: Media scraping will only scrape systems on external storage"
+				android:title="Enable media scraping" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn
+				android:key="PREF_SCRAPE_ICONS"
+				android:dependency="PREF_SCRAPE_ENABLED"
+				android:title="Scrape icons" android:summary="Enable it to scrape icons that will be showed on the system list"
+				android:defaultValue="True" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn
+				android:key="PREF_SCRAPE_SNAPSHOTS"
+				android:dependency="PREF_SCRAPE_ENABLED"
+				android:title="Scrape snapshots" android:summary="Enable it to scrape snapshots that will be showed on the images panel"
+				android:defaultValue="True" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn
+				android:key="PREF_SCRAPE_ALL"
+				android:dependency="PREF_SCRAPE_ENABLED"
+				android:title="Scrape additional media" android:summary="Enable to scrape the rest of available media like cabinets images. This will use up a lot of storage space and the download will take longer"
+				android:defaultValue="False" />
+
+			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn
+				android:key="PREF_SCRAPE_RESIZE"
+				android:dependency="PREF_SCRAPE_ENABLED"
+				android:title="Resize images to save space" android:summary="Enable it to resize images so that less storage space is used"
+				android:defaultValue="True" />
+
+		</PreferenceScreen>
+
     <PreferenceScreen android:key="general" android:title="General"
         android:summary="Select it to open general options" android:persistent="false">
 

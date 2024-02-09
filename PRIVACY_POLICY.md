@@ -18,6 +18,7 @@ The list of permissions required by the app can be found in the `AndroidManifest
 | Permission | Why it is required |
 | :---: | --- |
 | `android.permission.VIBRATE` | Required to vibrate the device when touch control is used. Permission automatically granted by the system; can't be revoked by user. |
+| `android.permission.INTERNET` | Required to download media resources when media scraping is enabled. Permission automatically granted by the system; can't be revoked by user. |
 
 
  <hr style="border:1px solid gray">

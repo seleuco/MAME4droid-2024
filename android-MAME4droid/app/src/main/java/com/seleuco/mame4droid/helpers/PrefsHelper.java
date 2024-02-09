@@ -88,6 +88,12 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_SHADER_IN_FRONTEND = "PREF_SHADER_IN_FRONTEND";
 	final static public String PREF_SHADER_30 = "PREF_SHADER_30";
 
+	final static public String PREF_SCRAPE_ENABLED = "PREF_SCRAPE_ENABLED";
+	final static public String PREF_SCRAPE_ICONS = "PREF_SCRAPE_ICONS";
+	final static public String PREF_SCRAPE_SNAPSHOTS = "PREF_SCRAPE_SNAPSHOTS";
+	final static public String PREF_SCRAPE_ALL = "PREF_SCRAPE_ALL";
+	final static public String PREF_SCRAPE_RESIZE = "PREF_SCRAPE_RESIZE";
+
 	final static public String PREF_PORTRAIT_SCALING_MODE = "PREF_PORTRAIT_SCALING_MODE";
 	final static public String PREF_PORTRAIT_TOUCH_CONTROLLER = "PREF_PORTRAIT_TOUCH_CONTROLLER";
 	final static public String PREF_PORTRAIT_BITMAP_FILTERING = "PREF_PORTRAIT_BITMAP_FILTERING";
@@ -706,5 +712,26 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	public boolean isShadersAs30() {
 		return getSharedPreferences().getBoolean(PREF_SHADER_30, false);
 	}
+
+	public boolean isScrapingEnabled() {
+		return getSharedPreferences().getBoolean(PREF_SCRAPE_ENABLED, false);
+	}
+
+	public boolean isScrapingIcons() {
+		return getSharedPreferences().getBoolean(PREF_SCRAPE_ICONS, true);
+	}
+
+	public boolean isScrapingSnapshots() {
+		return getSharedPreferences().getBoolean(PREF_SCRAPE_SNAPSHOTS, true);
+	}
+
+	public boolean isScrapingAll() {
+		return getSharedPreferences().getBoolean(PREF_SCRAPE_ALL, false);
+	}
+
+	public boolean isScrapingResize() {
+		return getSharedPreferences().getBoolean(PREF_SCRAPE_RESIZE, true);
+	}
+
 
 }

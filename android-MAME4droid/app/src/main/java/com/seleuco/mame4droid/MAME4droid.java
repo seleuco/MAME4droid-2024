@@ -61,6 +61,7 @@ import com.seleuco.mame4droid.helpers.DialogHelper;
 import com.seleuco.mame4droid.helpers.MainHelper;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
 import com.seleuco.mame4droid.helpers.SAFHelper;
+import com.seleuco.mame4droid.helpers.ScraperHelper;
 import com.seleuco.mame4droid.input.ControlCustomizer;
 import com.seleuco.mame4droid.input.GameController;
 import com.seleuco.mame4droid.input.InputHandler;
@@ -77,6 +78,7 @@ public class MAME4droid extends Activity {
 	protected PrefsHelper prefsHelper = null;
 	protected DialogHelper dialogHelper = null;
 	protected SAFHelper safHelper = null;
+	protected ScraperHelper scraperHelper = null;
 
 	protected InputHandler inputHandler = null;
 
@@ -94,6 +96,10 @@ public class MAME4droid extends Activity {
 
 	public SAFHelper getSAFHelper() {
 		return safHelper;
+	}
+
+	public ScraperHelper getScraperHelper() {
+		return scraperHelper;
 	}
 
 	public View getEmuView() {
@@ -130,6 +136,8 @@ public class MAME4droid extends Activity {
 		mainHelper = new MainHelper(this);
 
 		safHelper = new SAFHelper(this);
+
+		scraperHelper = new ScraperHelper(this);
 
 		inputHandler = new InputHandler(this);
 
@@ -276,6 +284,10 @@ public class MAME4droid extends Activity {
 				inputHandler.getTiltSensor().enable();
 		}
 
+		if(scraperHelper!=null){
+			scraperHelper.resume();
+		}
+
 		//System.out.println("OnResume");
 	}
 
@@ -294,6 +306,9 @@ public class MAME4droid extends Activity {
 
 		if (dialogHelper != null) {
 			dialogHelper.removeDialogs();
+		}
+		if(scraperHelper!=null){
+			scraperHelper.pause();
 		}
 
 		//System.out.println("OnPause");
@@ -343,6 +358,10 @@ public class MAME4droid extends Activity {
 
 		if (emuView != null)
 			((IEmuView) emuView).setMAME4droid(null);
+
+		if(scraperHelper!=null){
+			scraperHelper.stop();
+		}
 
         /*
         if(inputView!=null)

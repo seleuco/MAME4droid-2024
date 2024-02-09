@@ -188,6 +188,7 @@
 
 	<string-array name="pref_osd_resolution_options">
 		<item>400x300 (4/3)</item>
+		<item>500x333 (3/2)</item>
 		<item>640x480 (4/3)</item>
 		<item>800x600 (4/3)</item>
 		<item>1024x768 (4/3)</item>
@@ -201,6 +202,7 @@
 	</string-array>
 	<string-array name="pref_osd_resolution_values">
 		<item>0</item>
+		<item>11</item>
 		<item>1</item>
 		<item>2</item>
 		<item>3</item>

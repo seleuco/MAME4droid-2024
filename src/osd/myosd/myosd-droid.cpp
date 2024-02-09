@@ -831,6 +831,9 @@ static void droid_init(void) {
         switch (myosd_droid_resolution_osd)
         {
             case 0:{reswidth_osd = 400;resheight_osd = 300;break;}
+           // case 11:{reswidth_osd = 450;resheight_osd = 300;break;}
+            case 11:{reswidth_osd = 500;resheight_osd = 333;break;}
+            //case 11:{reswidth_osd = 510;resheight_osd = 300;break;}
             case 1:{reswidth_osd = 640;resheight_osd = 480;break;}//640x480 (4/3)
             case 2:{reswidth_osd = 800;resheight_osd = 600;break;}//800x600 (4/3)
             case 3:{reswidth_osd = 1024;resheight_osd = 768;break;}//1024x768 (4/3)

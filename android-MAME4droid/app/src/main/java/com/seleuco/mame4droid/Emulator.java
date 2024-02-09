@@ -619,6 +619,8 @@ public class Emulator {
 					Emulator.setValue(Emulator.USING_SAF, 1);
 					Emulator.setValueStr(Emulator.SAF_PATH, mm.getPrefsHelper().getROMsDIR());
 					mm.getSAFHelper().listUriFiles(true);
+					if(mm.getPrefsHelper().isScrapingEnabled())
+						mm.getScraperHelper().initMediaScrap();
 				}
 
 				Intent intent = mm.getIntent();
