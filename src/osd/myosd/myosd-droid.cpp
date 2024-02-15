@@ -22,6 +22,8 @@
 
 #include <string>
 #include <chrono>
+#include <sstream>
+#include <vector>
 
 #include "myosd_core.h"
 
@@ -102,6 +104,7 @@ static int myosd_droid_show_fps = 1;
 static int myosd_droid_zoom_to_window = 1;
 static std::string myosd_droid_selected_game;
 static std::string myosd_droid_rom_name;
+static std::string myosd_droid_cli_params;
 static std::string myosd_droid_overlay_effect;
 static int myosd_droid_auto_frameskip = 0;
 static int myosd_droid_cheats = 0;
@@ -474,6 +477,10 @@ void myosd_droid_setMyValueStr(int key, int i, const char *value) {
         }
         case com_seleuco_mame4droid_Emulator_OVERLAY_EFECT: {
             myosd_droid_overlay_effect = std::string(value);
+            break;
+        }
+        case com_seleuco_mame4droid_Emulator_CLI_PARAMS: {
+            myosd_droid_cli_params = std::string(value);
             break;
         }
         default:;
@@ -1100,8 +1107,34 @@ void droid_sound_exit_cb(){
     }
 }
 
-//main entry point to MAME
+static void split_in_args(std::vector <std::string> &qargs, std::string command) {
+    int len = command.length();
+    bool sqot = false;
+    int arglen;
+    for (int i = 0; i < len; i++) {
+        int start = i;
+        if (command[i] == '\'') {
+            sqot = true;
+        }
+        if (sqot) {
+            i++;
+            start++;
+            while (i < len && command[i] != '\'')
+                i++;
+            if (i < len)
+                sqot = false;
+            arglen = i - start;
+            i++;
+        } else {
+            while (i < len && command[i] != ' ')
+                i++;
+            arglen = i - start;
+        }
+        qargs.push_back(command.substr(start, arglen));
+    }
+}
 
+//main entry point to MAME
 int myosd_droid_main(int argc, char **argv) {
 
     __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "*********** ANDROID MAIN ********");
@@ -1140,6 +1173,20 @@ int myosd_droid_main(int argc, char **argv) {
         args[n]= myosd_droid_rom_name.c_str(); n++;
     }
 
+    if(!myosd_droid_cli_params.empty())
+    {
+        static std::vector <std::string> tokens;
+
+        split_in_args(tokens,myosd_droid_cli_params);
+
+        for(int i = 0; i < tokens.size(); i++) {
+            __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "cli param %s",
+                                tokens[i].c_str());
+            args[n] = tokens[i].c_str();
+            n++;
+        }
+    }
+
     if(myosd_droid_simple_ui) {
         args[n] = "-ui";
         n++;
@@ -1167,6 +1214,7 @@ int myosd_droid_main(int argc, char **argv) {
         args[n]= "-samplepath"; n++;args[n]=sp.c_str(); n++;
 
         static std::string swp = myosd_droid_safpath+std::string("/software;./software");
+        //static std::string swp = myosd_droid_safpath+std::string("/software;");
         args[n]= "-swpath"; n++;args[n]=swp.c_str(); n++;
 
         if(myosd_droid_savestatesinrompath)
@@ -1182,14 +1230,14 @@ int myosd_droid_main(int argc, char **argv) {
         args[n] =  myosd_droid_overlay_effect.c_str();
         n++;
     }
-
+/* now fixed on upstream
     if(myosd_one_processor) {
         args[n] = "-numprocessors";
         n++;
         args[n] = "1"; //thats way dkong works
         n++;
     }
-
+*/
     args[n] = "-ui_active";
     n++;
 

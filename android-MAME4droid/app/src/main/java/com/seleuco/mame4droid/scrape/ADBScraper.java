@@ -70,7 +70,9 @@ public class ADBScraper implements IScraper {
 	private static final int TIMEOUT = 5000;
 
 	private static final String USER_AGENT = "MAME4droid/1.0";
+	private static final String ADB_STATUS_ADB_URL = "http://adb.arcadeitalia.net/service_scraper.php?ajax=download_status";
 	private static final String ADB_QUERY_MAME_URL = "http://adb.arcadeitalia.net/service_scraper.php?ajax=query_mame";
+	private static final String ADB_QUERY_FULL_URL = "http://adb.arcadeitalia.net/service_scraper.php?ajax=query_mame_media";
 	private static final String FILE_TYPE_PNG = "png";
 	private static final String FILE_TYPE_ICO = "ico";
 
@@ -80,15 +82,46 @@ public class ADBScraper implements IScraper {
 	private static final String PROPERTIE_MARQUEE = "marquee";
 	private static final String PROPERTIE_TITLE = "title";
 	private static final String PROPERTIE_CABINET = "cabinet";
+	private static final String PROPERTIE_ARTPREVIEW = "artpreview";
+	private static final String PROPERTIE_BOSS = "boss";
+	private static final String PROPERTIE_CPANEL = "cpanel";
+	private static final String PROPERTIE_HOWTO = "howto";
+	private static final String PROPERTIE_LOGO = "logo";
+	private static final String PROPERTIE_PCB = "pcb";
+	private static final String PROPERTIE_SCORE = "score";
+	private static final String PROPERTIE_SELECT = "select";
+	private static final String PROPERTIE_DECAL = "decal";
+	private static final String PROPERTIE_VERSUS = "versus";
+	private static final String PROPERTIE_GAMEOVER = "gameover";
+	private static final String PROPERTIE_END = "end";
+	private static final String PROPERTIE_WARNING = "warning";
+	//private static final String PROPERTIE_BOX = "box";
 
 	private static final String DIR_INGAME = "snap";
 	private static final String DIR_ICON = "icons";
-	private static final String DIR_FLYER = "flyers";
-	private static final String DIR_MARQUEE = "marquees";
-	private static final String DIR_TITLE = "titles";
+	private static final String DIR_CPANEL = "cpanel";
 	private static final String DIR_CABINET = "cabinets";
+	private static final String DIR_MARQUEE = "marquees";
+	private static final String DIR_PCB = "pcb";
+	private static final String DIR_FLYER = "flyers";
+	private static final String DIR_TITLE = "titles";
+	private static final String DIR_END = "ends";
+	private static final String DIR_BOSS = "bosses";
+	private static final String DIR_ARTPREVIEW = "artpreview";
+	private static final String DIR_SELECT = "select";
+	private static final String DIR_GAMEOVER = "gameover";
+	private static final String DIR_HOWTO = "howto";
+	private static final String DIR_LOGO = "logo";
+	private static final String DIR_SCORE = "scores";
+	private static final String DIR_VERSUS = "versus";
+	private static final String DIR_DECAL = "covers";
+	//private static final String DIR_BOX = "box";
+
+	private static final String DIR_WARNING = "warning";
+
 	private static final String DIR_PROPERTIES = "scrape";
 	private String scrapeDir;
+	private Boolean scraping = false;
 
 	private MAME4droid mm = null;
 
@@ -116,7 +149,7 @@ public class ADBScraper implements IScraper {
 	}
 
 	@Override
-	public boolean scrape(String rom_name, int current) {
+	public boolean scrape(String rom_name, int current) throws ScrapeException{
 		try {
 
 			Properties props = new Properties();
@@ -135,10 +168,23 @@ public class ADBScraper implements IScraper {
 				props.load(in);
 				in.close();
 				skip = true;
-				Enumeration<Object> e = props.elements();
-				while(e.hasMoreElements() && skip){
-					skip = Boolean.parseBoolean((String)e.nextElement());
-				}
+				if(skip) skip = !needsDownload(props, PROPERTIE_INGAME);
+				if(skip) skip = !needsDownload(props, PROPERTIE_ICON);
+				if(skip) skip = !needsDownload(props, PROPERTIE_CPANEL);
+				if(skip) skip = !needsDownload(props, PROPERTIE_CABINET);
+				if(skip) skip = !needsDownload(props, PROPERTIE_MARQUEE);
+				if(skip) skip = !needsDownload(props, PROPERTIE_PCB);
+				if(skip) skip = !needsDownload(props, PROPERTIE_FLYER);
+				if(skip) skip = !needsDownload(props, PROPERTIE_TITLE);
+				if(skip) skip = !needsDownload(props, PROPERTIE_END);
+				if(skip) skip = !needsDownload(props, PROPERTIE_BOSS);
+				if(skip) skip = !needsDownload(props, PROPERTIE_ARTPREVIEW);
+				if(skip) skip = !needsDownload(props, PROPERTIE_SELECT);
+				if(skip) skip = !needsDownload(props, PROPERTIE_GAMEOVER);
+				if(skip) skip = !needsDownload(props, PROPERTIE_HOWTO);
+				if(skip) skip = !needsDownload(props, PROPERTIE_LOGO);
+				if(skip) skip = !needsDownload(props, PROPERTIE_SCORE);
+				if(skip) skip = !needsDownload(props, PROPERTIE_VERSUS);
 			}
 
 			if (skip) {
@@ -146,9 +192,17 @@ public class ADBScraper implements IScraper {
 				return false;
 			}
 
+			if(!scraping) {
+				String json_status = getJSON(ADB_STATUS_ADB_URL, TIMEOUT * 2);
+				if (json_status == null)
+					throw new ScrapeException("ADB is not available!");
+			}
+			scraping = true;
+
 			Log.d(TAG, "scraping: " + rom_name);
 
-			String json = getJSON(ADB_QUERY_MAME_URL + "&game_name=" + rom_name, TIMEOUT);
+			String json_query = mm.getPrefsHelper().isScrapingAll() ? ADB_QUERY_FULL_URL : ADB_QUERY_MAME_URL;
+			String json = getJSON(json_query + "&game_name=" + rom_name, TIMEOUT);
 			Log.d(TAG, "json: " + json);
 
 			if (json == null) {
@@ -158,25 +212,68 @@ public class ADBScraper implements IScraper {
 
 			if (!isEmpty(json)) {
 
-				String url_image_ingame = getImageURL("url_image_ingame", json);
-				String url_image_title = getImageURL("url_image_title", json);
-				String url_image_marquee = getImageURL("url_image_marquee", json);
-				String url_image_cabinet = getImageURL("url_image_cabinet", json);
-				String url_image_flyer = getImageURL("url_image_flyer", json);
 				String url_icon = getImageURL("url_icon", json);
+				String url_image_ingame = getImageURL("url_image_ingame", json);
 
-				if (url_image_ingame != null && needsDownload(props, PROPERTIE_INGAME))
+				if (needsDownload(props, PROPERTIE_INGAME))
 					props.put(PROPERTIE_INGAME, download(rom_name, FILE_TYPE_PNG, url_image_ingame, TIMEOUT, DIR_INGAME) + "");
-				if (url_icon != null && needsDownload(props, PROPERTIE_ICON))
+				if (needsDownload(props, PROPERTIE_ICON))
 					props.put(PROPERTIE_ICON, download(rom_name, FILE_TYPE_ICO, url_icon, TIMEOUT, DIR_ICON) + "");
-				if (url_image_title != null && needsDownload(props, PROPERTIE_TITLE))
-					props.put(PROPERTIE_TITLE, download(rom_name, FILE_TYPE_PNG, url_image_title, TIMEOUT, DIR_TITLE) + "");
-				if (url_image_marquee != null && needsDownload(props, PROPERTIE_MARQUEE))
-					props.put(PROPERTIE_MARQUEE, download(rom_name, FILE_TYPE_PNG, url_image_marquee, TIMEOUT, DIR_MARQUEE) + "");
-				if (url_image_cabinet != null && needsDownload(props, PROPERTIE_CABINET))
-					props.put(PROPERTIE_CABINET, download(rom_name, FILE_TYPE_PNG, url_image_cabinet, TIMEOUT, DIR_CABINET) + "");
-				if (url_image_flyer != null && needsDownload(props, PROPERTIE_FLYER))
-					props.put(PROPERTIE_FLYER, download(rom_name, FILE_TYPE_PNG, url_image_flyer, TIMEOUT, DIR_FLYER) + "");
+
+				if(mm.getPrefsHelper().isScrapingAll()){
+
+					String url_image_cpanel = getImageURL("url_image_cpanel", json);
+					String url_image_cabinet = getImageURL("url_image_cabinet", json);
+					String url_image_marquee = getImageURL("url_image_marquee", json);
+					String url_image_pcb = getImageURL("url_image_pcb", json);
+					String url_image_flyer = getImageURL("url_image_flyer", json);
+					String url_image_title = getImageURL("url_image_title", json);
+					String url_image_end = getImageURL("url_image_end", json);
+					String url_image_boss = getImageURL("url_image_boss", json);
+					String url_image_artpreview = getImageURL("url_image_artwork_preview", json);
+					String url_image_select = getImageURL("url_image_select", json);
+					String url_image_gameover = getImageURL("url_image_gameover", json);
+					String url_image_howto = getImageURL("url_image_howto", json);
+					String url_image_logo = getImageURL("url_image_logo", json);
+					String url_image_score = getImageURL("url_image_score", json);
+					String url_image_versus = getImageURL("url_image_versus", json);
+
+					//String url_image_box = getImageURL("url_image_box", json);
+					//String url_image_decal = getImageURL("url_image_decal", json);
+					//String url_image_warning = getImageURL("url_image_warning", json);
+
+					if (needsDownload(props, PROPERTIE_CPANEL))
+						props.put(PROPERTIE_CPANEL, download(rom_name, FILE_TYPE_PNG, url_image_cpanel, TIMEOUT, DIR_CPANEL) + "");
+					if (needsDownload(props, PROPERTIE_CABINET))
+						props.put(PROPERTIE_CABINET, download(rom_name, FILE_TYPE_PNG, url_image_cabinet, TIMEOUT, DIR_CABINET) + "");
+					if (needsDownload(props, PROPERTIE_MARQUEE))
+						props.put(PROPERTIE_MARQUEE, download(rom_name, FILE_TYPE_PNG, url_image_marquee, TIMEOUT, DIR_MARQUEE) + "");
+					if (needsDownload(props, PROPERTIE_PCB))
+						props.put(PROPERTIE_PCB, download(rom_name, FILE_TYPE_PNG, url_image_pcb, TIMEOUT, DIR_PCB) + "");
+					if (needsDownload(props, PROPERTIE_FLYER))
+						props.put(PROPERTIE_FLYER, download(rom_name, FILE_TYPE_PNG, url_image_flyer, TIMEOUT, DIR_FLYER) + "");
+					if (needsDownload(props, PROPERTIE_TITLE))
+						props.put(PROPERTIE_TITLE, download(rom_name, FILE_TYPE_PNG, url_image_title, TIMEOUT, DIR_TITLE) + "");
+					if (needsDownload(props, PROPERTIE_END))
+						props.put(PROPERTIE_END, download(rom_name, FILE_TYPE_PNG, url_image_end, TIMEOUT, DIR_END) + "");
+					if (needsDownload(props, PROPERTIE_BOSS))
+						props.put(PROPERTIE_BOSS, download(rom_name, FILE_TYPE_PNG, url_image_boss, TIMEOUT, DIR_BOSS) + "");
+					if (needsDownload(props, PROPERTIE_ARTPREVIEW))
+						props.put(PROPERTIE_ARTPREVIEW, download(rom_name, FILE_TYPE_PNG, url_image_artpreview, TIMEOUT, DIR_ARTPREVIEW) + "");
+					if (needsDownload(props, PROPERTIE_SELECT))
+						props.put(PROPERTIE_SELECT, download(rom_name, FILE_TYPE_PNG, url_image_select, TIMEOUT, DIR_SELECT) + "");
+					if (needsDownload(props, PROPERTIE_GAMEOVER))
+						props.put(PROPERTIE_GAMEOVER, download(rom_name, FILE_TYPE_PNG, url_image_gameover, TIMEOUT, DIR_GAMEOVER) + "");
+					if (needsDownload(props, PROPERTIE_HOWTO))
+						props.put(PROPERTIE_HOWTO, download(rom_name, FILE_TYPE_PNG, url_image_howto, TIMEOUT, DIR_HOWTO) + "");
+					if (needsDownload(props, PROPERTIE_LOGO))
+						props.put(PROPERTIE_LOGO, download(rom_name, FILE_TYPE_PNG, url_image_logo, TIMEOUT, DIR_LOGO) + "");
+					if (needsDownload(props, PROPERTIE_SCORE))
+						props.put(PROPERTIE_SCORE, download(rom_name, FILE_TYPE_PNG, url_image_score, TIMEOUT, DIR_SCORE) + "");
+					if (needsDownload(props, PROPERTIE_VERSUS))
+						props.put(PROPERTIE_VERSUS, download(rom_name, FILE_TYPE_PNG, url_image_versus, TIMEOUT, DIR_VERSUS) + "");
+				}
+
 			} else {
 				Log.d(TAG, "Not data: " + rom_name);
 			}
@@ -194,6 +291,7 @@ public class ADBScraper implements IScraper {
 
 	@Override
 	public boolean reset() {
+/*
 		Log.d(TAG, "Deleting properties...");
 		String propsDir = scrapeDir + DIR_PROPERTIES;
 		File f = new File(propsDir);
@@ -201,6 +299,7 @@ public class ADBScraper implements IScraper {
 		for (File f2 : contents) {
 			f2.delete();
 		}
+ */
 		return true;
 	}
 
@@ -214,11 +313,19 @@ public class ADBScraper implements IScraper {
 		int j = json.indexOf("\"", i + 1);
 		if (j == -1) return url;
 		url = json.substring(i + 1, j);
-		if(url.trim().length()==0)
+		if (url.trim().length() == 0)
 			return null;
 		url = url.replace("\\", "");
-		if(mm.getPrefsHelper().isScrapingResize()) {
-			url = url.replace("resize=0", "resize=300");
+
+		if (url.endsWith("resize=0")) {
+			if (mm.getPrefsHelper().isScrapingResize())
+				url = url.replace("resize=0", "resize=300");
+		} else {
+			if (mm.getPrefsHelper().isScrapingResize()) {
+				url += "&resize=300";
+			} else {
+				url += "&resize=0";
+			}
 		}
 		return url;
 	}
@@ -280,6 +387,10 @@ public class ADBScraper implements IScraper {
 		String dir = scrapeDir + folder;
 		String fileName = name + "." + fileType;
 		File file = new File(dir + File.separator + fileName);
+		if(url == null) {
+			Log.d(TAG, "Theres not url image: " + fileName +" ("+folder+")");
+			return true;
+		}
 		if(file.exists()){
 			Log.d(TAG, "Already exists: " + fileName);
 			return true;

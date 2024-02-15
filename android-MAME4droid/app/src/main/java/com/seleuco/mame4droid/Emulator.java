@@ -140,6 +140,7 @@ public class Emulator {
 	final static public int ROM_NAME = 2;
 	final static public int VERSION = 3;
 	final static public int OVERLAY_EFECT = 4;
+	final static public int CLI_PARAMS = 5;
 
 	//get str
 	final static public int MAME_VERSION = 1;
@@ -627,6 +628,7 @@ public class Emulator {
 				String action = intent.getAction();
 				//Uri pkg = null;
 				String fileName = null;
+				String cliParams = null;
 				String path = null;
 				boolean delete = false;
 				if (Intent.ACTION_VIEW.equals(action)) {
@@ -635,10 +637,12 @@ public class Emulator {
 					//System.out.println("PKG: "+pkg.getHost());
 
 					Uri _uri = intent.getData();
-					//System.out.println("URI: "+_uri.toString());
-					boolean error = false;
+					Log.d("ACTION_VIEW", "URI = " + _uri);
 
-					Log.d("", "URI = " + _uri);
+					cliParams = intent.getStringExtra("cli_params");
+					Log.d("ACTION_VIEW", "CLI_PARAMS = " + cliParams);
+
+					boolean error = false;
 					try {
 						if (_uri != null && "content".equalsIgnoreCase(_uri.getScheme())) {
 							//mm.safHelper.setURI(null);//disable SAF.
@@ -680,9 +684,16 @@ public class Emulator {
 							}
 						});
 					} else {
+						//String cliParams = "-skip_gameinfo -cass gng -autoboot_delay 2 -autoboot_command 'load\\n'";
+						//String cliParams = "-skip_gameinfo -cass gng -autoboot_delay 2 -autoboot_command 'LOAD \"*\",8\\n'";
+						if(cliParams!=null)
+						{
+							Emulator.setValueStr(Emulator.CLI_PARAMS, cliParams);
+						}
+
 						Emulator.setValueStr(Emulator.ROM_NAME, fileName);
-						System.out.println("XX name: " + fileName);
-						System.out.println("XX path: " + path);
+						Log.d("ACTION_VIEW","XX name: " + fileName);
+						Log.d("ACTION_VIEW","XX path: " + path);
 						extROM = true;
 						String msg = "Launching: " + fileName + "\nMAME4droid 2024 " + versionName + " by D.Valdeita (Seleuco)";
 						new WarnWidget.WarnWidgetHelper(mm, msg, 3, Color.GREEN, true);

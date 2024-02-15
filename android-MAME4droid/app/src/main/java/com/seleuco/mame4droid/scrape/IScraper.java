@@ -48,7 +48,7 @@ import com.seleuco.mame4droid.MAME4droid;
 
 public interface IScraper {
 
-	public boolean scrape(String rom_name, int current);
+	public boolean scrape(String rom_name, int current) throws ScrapeException;
 
 	public boolean reset();
 

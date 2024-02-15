@@ -113,12 +113,11 @@ public class MainHelper {
 
     // final static public String MAGIC_FILE = "dont-delete-00005.bin";
 
-    final public static int DEVICE_GENEREIC = 1;
-    final public static int DEVICE_OUYA = 2;
+    final public static int DEVICE_GENERIC = 1;
     final public static int DEVICE_SHIELD = 3;
-    final public static int DEVICE_JXDS7800 = 4;
     final public static int DEVICE_AGAMEPAD2 = 5;
     final public static int DEVICE_ANDROIDTV = 5;
+	final public static int DEVICE_METAQUEST = 5;
 
     final public static int INSTALLATION_DIR_UNDEFINED = 1;
     final public static int INSTALLATION_DIR_FILES_DIR = 2;
@@ -129,7 +128,7 @@ public class MainHelper {
 
     protected boolean createdInstallationDir = false;
 
-    protected int deviceDetected = DEVICE_GENEREIC;
+    protected int deviceDetected = DEVICE_GENERIC;
 
     protected int oldInGame = 0;
 
@@ -383,6 +382,11 @@ public class MainHelper {
                             + "' to store save states, cfg files and MAME assets.\n\nNote, copy or move your zipped ROMs under '"
                             + rompath
                             + "' directory!\n\nIMPORTANT: MAME4droid 2024 uses only "+ mm.getString(R.string.mame_version) +" MAME romset, not 0.139.";
+
+			if(mm.getMainHelper().getDeviceDetected() == MainHelper.DEVICE_METAQUEST){
+				msg = "Welcome to MAME4droid for META Quest!\n\nYou should pair an XBOX One controller on your META Quest to be able to play games.\n\n"+msg;
+			}
+
             //if (mm.getPrefsHelper().getSAF_Uri()!=null)
                 //msg += "\n\nTIP: You can enable a setting to store save states under roms folder, so they will not be deleted when uninstalling MAME4droid. Look at MAME4droid option in settings.";
             mm.getDialogHelper().setInfoMsg(msg);
@@ -1020,9 +1024,38 @@ galaxy sde	   --> 2560x1600 16:10
 
     public void detectDevice() {
 
-        boolean shield = android.os.Build.MODEL.equals("SHIELD");
+		Log.d("model",android.os.Build.MODEL);
 
-        if (shield) {
+        boolean shield = android.os.Build.MODEL.equals("SHIELD");
+		boolean quest = android.os.Build.MODEL.toUpperCase().equals("QUEST");
+
+		if(quest) {
+
+
+
+			Context context = mm.getApplicationContext();
+			SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+			if (!prefs.getBoolean("metaquest", false)) {
+				SharedPreferences.Editor edit = prefs.edit();
+				edit.putBoolean("metaquest", true);
+				edit.putBoolean(PrefsHelper.PREF_LANDSCAPE_TOUCH_CONTROLLER,
+					false);
+				edit.putBoolean(PrefsHelper.PREF_LANDSCAPE_BITMAP_FILTERING,
+					true);
+
+				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "10");
+				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "10");
+
+				edit.putString(PrefsHelper.PREF_ORIENTATION, "2");
+
+				// edit.putString("", "");
+				edit.commit();
+
+			}
+			deviceDetected = DEVICE_METAQUEST;
+		}
+        else if (shield) {
             Context context = mm.getApplicationContext();
             SharedPreferences prefs = PreferenceManager
                     .getDefaultSharedPreferences(context);

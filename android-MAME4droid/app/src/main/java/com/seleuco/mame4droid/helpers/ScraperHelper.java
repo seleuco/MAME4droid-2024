@@ -49,6 +49,7 @@ import android.util.Log;
 import com.seleuco.mame4droid.MAME4droid;
 import com.seleuco.mame4droid.scrape.ADBScraper;
 import com.seleuco.mame4droid.scrape.IScraper;
+import com.seleuco.mame4droid.scrape.ScrapeException;
 import com.seleuco.mame4droid.widgets.WarnWidget;
 import android.graphics.Color;
 
@@ -85,6 +86,13 @@ public class ScraperHelper implements Runnable {
     }
 
     public void initMediaScrap() {
+
+		if(!mm.getPrefsHelper().isScrapingIcons() &&
+			!mm.getPrefsHelper().isScrapingSnapshots() &&
+			!mm.getPrefsHelper().isScrapingAll() ) {
+			Log.d(TAG, "There's nothing to scrape");
+			return;
+		}
 
         if (!isRunning) {
 
@@ -124,10 +132,18 @@ public class ScraperHelper implements Runnable {
 				break;
 			}
 
-			boolean scrapping = scraper.scrape(name, current);
+			boolean scrapping = false;
+
+			try {
+				scrapping = scraper.scrape(name, current);
+			}catch (ScrapeException e) {
+				new WarnWidget.WarnWidgetHelper(mm,"Media scraping error: "+e.getMessage(), 3, Color.RED, false);
+				break;
+			}
+
 			if(!ScraperHelper.isScraping && scrapping){
 				ScraperHelper.isScraping = true;
-				new WarnWidget.WarnWidgetHelper(mm,"Media scraping started...", 3, Color.GREEN, true);
+				new WarnWidget.WarnWidgetHelper(mm,"Media scraping is running...", 3, Color.GREEN, true);
 			}
 
 			current++;
@@ -150,7 +166,7 @@ public class ScraperHelper implements Runnable {
         isRunning = false;
 
 		if(isScraping && !isStopped){
-			new WarnWidget.WarnWidgetHelper(mm,"Media scraping ends (you should restart MAME4droid...)", 3, Color.GREEN, true);
+			new WarnWidget.WarnWidgetHelper(mm,"Media scraping ends (you should restart MAME4droid...)", 5, Color.GREEN, true);
 		}
         Log.d(TAG, "Scraping ends");
     }

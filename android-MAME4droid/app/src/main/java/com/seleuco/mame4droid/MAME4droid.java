@@ -119,6 +119,7 @@ public class MAME4droid extends Activity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 
 		//android.os.Debug.waitForDebugger();

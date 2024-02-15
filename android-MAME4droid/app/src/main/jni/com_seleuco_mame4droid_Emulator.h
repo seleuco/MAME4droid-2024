@@ -101,6 +101,8 @@ extern "C" {
 #define com_seleuco_mame4droid_Emulator_VERSION 3L
 #undef com_seleuco_mame4droid_Emulator_OVERLAY_EFECT
 #define com_seleuco_mame4droid_Emulator_OVERLAY_EFECT 4L
+#undef com_seleuco_mame4droid_Emulator_CLI_PARAMS
+#define com_seleuco_mame4droid_Emulator_CLI_PARAMS 5L
 #undef com_seleuco_mame4droid_Emulator_MAME_VERSION
 #define com_seleuco_mame4droid_Emulator_MAME_VERSION 1L
 #undef com_seleuco_mame4droid_Emulator_KEY_DOWN
