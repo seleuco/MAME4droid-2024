@@ -50,6 +50,7 @@ import android.view.View;
 
 import com.seleuco.mame4droid.Emulator;
 import com.seleuco.mame4droid.MAME4droid;
+import com.seleuco.mame4droid.helpers.MainHelper;
 
 public class TouchLightgun implements IController {
 
@@ -145,9 +146,12 @@ public class TouchLightgun implements IController {
 							digital_data[0] |= A_VALUE;
 
 						if(mm.getPrefsHelper().isLightgunLongPress()) {
+							int wait = 125;
+							if(mm.getMainHelper().getDeviceDetected()== MainHelper.DEVICE_METAQUEST)
+								wait = 300;
 							if (millis_pressed == 0) {
 								millis_pressed = System.currentTimeMillis();
-							} else if (System.currentTimeMillis() - millis_pressed > 100 && !press_on) {
+							} else if (System.currentTimeMillis() - millis_pressed > wait && !press_on) {
 								press_on = true;
 								digital_data[0] |= B_VALUE;
 								digital_data[0] &= ~A_VALUE;

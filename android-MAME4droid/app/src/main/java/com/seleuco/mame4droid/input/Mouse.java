@@ -75,7 +75,7 @@ public class Mouse implements IController {
 			new WarnWidget.WarnWidgetHelper(mm, text.toString(), 3, Color.GREEN, true);
 
 			mm.getMainHelper().updateMAME4droid();
-			mm.getInputHandler().resetInput();
+			mm.getInputHandler().resetInput(true);
 		}
 
 		float cx = event.getX();

@@ -31,6 +31,7 @@
                   android:windowSoftInputMode="stateAlwaysHidden" android:theme="@style/Theme.MAME4droid">
 -->
 <!-- PLAY STORE -->
+
 		<activity android:name="com.seleuco.mame4droid.MAME4droid"
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:launchMode="singleTask"
@@ -52,7 +53,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="application/zip" />
-                <data android:host="*" android:scheme="file" android:maxSdkVersion="23"/>
+				<data android:mimeType="application/x-7z-compressed"/>
+				<data android:host="*" android:scheme="file" android:maxSdkVersion="23"/>
                 <data android:host="*" android:scheme="content" />
             </intent-filter>
         </activity>

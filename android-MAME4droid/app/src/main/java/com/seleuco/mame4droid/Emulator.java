@@ -153,6 +153,7 @@ public class Emulator {
 	final static public int MOUSE_MOVE = 1;
 	final static public int MOUSE_BTN_DOWN = 2;
 	final static public int MOUSE_BTN_UP = 3;
+	final static public int MOUSE_MOVE_POINTER = 4;
 
 	private static MAME4droid mm = null;
 
@@ -350,6 +351,9 @@ public class Emulator {
 
 				if (inMenu != oldInMenu) {
 
+					if(!inMenu)
+						mm.getInputHandler().resetInput(false);
+
 					if (!inMenu && isSaveorload())
 						setSaveorload(false);
 
@@ -384,7 +388,7 @@ public class Emulator {
 		Log.d("Thread Video", "changeVideo emu_width:" + emu_width + " emu_height: " + emu_height + " newWidth:" + newWidth + " newHeight: " + newHeight + " newVisWidth:" + newVisWidth + " newVisHeight: " + newVisHeight);
 		synchronized (lock1) {
 
-			mm.getInputHandler().resetInput();
+			mm.getInputHandler().resetInput(true);
 
 			//if(emu_width!=newWidth || emu_height!=newHeight)
 			//{
@@ -438,10 +442,18 @@ public class Emulator {
 					CharSequence text = "";
 					if (mm.getPrefsHelper().isTiltSensorEnabled())
 						text = "Tilt sensor is enabled!";
-					else if (mm.getPrefsHelper().isTouchLightgun())
-						text = "Touch lightgun is auto enabled!";
-					else if (mm.getPrefsHelper().isTouchGameMouse())
-						text = "Touch mouse is auto enabled!";
+					else if (mm.getPrefsHelper().isTouchLightgun()) {
+						if(mm.getPrefsHelper().isTouchLightgunForced())
+							text = "Touch lightgun is always enabled!";
+							else
+							text = "Touch lightgun is auto enabled!";
+					}
+					else if (mm.getPrefsHelper().isTouchGameMouse()) {
+						if(mm.getPrefsHelper().isTouchGameMouseForced())
+							text = "Touch mouse is always enabled!";
+							else
+						    text = "Touch mouse is auto enabled!";
+					}
 
 					new WarnWidget.WarnWidgetHelper(mm, text.toString(), 3, Color.YELLOW, true);
 

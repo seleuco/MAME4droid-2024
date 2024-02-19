@@ -117,7 +117,7 @@ public class MainHelper {
     final public static int DEVICE_SHIELD = 3;
     final public static int DEVICE_AGAMEPAD2 = 5;
     final public static int DEVICE_ANDROIDTV = 5;
-	final public static int DEVICE_METAQUEST = 5;
+	final public static int DEVICE_METAQUEST = 6;
 
     final public static int INSTALLATION_DIR_UNDEFINED = 1;
     final public static int INSTALLATION_DIR_FILES_DIR = 2;
@@ -384,7 +384,7 @@ public class MainHelper {
                             + "' directory!\n\nIMPORTANT: MAME4droid 2024 uses only "+ mm.getString(R.string.mame_version) +" MAME romset, not 0.139.";
 
 			if(mm.getMainHelper().getDeviceDetected() == MainHelper.DEVICE_METAQUEST){
-				msg = "Welcome to MAME4droid for META Quest!\n\nYou should pair an XBOX One controller on your META Quest to be able to play games.\n\n"+msg;
+				msg = "Welcome to MAME4droid for META Quest!\n\nYou should pair an XBOX One controller on your META Quest to be able to play games but you can play lightgun games with your touch controllers.\n\n"+msg;
 			}
 
             //if (mm.getPrefsHelper().getSAF_Uri()!=null)
@@ -1039,13 +1039,18 @@ galaxy sde	   --> 2560x1600 16:10
 			if (!prefs.getBoolean("metaquest", false)) {
 				SharedPreferences.Editor edit = prefs.edit();
 				edit.putBoolean("metaquest", true);
-				edit.putBoolean(PrefsHelper.PREF_LANDSCAPE_TOUCH_CONTROLLER,
-					false);
+				//edit.putBoolean(PrefsHelper.PREF_LANDSCAPE_TOUCH_CONTROLLER, false);
+
+				edit.putBoolean(PrefsHelper.PREF_HIDE_STICK, true);
+
 				edit.putBoolean(PrefsHelper.PREF_LANDSCAPE_BITMAP_FILTERING,
 					true);
 
-				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "10");
-				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "10");
+				edit.putBoolean(PrefsHelper.PREF_TOUCH_GAME_MOUSE,
+					false);
+
+				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "2");
+				edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "2");
 
 				edit.putString(PrefsHelper.PREF_ORIENTATION, "2");
 

@@ -502,6 +502,8 @@ char *myosd_droid_getMyValueStr(int key, int i) {
 
 void myosd_droid_setDigitalData(int i, unsigned long value) {
 
+    if(i>=MYOSD_NUM_JOY) return;
+
     //__android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "setDigitalData  %d,%ld",i,value);
 
     if (i == 1 && (value & MYOSD_SELECT) && myosd_droid_num_of_joys < 2)
@@ -525,6 +527,8 @@ void myosd_droid_setDigitalData(int i, unsigned long value) {
 }
 
 void myosd_droid_setAnalogData(int i, float v1, float v2) {
+
+    if(i>8) return;
 
     if(i == 8) {
         lightgun_x[0] = v1;
@@ -591,7 +595,8 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
                         "MAME4droid.so", "set mouseData %d %d %d %f %f -> %d %d",i, mouseAction,
                         button, cx, cy, (int)cur_x_mouse, (int)cur_y_mouse);
 */
-    if(mouseAction == com_seleuco_mame4droid_Emulator_MOUSE_MOVE) {
+    if(mouseAction == com_seleuco_mame4droid_Emulator_MOUSE_MOVE)
+    {
         cur_x_mouse = MAX(0, MIN(cx + cur_x_mouse, myosd_droid_video_width));
         cur_y_mouse = MAX(0, MIN(cy + cur_y_mouse, myosd_droid_video_height));
 
@@ -610,6 +615,17 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
             pthread_mutex_unlock(&mouse_mutex);
        }
     }
+    else if(mouseAction == com_seleuco_mame4droid_Emulator_MOUSE_MOVE_POINTER)
+    {
+        cur_x_mouse = cx;
+        cur_y_mouse = cy;
+
+        myosd_inputevent ev;
+        ev.type = ev.MYOSD_MOUSE_MOVE_EVENT;
+        ev.data.mouse_data.x = cur_x_mouse;
+        ev.data.mouse_data.y = cur_y_mouse;
+        myosd_pushEvent(ev);
+    }
     else if(mouseAction == com_seleuco_mame4droid_Emulator_MOUSE_BTN_DOWN)
     {
         myosd_inputevent ev;
@@ -625,12 +641,20 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
             static float last_click_y = 0;
             static std::chrono::steady_clock::time_point last_click_time = std::chrono::steady_clock::time_point::min();
 
-            auto const double_click_speed = std::chrono::milliseconds(250);
+            auto double_click_speed = std::chrono::milliseconds(250);
             auto const click = std::chrono::steady_clock::now();
 
+            int offsetX = 4;
+            int offsetY = 4;
+            if(cx != -1 && cy != -1) {
+                offsetX = cx;
+                offsetY = cy;
+                double_click_speed = std::chrono::milliseconds(400);
+            }
+
             if (click < (last_click_time + double_click_speed)
-                && (cur_x_mouse >= (last_click_x - 4) && cur_x_mouse <= (last_click_x + 4))
-                && (cur_y_mouse >= (last_click_y - 4) && cur_y_mouse <= (last_click_y + 4)))
+                && (cur_x_mouse >= (last_click_x - offsetX) && cur_x_mouse <= (last_click_x + offsetX))
+                && (cur_y_mouse >= (last_click_y - offsetY) && cur_y_mouse <= (last_click_y + offsetY)))
             {
                 last_click_time = std::chrono::time_point<std::chrono::steady_clock>::min();
                 ev.type = ev.MYOSD_MOUSE_BT1_DBLCLK;

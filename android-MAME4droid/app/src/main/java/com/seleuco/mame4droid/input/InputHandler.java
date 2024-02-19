@@ -59,6 +59,8 @@ import com.seleuco.mame4droid.helpers.DialogHelper;
 import com.seleuco.mame4droid.helpers.PrefsHelper;
 
 public class InputHandler implements OnTouchListener, OnKeyListener {
+
+	final static public String TAG = "InputHandler";
 	final static public int PRESS_WAIT = 100;
 
 	protected TouchController touchController = new TouchController();
@@ -106,20 +108,26 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 		tiltSensor.setMAME4droid(mm);
 		controlCustomizer.setMAME4droid(mm);
 
-        resetInput();
+        resetInput(true);
     }
 
-    public void resetInput() {
+    public void resetInput(boolean digital) {
         for (int i = 0; i < 4 * 3; i++) {
             try {
-                if (i < 4) {
-                    digital_data[i] = 0;
-                    Emulator.setDigitalData(i, digital_data[i]);
-                }
+				if(digital) {
+					if (i < 4) {
+						digital_data[i] = 0;
+						Emulator.setDigitalData(i, digital_data[i]);
+					}
+				}
                 Emulator.setAnalogData(i, 0, 0);
             } catch (Throwable ignored) {
             }
         }
+
+		Emulator.setMouseData(0, Emulator.MOUSE_BTN_UP, 1, -1, -1);
+		Emulator.setMouseData(0, Emulator.MOUSE_BTN_UP, 2, -1, -1);
+		Emulator.setMouseData(0, Emulator.MOUSE_BTN_UP, 3, -1, -1);
 
 		touchStick.reset();
     }
@@ -135,7 +143,7 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 	}
 
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        //Log.d("TECLA", "onKeyDown=" + keyCode + " " + event.getAction() + " " + event.getDisplayLabel() + " " + event.getUnicodeChar() + " " + event.getNumber());
+        //Log.d(TAG, "onKeyDown=" + keyCode + " " + event.getAction() + " " + event.getDisplayLabel() + " " + event.getUnicodeChar() + " " + event.getNumber());
 
 		if(event.getSource() == InputDevice.SOURCE_MOUSE_RELATIVE)//TODO parametrize check mouse
 		{
@@ -299,7 +307,7 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 
 	public void dumpEvent(MotionEvent event) {
 		String[] names = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE",
-			"POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
+			"POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?","10?","11?","12?"};
 		StringBuilder sb = new StringBuilder();
 		int action = event.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
@@ -322,7 +330,7 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 		}
 		sb.append("]");
 		//if(action != MotionEvent.ACTION_MOVE)
-		Log.d("touch", sb.toString());
+		Log.d(TAG, sb.toString());
 	}
 
 }

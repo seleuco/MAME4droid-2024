@@ -137,7 +137,7 @@ public class TouchController implements IController {
 
 	public void changeState() {
 		if (state == STATE_SHOWING_CONTROLLER) {
-			mm.getInputHandler().resetInput();
+			mm.getInputHandler().resetInput(true);
 			state = STATE_SHOWING_NONE;
 		} else {
 			state = STATE_SHOWING_CONTROLLER;
@@ -534,6 +534,8 @@ public class TouchController implements IController {
 				}else if (!Emulator.isInGame() ){
 					if(mm.getPrefsHelper().getNumButtons() > 2)
 						n = mm.getPrefsHelper().getNumButtons();
+					else if(mm.getPrefsHelper().isHideStick())
+						n = 0;
 					else
 						n = 2;
 				//n=6;//all buttons

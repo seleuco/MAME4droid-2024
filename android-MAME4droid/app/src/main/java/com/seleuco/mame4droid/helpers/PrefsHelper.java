@@ -123,6 +123,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_VIBRATE = "PREF_VIBRATE";
 	final static public String PREF_MOUSE = "PREF_MOUSE";
 	final static public String PREF_TOUCH_MOUSE = "PREF_TOUCH_MOUSE";
+	final static public String PREF_TOUCH_MOUSE_AS_POINTER = "PREF_TOUCH_MOUSE_AS_POINTER";
 	final static public String PREF_TOUCH_GAME_MOUSE = "PREF_TOUCH_GAME_MOUSE";
 	final static public String PREF_TOUCH_GAME_MOUSE_FORCE = "PREF_TOUCH_GAME_MOUSE_FORCE";
 	final static public String PREF_KEYBOARD = "PREF_KEYBOARD";
@@ -373,6 +374,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		return Integer.valueOf(getSharedPreferences().getString(PREF_CONTROLLER_TYPE, "1")).intValue();
 	}
 
+	public boolean isTouchLightgunForced() {
+		return getSharedPreferences().getBoolean(PREF_TOUCH_LIGHTGUN_FORCE, false);
+	}
+
 	public boolean isTouchLightgun() {
 
 		if (!Emulator.isInGame())
@@ -382,7 +387,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
 		if (enabled &&
 
-			(Emulator.getValue(Emulator.IS_LIGHTGUN) == 1 || getSharedPreferences().getBoolean(PREF_TOUCH_LIGHTGUN_FORCE, false))
+			(Emulator.getValue(Emulator.IS_LIGHTGUN) == 1 || isTouchLightgunForced())
 
 			&& !this.isTiltSensorEnabled() && !mm.getInputHandler().getMouse().isEnabled())
 			return true;
@@ -399,6 +404,14 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 			return false;
 
 		return getSharedPreferences().getBoolean(PREF_TOUCH_MOUSE, true);
+	}
+
+	public boolean isTouchMouseAsPointer() {
+		return getSharedPreferences().getBoolean(PREF_TOUCH_MOUSE_AS_POINTER, true);
+	}
+
+	public boolean isTouchGameMouseForced() {
+		return getSharedPreferences().getBoolean(PREF_TOUCH_GAME_MOUSE_FORCE, false);
 	}
 
 	public boolean isTouchGameMouse() {
@@ -424,7 +437,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		if (isTouchLightgun())
 			return false;
 
-		return Emulator.getValue(Emulator.IS_MOUSE) == 1 || getSharedPreferences().getBoolean(PREF_TOUCH_GAME_MOUSE_FORCE, false);
+		return Emulator.getValue(Emulator.IS_MOUSE) == 1 || isTouchGameMouseForced();
 
 	}
 

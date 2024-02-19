@@ -115,6 +115,8 @@ extern "C" {
 #define com_seleuco_mame4droid_Emulator_MOUSE_BTN_DOWN 2L
 #undef com_seleuco_mame4droid_Emulator_MOUSE_BTN_UP
 #define com_seleuco_mame4droid_Emulator_MOUSE_BTN_UP 3L
+#undef com_seleuco_mame4droid_Emulator_MOUSE_MOVE_POINTER
+#define com_seleuco_mame4droid_Emulator_MOUSE_MOVE_POINTER 4L
 /*
  * Class:     com_seleuco_mame4droid_Emulator
  * Method:    init
