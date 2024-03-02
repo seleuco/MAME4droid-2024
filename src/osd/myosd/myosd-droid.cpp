@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "myosd_core.h"
+#include "myosd_saf.h"
 
 #include "../../../android-MAME4droid/app/src/main/jni/com_seleuco_mame4droid_Emulator.h"
 
@@ -166,7 +167,7 @@ static int (*safOpenFile_callback)(const char *pathName,const char *mode) = null
 
 static int (*safReadDir_callback)(const char *dirName, int reload) = nullptr;
 
-static char *(*safGetNextDirEntry_callback)(int dirId) = nullptr;
+static char **(*safGetNextDirEntry_callback)(int dirId) = nullptr;
 
 static void (*safCloseDir_callback)(int dirId) = nullptr;
 //end android callbacks
@@ -208,7 +209,7 @@ void myosd_droid_setInputCallbacks(
 void myosd_droid_setSAFCallbacks(
         int (*safOpenFile_java)(const char *, const char *),
         int (*safReadDir_java)(const char *, int reload),
-        char *(*safGetNextDirEntry_java)(int),
+        char **(*safGetNextDirEntry_java)(int),
         void (*safCloseDir_java)(int)
 ) {
 
@@ -358,12 +359,12 @@ void myosd_droid_setMyValue(int key, int i, int value) {
             myosd_droid_autosave = value;
             break;
         case com_seleuco_mame4droid_Emulator_SAVESTATE:
-            keyboard[MYOSD_KEY_LOADSAVE] = value ? 0x80: 0;
-            keyboard[MYOSD_KEY_LSHIFT] = value ? 0x80: 0;
+            keyboard[MYOSD_KEY_F6] = value ? 0x80: 0;
+            //keyboard[MYOSD_KEY_LSHIFT] = value ? 0x80: 0;
             myosd_droid_savestate = value;
             break;
         case com_seleuco_mame4droid_Emulator_LOADSTATE:
-            keyboard[MYOSD_KEY_LOADSAVE] = value ? 0x80: 0;
+            keyboard[MYOSD_KEY_F7] = value ? 0x80: 0;
             myosd_droid_loadstate = value;
             break;
         case com_seleuco_mame4droid_Emulator_EMU_RESOLUTION:
@@ -942,12 +943,16 @@ int *myosd_safReadDir(const char *dirName, int reload) {
     return nullptr;
 }
 
-std::string *myosd_safGetNextDirEntry(int *id) {
-    std::string *entry = nullptr;
+myosd_saf_dirent *myosd_safGetNextDirEntry(int *id) {
+    myosd_saf_dirent *entry = nullptr;
     if (safGetNextDirEntry_callback != nullptr && id!= nullptr) {
-        char *s = safGetNextDirEntry_callback(*id);
+        char **s = safGetNextDirEntry_callback(*id);
         if(s!= nullptr) {
-            entry = new std::string(s);
+            entry = new myosd_saf_dirent;
+            entry->name = std::string(s[0]); free(s[0]);
+            entry->size = atol(s[1]);free(s[1]);
+            entry->modified = atol(s[2]);free(s[2]);
+            entry->isDir = s[3][0] == 'D';free(s[3]);
             free(s);
         }
     }
@@ -1197,20 +1202,6 @@ int myosd_droid_main(int argc, char **argv) {
         args[n]= myosd_droid_rom_name.c_str(); n++;
     }
 
-    if(!myosd_droid_cli_params.empty())
-    {
-        static std::vector <std::string> tokens;
-
-        split_in_args(tokens,myosd_droid_cli_params);
-
-        for(int i = 0; i < tokens.size(); i++) {
-            __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "cli param %s",
-                                tokens[i].c_str());
-            args[n] = tokens[i].c_str();
-            n++;
-        }
-    }
-
     if(myosd_droid_simple_ui) {
         args[n] = "-ui";
         n++;
@@ -1356,6 +1347,20 @@ int myosd_droid_main(int argc, char **argv) {
     if(0)
     {
         args[n] =  "-v";n++;
+    }
+
+    if(!myosd_droid_cli_params.empty())
+    {
+        static std::vector <std::string> tokens;
+
+        split_in_args(tokens,myosd_droid_cli_params);
+
+        for(int i = 0; i < tokens.size(); i++) {
+            __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "cli param %s",
+                                tokens[i].c_str());
+            args[n] = tokens[i].c_str();
+            n++;
+        }
     }
 
     myosd_main(n, (char**)args, &callbacks, sizeof(callbacks));

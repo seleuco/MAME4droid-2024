@@ -110,7 +110,7 @@ public:
 private:
 	typedef std::unique_ptr<DIR, int (*)(DIR *)>    dir_ptr; //puntero smart con custom deleter.
     typedef std::unique_ptr<int, void (*)(int *)>    saf_dir_ptr; //puntero smart con custom deleter.
-    typedef std::unique_ptr<std::string> saf_dirent;
+    typedef std::unique_ptr<myosd_saf_dirent> saf_dirent;
 
     entry       m_entry; //nuestra entrada
 	sdl_dirent  *m_data; //entrada de  readdir
@@ -155,10 +155,11 @@ const osd::directory::entry *posix_directory::read() {
         m_saf_data.reset( ::myosd_safGetNextDirEntry(m_saf_fd.get()));
         if(!m_saf_data)
             return nullptr;
-        m_entry.name =  m_saf_data->c_str();
-        m_entry.type = entry::entry_type::FILE;
-        m_entry.size = 1;//TODO???
-        //m_entry.last_modified = //TODO???
+        m_entry.name =  m_saf_data->name.c_str();
+        m_entry.type = m_saf_data->isDir ? entry::entry_type::DIR : entry::entry_type::FILE;
+        m_entry.size =  m_saf_data->size;
+        std::time_t modified = m_saf_data->modified / 1000;//ms to sec
+        m_entry.last_modified = std::chrono::system_clock::from_time_t(modified);
 
         //__android_log_print(ANDROID_LOG_DEBUG, "mame42024", "Reading directory entry in SAF %s", m_entry.name);
 

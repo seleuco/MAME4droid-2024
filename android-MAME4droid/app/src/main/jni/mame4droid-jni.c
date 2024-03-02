@@ -316,7 +316,7 @@ int myJNI_safReadDir(const char *dirName, int reload)
     //(*env)->DeleteLocalRef(env, jstrBuf);
 }
 
-char *myJNI_safGetNextDirEntry(int id)
+char **myJNI_safGetNextDirEntry(int id)
 {
     JNIEnv *env;
     (*jVM)->GetEnv(jVM, (void**) &env, JNI_VERSION_1_4);
@@ -334,22 +334,31 @@ char *myJNI_safGetNextDirEntry(int id)
             (*jVM)->AttachCurrentThread(jVM,(void *) &env, NULL);
         }
 
-        jstring ret =(*env)->CallStaticObjectMethod(env, cEmulator, android_safGetNextDirEntry, id);
+        jarray data =(*env)->CallStaticObjectMethod(env, cEmulator, android_safGetNextDirEntry, id);
 
-        char *str = NULL;
+        char** args = NULL;
 
-        if(ret!=NULL)
+        if(data!=NULL)
         {
-            char *tmp = (char *) (*env)->GetStringUTFChars(env, ret, 0);
-            str = (char*)malloc(strlen(tmp)+1);
-            strcpy(str,tmp);
-            (*env)->ReleaseStringUTFChars(env, ret, tmp);
+            jsize const length = (*env)->GetArrayLength(env, data);
+
+            args = (char*)malloc(sizeof(char*)*length);
+
+            for(int index = 0; index < length; index++ )
+            {
+                jstring element = (*env)->GetObjectArrayElement(env, data, index);
+                char *tmp = (char *) (*env)->GetStringUTFChars(env, element, 0);
+                args[index] = (char *) malloc(strlen(tmp) + 1);
+                strcpy(args[index], tmp);
+                (*env)->ReleaseStringUTFChars(env, element, tmp);
+                (*env)->DeleteLocalRef(env, element );
+            }
         }
 
         if(attached)
             (*jVM)->DetachCurrentThread(jVM);
 
-        return str;
+        return args;
     }
     return NULL;
     //(*env)->DeleteLocalRef(env, jstrBuf);
@@ -472,7 +481,7 @@ int JNI_OnLoad(JavaVM* vm, void* reserved)
         return -1;
     }
 
-    android_safGetNextDirEntry = (*env)->GetStaticMethodID(env,cEmulator,"safGetNextDirEntry","(I)Ljava/lang/String;");
+    android_safGetNextDirEntry = (*env)->GetStaticMethodID(env,cEmulator,"safGetNextDirEntry","(I)[Ljava/lang/String;");
 
     if(android_safGetNextDirEntry==NULL)
     {

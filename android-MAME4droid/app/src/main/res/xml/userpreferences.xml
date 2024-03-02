@@ -223,9 +223,14 @@
 				android:title="Gaming touch mouse" android:summary="Enable to use touch mouse for games (autodetected)."
 				android:defaultValue="True" android:dependency="PREF_TOUCH_MOUSE"/>
 
-			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_GAME_MOUSE_FORCE"
+			<CheckBoxPreference android:key="PREF_TOUCH_GAME_MOUSE_FORCE"
 				android:title="Always gaming touch mouse" android:summary="Forces the use of the touch mouse in all games (useful when fails autodetect)."
 				android:defaultValue="False" android:dependency="PREF_TOUCH_GAME_MOUSE"/>
+<!--
+			<CheckBoxPreference android:key="PREF_TOUCH_GAME_MOUSE_HIDE_CONTROLLER"
+				android:title="Hide touch controller" android:summary="Enable to auto hide touch controller when game mouse is enabled"
+				android:defaultValue="False" android:dependency="PREF_TOUCH_GAME_MOUSE"/>
+-->
 
 		</PreferenceScreen>
 
@@ -408,7 +413,7 @@
 
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="SAVESATES_IN_ROM_PATH"
 			android:title="Save States in ROMs path" android:summary="Game states will be stored under ROM files folder. This prevents Android 11+ from deleting them when using external storage for ROMs files and uninstalling the app"
-			android:defaultValue="False" />
+			android:defaultValue="true" />
 
 		<com.seleuco.mame4droid.prefs.ListPrefWithWarn
 			android:title='Screen orientation'

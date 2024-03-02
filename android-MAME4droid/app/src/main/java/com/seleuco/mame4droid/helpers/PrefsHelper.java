@@ -126,6 +126,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_TOUCH_MOUSE_AS_POINTER = "PREF_TOUCH_MOUSE_AS_POINTER";
 	final static public String PREF_TOUCH_GAME_MOUSE = "PREF_TOUCH_GAME_MOUSE";
 	final static public String PREF_TOUCH_GAME_MOUSE_FORCE = "PREF_TOUCH_GAME_MOUSE_FORCE";
+	final static public String PREF_TOUCH_GAME_MOUSE_HIDE_CONTROLLER = "PREF_TOUCH_GAME_MOUSE_HIDE_CONTROLLER";
 	final static public String PREF_KEYBOARD = "PREF_KEYBOARD";
 	final static public String PREF_KEYBOARD_HIDE_CONTROLLER = "PREF_KEYBOARD_HIDE_CONTROLLER";
 	final static public String PREF_VIRTUAL_KEYBOARD = "PREF_VIRTUAL_KEYBOARD";
@@ -414,6 +415,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		return getSharedPreferences().getBoolean(PREF_TOUCH_GAME_MOUSE_FORCE, false);
 	}
 
+	public boolean isTouchGameMouseHideController() {
+		return getSharedPreferences().getBoolean(PREF_TOUCH_GAME_MOUSE_HIDE_CONTROLLER, false);
+	}
+
 	public boolean isTouchGameMouse() {
 
 		if (!isTouchMouseEnabled())
@@ -614,7 +619,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	}
 
 	public boolean areSavesInRomPath() {
-		return getSharedPreferences().getBoolean(SAVESATES_IN_ROM_PATH, false);
+		return getSharedPreferences().getBoolean(SAVESATES_IN_ROM_PATH, true);
 	}
 
 	public boolean isPlayerXasPlayer1() {

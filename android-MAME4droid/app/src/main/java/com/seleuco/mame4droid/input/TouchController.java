@@ -522,7 +522,7 @@ public class TouchController implements IController {
 				int n;
 				if (mm.getInputHandler().isHideTouchController() ||
 					(mm.getPrefsHelper().isTouchLightgun() && !Emulator.isInMenu()) ||
-					(mm.getPrefsHelper().isTouchGameMouse() && !Emulator.isInMenu())
+					( mm.getPrefsHelper().isTouchGameMouse()  && !Emulator.isInMenu())
 				) {
 					n = 0;
 				} else if (Emulator.isSaveorload()) {

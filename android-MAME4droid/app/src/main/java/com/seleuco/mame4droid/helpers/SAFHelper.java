@@ -62,31 +62,37 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-class DirEnt{
+class DirEntry {
+	String name;
+	long size;
+	long modified;
+	boolean isDir;
+}
+
+class DirEntries {
 	private static int lastId = 1;
-	DirEnt(){this.id = lastId++;}
+	DirEntries(){this.id = lastId++;}
 	int id = 0;
-	int fileNameIdx = 0;
-	ArrayList fileNames = null;
+	int dirEntIdx = 0;
+	ArrayList<DirEntry> dirEntries = null;
 }
 
 public class SAFHelper {
 
-    /*static*/ protected MAME4droid mm = null;
+	private static final String TAG = "SAF";
+
+    protected MAME4droid mm = null;
 
 	static Uri uri = null;
     static protected Hashtable<String, String> fileIDs = null; //hago estatico para evitar reloads si la actividad se recrea
-    static protected Hashtable<String,ArrayList<String>> dirFiles = null;
+    static protected Hashtable<String,ArrayList<DirEntry>> dirFiles = null;
 
-	protected Hashtable<Integer,DirEnt> openDirs = new Hashtable<Integer, DirEnt>();
+	protected Hashtable<Integer, DirEntries> openDirs = new Hashtable<Integer, DirEntries>();
 
 	protected WarnWidget pw = null;
 
-	// protected ArrayList<String> fileNames = null;
-    //int idxCurName = 0;
-
     public void setURI(String uriStr) {
-		Log.d("SAF","set SAF uri:"+uriStr);
+		Log.d(TAG,"set SAF uri:"+uriStr);
         if (uriStr == null)
             uri = null;
         else
@@ -102,7 +108,18 @@ public class SAFHelper {
 			listUriFiles(true);
 		}
 
-		return dirFiles.get("/");
+		ArrayList<String> fileNames = null;
+
+		ArrayList<DirEntry> dirEntries =  dirFiles.get("/");
+		if(dirEntries!=null)
+		{
+			fileNames = new ArrayList<>();
+			for (DirEntry dirEntry :dirEntries) {
+				fileNames.add(dirEntry.name);
+			}
+		}
+
+		return fileNames;
 	}
 
 	public int readDir(String dirName) {
@@ -112,13 +129,13 @@ public class SAFHelper {
 			listUriFiles(true);
 		}
 
-	 	ArrayList<String> folderFiles = dirFiles.get(dirName);
+		ArrayList<DirEntry>  folderFiles = dirFiles.get(dirName);
 		if(folderFiles!=null)
 		{
-			DirEnt ent = new DirEnt();
-			ent.fileNames = folderFiles;
-			openDirs.put(ent.id,ent);
-			res = ent.id;
+			DirEntries entries = new DirEntries();
+			entries.dirEntries = folderFiles;
+			openDirs.put(entries.id,entries);
+			res = entries.id;
 		}
 		return res;
 	}
@@ -127,8 +144,8 @@ public class SAFHelper {
 		int res = 0;
 
 		if(openDirs!=null) {
-			DirEnt dirEnt = openDirs.get(id);
-			if (dirEnt != null) {
+			DirEntries dirEntries = openDirs.get(id);
+			if (dirEntries != null) {
 				openDirs.remove(id);
 				res = 1;
 			}
@@ -138,23 +155,26 @@ public class SAFHelper {
 		return res;
 	}
 
-    public String getNextDirName(int id) {
-		String name = null;
+    public String[] getNextDirEntrie(int id) {
+		String [] entryRes = null;
 
 		if(openDirs!=null) {
-			DirEnt dirEnt = openDirs.get(id);
-			if (dirEnt != null) {
-				if (dirEnt.fileNameIdx < dirEnt.fileNames.size()) {
-					name = (String) dirEnt.fileNames.get(dirEnt.fileNameIdx);
-					dirEnt.fileNameIdx++;
+			DirEntries dirEntries = openDirs.get(id);
+			if (dirEntries != null) {
+				if (dirEntries.dirEntIdx < dirEntries.dirEntries.size()) {
+					DirEntry entry = dirEntries.dirEntries.get(dirEntries.dirEntIdx);
+					dirEntries.dirEntIdx++;
+					entryRes = new String[]{entry.name,String.valueOf(entry.size),String.valueOf(entry.modified),entry.isDir ? "D":"F"};
 				}
 			}
 		}
-        return name;
+        return entryRes;
     }
 
     public int openUriFd(String pathName, String flags) {
         //System.out.println("openRomUriFd "+pathName+" "+flags);
+
+		Log.d(TAG, "openRomUriFd "+pathName+" "+flags);
 
         if (fileIDs == null) {//safety
             //return -1;
@@ -165,26 +185,32 @@ public class SAFHelper {
 
         fileid = (String) fileIDs.get(pathName);
 
+		String path = "";
+		String name = pathName;
+		int i = pathName.lastIndexOf("/");
+		if (i != -1) {
+			name = pathName.substring(i + 1, pathName.length());
+			path = pathName.substring(0, i + 1);
+		}
+
         if (fileid == null && flags.contains("w")) {
             String mimeType = "application/octet-stream";
             try {
-                String path = "";
-                String name = pathName;
-                int i = pathName.lastIndexOf("/");
-                if (i != -1) {
-                    name = pathName.substring(i + 1, pathName.length());
-                    path = pathName.substring(0, i + 1);
-                }
 
-                String docId = retrieveDirId(path);
+                String docId = retrieveDirId(path,flags);
 
-                if (docId != null) {
+                if (docId != null && flags.contains("t")) {
                     Uri dirUri = DocumentsContract.buildDocumentUriUsingTree(uri, docId);
 
                     Uri docUri = DocumentsContract.createDocument(mm.getContentResolver(), dirUri, mimeType, name);
                     fileid = DocumentsContract.getDocumentId(docUri);
                     fileIDs.put(pathName, fileid);
-					dirFiles.get(path).add(name);
+					DirEntry newFile = new DirEntry();
+					newFile.name = name;
+					newFile.isDir = false;
+					newFile.modified = System.currentTimeMillis();
+					newFile.size = 1;//how to??
+					dirFiles.get(path).add(newFile);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -194,6 +220,15 @@ public class SAFHelper {
         if (fileid != null) {
             final Uri fileUri = DocumentsContract.buildDocumentUriUsingTree(uri, fileid);
             try {
+				if(flags.contains("w") && !flags.contains("t") ){
+					ArrayList<DirEntry> files = dirFiles.get(path);
+					for (DirEntry e: files) {
+						if(e.name.equals(name)) {
+							e.modified = System.currentTimeMillis();
+							break;
+						}
+					}
+				}
                 return mm.getContentResolver().openFileDescriptor(fileUri, flags).detachFd();
             } catch (Exception e) {
                 return -1;
@@ -202,7 +237,7 @@ public class SAFHelper {
         return -1;
     }
 
-    private String retrieveDirId(String path) {
+    private String retrieveDirId(String path,  String flags) {
 
         if (path == null || path.isEmpty())
             return null;
@@ -212,6 +247,10 @@ public class SAFHelper {
             //System.out.println("Encuentro id para "+path+" "+id);
             return id;
         } else {
+
+			if(!flags.contains("t"))
+				return null;
+
             String newPath = path;
             String dirName = "";
             int i = path.substring(0, path.length() - 1).lastIndexOf("/");
@@ -222,15 +261,22 @@ public class SAFHelper {
             //System.out.println("newPath "+newPath);
             //System.out.println("dirName "+dirName);
 
-            id = retrieveDirId(newPath);
+            id = retrieveDirId(newPath,flags);
             if (id != null) {
                 try {
                     Uri parentDirUri = DocumentsContract.buildDocumentUriUsingTree(uri, id);
                     Uri newDirUri = DocumentsContract.createDocument(mm.getContentResolver(), parentDirUri, DocumentsContract.Document.MIME_TYPE_DIR, dirName);
                     id = DocumentsContract.getDocumentId(newDirUri);
                     fileIDs.put(path, id);
-					ArrayList<String> newFolderFiles = new ArrayList<String>();
+					ArrayList<DirEntry> newFolderFiles = new ArrayList<DirEntry>();
 					dirFiles.put(path,newFolderFiles);
+					DirEntry newDir = new DirEntry();
+					newDir.name = dirName;
+					newDir.isDir = true;
+					newDir.modified = System.currentTimeMillis();
+					newDir.size = 1;//how to??
+					dirFiles.get(newPath).add(newDir);
+
                     return id;
                 } catch (Exception e) {
                     //e.printStackTrace();
@@ -249,7 +295,7 @@ public class SAFHelper {
         if (fileIDs != null && !reload) return true;
 
         fileIDs = new Hashtable<String, String>();
-		dirFiles = new Hashtable<String,ArrayList<String>>();
+		dirFiles = new Hashtable<String,ArrayList<DirEntry>>();
 
         if (uri == null) {
             Log.e("SAF", "SAF URI NOT SET!!!");
@@ -259,20 +305,20 @@ public class SAFHelper {
 
         String id = DocumentsContract.getTreeDocumentId(uri);
         fileIDs.put("/", id);
-		ArrayList<String> files = new ArrayList<String>();
-		dirFiles.put("/",files);
+		ArrayList<DirEntry> entries = new ArrayList<DirEntry>();
+		dirFiles.put("/",entries);
 
         System.out.println("path " + pathFromDocumentUri(uri));
         System.out.println("tree document id " + id);
 
-        boolean res =  listUriFilesRecursive(files,   uri, "", 0);
+        boolean res =  listUriFilesRecursive(entries,   uri, "", 0);
 
 		pw.end();
 
 		return res;
     }
 
-    private boolean listUriFilesRecursive(ArrayList<String> folderFiles, Uri _uri, String path, int p) {
+    private boolean listUriFilesRecursive(ArrayList<DirEntry> folderFiles, Uri _uri, String path, int p) {
         if (p == 6) return true;
 
         //System.out.println("Uri "+_uri);
@@ -282,16 +328,21 @@ public class SAFHelper {
         Cursor c = null;
         try {
             c = mm.getContentResolver().query(childrenUri,
-                    new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_MIME_TYPE},
+                    new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+						DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_MIME_TYPE,
+						DocumentsContract.Document.COLUMN_SIZE,DocumentsContract.Document.COLUMN_LAST_MODIFIED},
                     null, null, null);
 
             if (c == null)
                 return false;
 
             while (c.moveToNext()) {
-                final String documentId = c.getString(0);
-                final String displayName = c.getString(1);
-                final String mimeType = c.getString(2);
+                final String documentId = c.getString(c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID));
+				final String displayName = c.getString(c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME));
+				final long size = c.getLong(c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_SIZE));
+				final long modified = c.getLong(c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_LAST_MODIFIED));
+                final String mimeType = c.getString(c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE));
+
                 final boolean isDir = mimeType.equals(DocumentsContract.Document.MIME_TYPE_DIR);
                 final Uri documentUri = DocumentsContract.buildDocumentUriUsingTree(_uri, documentId);
                 final String filepath = path + "/" + displayName;
@@ -299,15 +350,27 @@ public class SAFHelper {
                 if (!isDir) {
                     fileIDs.put(filepath, documentId);
                     //System.out.println(documentId+ " "+filepath+" "+" "+mimeType+" "+documentUri);
-					folderFiles.add(displayName);
+					DirEntry dirEntry = new DirEntry();
+					dirEntry.name = displayName;
+					dirEntry.modified = modified;
+					dirEntry.size = size;
+					dirEntry.isDir = false;
+					folderFiles.add(dirEntry);
 
 					if(pw!=null) {
 						pw.notifyText("Caching: " + displayName);
 					}
                 } else {
+
 					String dirPath = filepath + "/";
-					ArrayList<String> newFolderFiles = new ArrayList<String>();
+					ArrayList<DirEntry> newFolderFiles = new ArrayList<DirEntry>();
                     fileIDs.put(dirPath, documentId);
+					DirEntry dirEntry = new DirEntry();
+					dirEntry.name = displayName;
+					dirEntry.modified = modified;
+					dirEntry.size = size;
+					dirEntry.isDir = true;
+					folderFiles.add(dirEntry);
 					dirFiles.put(dirPath,newFolderFiles);
                     //System.out.println(documentId+ " "+filepath+" "+" "+mimeType+" "+documentUri);
                     listUriFilesRecursive(newFolderFiles, documentUri, filepath, p + 1);

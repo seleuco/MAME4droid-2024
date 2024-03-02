@@ -520,8 +520,8 @@ void my_osd_interface::customize_input_type_list(std::vector<input_type_entry> &
                 entry.defseq(SEQ_TYPE_STANDARD) += (JOYCODE_BUTTON6);
                 break;
             case IPT_UI_PAUSE: //no P as Pause
-                entry.defseq(SEQ_TYPE_STANDARD) = input_code();//no P default so systems natural keboards don't hung
-                entry.defseq(SEQ_TYPE_STANDARD) |= KEYCODE_PAUSE;
+                //entry.defseq(SEQ_TYPE_STANDARD) = input_code();//no P default so systems natural keboards don't hung
+                //entry.defseq(SEQ_TYPE_STANDARD) |= KEYCODE_PAUSE;
 
                 break;
             case IPT_SERVICE: //START+A+B is service
