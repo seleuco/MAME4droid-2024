@@ -183,6 +183,7 @@ public class DialogHelper {
 							}
 						}
 					});
+
 				dialog = builder.create();
 				break;
 			case DIALOG_EXIT:

@@ -67,6 +67,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_EMU_SOUND = "PREF_EMU_SOUND";
 	final static public String PREF_EMU_SHOW_FPS = "PREF_EMU_SHOW_FPS";
 	final static public String PREF_ZOOM_TO_WINDOW = "PREF_ZOOM_TO_WINDOW";
+	final static public String PREF_ZOOM_40 = "PREF_ZOOM_40";
 	final static public String PREF_EMU_AUTO_FRAMESKIP = "PREF_EMU_AUTO_FRAMESKIP";
 	final static public String CHEATS = "CHEATS";
 	final static public String SKIP_GAMEINFO = "SKIP_GAMEINFO";
@@ -317,6 +318,10 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
 	public boolean isZoomToWindow() {
 		return getSharedPreferences().getBoolean(PREF_ZOOM_TO_WINDOW, true);
+	}
+
+	public boolean isZoomTo40() {
+		return getSharedPreferences().getBoolean(PREF_ZOOM_40, false);
 	}
 
 	public boolean isAutoFrameSkip() {

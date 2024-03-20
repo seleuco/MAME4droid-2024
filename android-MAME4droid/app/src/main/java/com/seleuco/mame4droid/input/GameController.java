@@ -166,6 +166,8 @@ public class GameController implements IController {
 	public static int[] deviceIDs = new int[MAX_DEVICES];
 	//public  static int id = 0;
 
+	boolean joystickMotion = false;
+
 	protected int[][] deviceMappings = new int[MAX_KEYS][MAX_DEVICES];
 
 	protected static SparseIntArray banDev = new SparseIntArray(50);
@@ -344,18 +346,18 @@ public class GameController implements IController {
 		if(!manageDevice) {
 
 			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-				handleControllerKey(12, event, digital_data);
+				handleControllerKey(14, event, digital_data);
 				return true;
 			}
 
 			if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
-				handleControllerKey(13, event, digital_data);
+				handleControllerKey(15, event, digital_data);
 				return true;
 			}
-
+//TODO ver en android tv START y SELEC
 			if ((event.getKeyCode() == KeyEvent.KEYCODE_BUTTON_START || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
 				|| event.getKeyCode() == KeyEvent.KEYCODE_BUTTON_SELECT) && !Emulator.isInGame() && mm.getMainHelper().isAndroidTV()) {
-				handleControllerKey(13, event, digital_data);
+				handleControllerKey(15, event, digital_data);
 				return true;
 			}
 
@@ -672,15 +674,26 @@ public class GameController implements IController {
 	}
 
 	public boolean genericMotion(MotionEvent event,int[]digital_data ) {
-
+/*
 		if (!mm.getPrefsHelper().isContollerAutodetect()) {
 			return false;
 		}
-
+*/
 		if (((event.getSource() & (InputDevice.SOURCE_CLASS_JOYSTICK | InputDevice.SOURCE_GAMEPAD)) == 0)
 			|| (event.getAction() != MotionEvent.ACTION_MOVE)) {
 			return false;
 		}
+
+		if(!joystickMotion) {
+			int dev = getDevice(event.getDevice(), true);
+			if(dev==-1) { //joystick generico no autodetectado
+				CharSequence text = "Detected generic controller. You should map it on settings! ";
+				new WarnWidget.WarnWidgetHelper(mm, text.toString(), 3, Color.YELLOW, true);
+				mm.getMainHelper().updateMAME4droid();
+			}
+			joystickMotion = true;
+		}
+
 		int historySize = event.getHistorySize();
 		for (int i = 0; i < historySize; i++) {
 			processJoystickInput(event, i,digital_data);
@@ -1318,7 +1331,7 @@ public class GameController implements IController {
 			if (deviceIDs[i] != -1)
 				numDevs++;
 		}
-		return numDevs != 0;
+		return numDevs != 0 || joystickMotion==true;
 	}
 
 }

@@ -163,7 +163,16 @@ public class MAME4droid extends Activity {
 
 			if (getPrefsHelper().getInstallationDIR() == null || prefsHelper.getROMsDIR() == null) {
 				if (DialogHelper.savedDialog == DialogHelper.DIALOG_NONE) {
-					showDialog(DialogHelper.DIALOG_ROMs);
+					if(getMainHelper().isAndroidTV() && getPrefsHelper().getInstallationDIR() == null ) {
+						getMainHelper().setInstallationDirType(MainHelper.INSTALLATION_DIR_MEDIA_FOLDER);
+						getPrefsHelper().setROMsDIR("");
+						getPrefsHelper().setSAF_Uri(null);
+						Thread t = new Thread(new Runnable() { public void run() { runMAME4droid();
+						}});
+						t.start();
+					}
+					else
+					   showDialog(DialogHelper.DIALOG_ROMs);
 				}
 			} else { //roms dir no es null es que previamente hemos puesto "" o un path especifico. Venimos del recreate y si ha cambiado el installation path hay que actuzalizarlo
 

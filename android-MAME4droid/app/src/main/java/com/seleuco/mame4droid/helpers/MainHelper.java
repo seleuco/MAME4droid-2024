@@ -957,6 +957,11 @@ galaxy sde	   --> 2560x1600 16:10
                     heightSize *= 0.93;
                 }
 
+				if(mm.getPrefsHelper().isZoomTo40() && Emulator.isInGame()){
+					widthSize *= 1.35;
+					heightSize *= 1.35;
+				}
+
             } else {
                 widthSize = emu_w;
                 heightSize = emu_h;

@@ -57,6 +57,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Process;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
@@ -72,6 +73,8 @@ import java.io.File;
 import java.nio.ByteBuffer;
 
 public class Emulator {
+
+	final static public String TAG = "EMULATOR";
 
 	//gets
 	final static public int IN_MENU = 1;
@@ -620,6 +623,20 @@ public class Emulator {
 
 			public void run() {
 
+				int tid=android.os.Process.myTid();
+				Log.d(TAG,"priority before change = " + android.os.Process.getThreadPriority(tid));
+				boolean err= false;
+				try {
+					if (mm.getPrefsHelper().getMainThreadPriority() == PrefsHelper.LOW) {
+						android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_LESS_FAVORABLE);
+					} else if (mm.getPrefsHelper().getMainThreadPriority() == PrefsHelper.NORMAL) {
+						android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE);
+					} else
+						android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DISPLAY);
+				} catch (Exception e) {
+				}
+				Log.d(TAG,"priority after change = " + android.os.Process.getThreadPriority(tid));
+
 				boolean extROM = false;
 				isEmulating = true;
 				Size sz = mm.getMainHelper().getWindowSize();
@@ -732,13 +749,14 @@ public class Emulator {
 			}
 		}, "emulatorNativeMain-Thread");
 
+/*
 		if (mm.getPrefsHelper().getMainThreadPriority() == PrefsHelper.LOW) {
 			t.setPriority(Thread.MIN_PRIORITY);
 		} else if (mm.getPrefsHelper().getMainThreadPriority() == PrefsHelper.NORMAL) {
 			t.setPriority(Thread.NORM_PRIORITY);
 		} else
 			t.setPriority(Thread.MAX_PRIORITY);
-
+*/
 		t.start();
 	}
 
