@@ -195,9 +195,18 @@
 			android:title="Return always same controller ID" android:summary="If you enable this option, multi controller support will be disabled and will always returned the same device ID when you define your controller. This is useful to persist configuration on controllers or keyboards which lose their mappings when you disconnect and connect again"
 			android:defaultValue="false" />
 
+<!--
 		<CheckBoxPreference android:key="PREF_DISABLE_RIGHT_STICK"
 			android:title="Disable right stick" android:summary="Disable right stick when controller is autodetected"
 			android:defaultValue="false" android:dependency="PREF_CONTROLLER_AUTODETECT"/>
+-->
+		<CheckBoxPreference android:key="PREF_CONTROLLER_DISABLE_BUTTONS_IN_FRONTEND"
+			android:title="Hide all buttons in frontend" android:summary="Disable all buttons in frontend when a controller is detected and is full screen"
+			android:defaultValue="false"/>
+
+		<CheckBoxPreference android:key="PREF_CONTROLLER_DISABLE_BUTTONS_IN_GAME"
+			android:title="Hide all buttons in game" android:summary="Disable all buttons in game when a controller is detected and is full screen"
+			android:defaultValue="false"/>
 
 	     <ListPreference
 			android:entries="@array/pref_dz_options"

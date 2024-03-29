@@ -111,6 +111,9 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_DEFINED_CONTROL_LAYOUT_P = "PREF_DEFINED_CONTROL_LAYOUT_P";
 
 	final static public String PREF_DISABLE_RIGHT_STICK = "PREF_DISABLE_RIGHT_STICK";
+	final static public String PREF_CONTROLLER_DISABLE_BUTTONS_IN_FRONTEND = "PREF_CONTROLLER_DISABLE_BUTTONS_IN_FRONTEND";
+	final static public String PREF_CONTROLLER_DISABLE_BUTTONS_IN_GAME = "PREF_CONTROLLER_DISABLE_BUTTONS_IN_GAME";
+
 	final static public String PREF_ANIMATED_INPUT = "PREF_ANIMATED_INPUT";
 	final static public String PREF_TOUCH_LIGHTGUN = "PREF_TOUCH_LIGHTGUN";
 	final static public String PREF_TOUCH_LIGHTGUN_FORCE = "PREF_TOUCH_LIGHTGUN_FORCE";
@@ -366,6 +369,14 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 
 	public boolean isDisabledRightStick() {
 		return getSharedPreferences().getBoolean(PREF_DISABLE_RIGHT_STICK, false);
+	}
+
+	public boolean isDisabledAllButtonsInFronted() {
+		return getSharedPreferences().getBoolean(PREF_CONTROLLER_DISABLE_BUTTONS_IN_FRONTEND, false);
+	}
+
+	public boolean isDisabledAllButtonsInGame() {
+		return getSharedPreferences().getBoolean(PREF_CONTROLLER_DISABLE_BUTTONS_IN_GAME, false);
 	}
 
 	public boolean isAnimatedInput() {

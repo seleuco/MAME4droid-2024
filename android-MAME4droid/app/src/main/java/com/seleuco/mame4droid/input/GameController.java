@@ -86,20 +86,20 @@ public class GameController implements IController {
 	};
 
 	public static int[] defaultKeyMapping = {
-		KeyEvent.KEYCODE_DPAD_UP,
-		KeyEvent.KEYCODE_DPAD_DOWN,
-		KeyEvent.KEYCODE_DPAD_LEFT,
-		KeyEvent.KEYCODE_DPAD_RIGHT,
-		KeyEvent.KEYCODE_BUTTON_B,
-		KeyEvent.KEYCODE_BUTTON_A,
-		KeyEvent.KEYCODE_BUTTON_X,
-		KeyEvent.KEYCODE_BUTTON_Y,
-		KeyEvent.KEYCODE_BUTTON_L1,
-		KeyEvent.KEYCODE_BUTTON_R1,
-		KeyEvent.KEYCODE_BUTTON_L2,
-		KeyEvent.KEYCODE_BUTTON_R2,
-		KeyEvent.KEYCODE_BUTTON_THUMBR ,
-		KeyEvent.KEYCODE_BUTTON_THUMBL,
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_DPAD_UP),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_DPAD_DOWN),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_DPAD_LEFT),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_DPAD_RIGHT),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_B),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_A),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_X),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_Y),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_L1),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_R1),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_L2),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_R2),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_THUMBR),
+		makeKeyCodeWithDeviceID(1,KeyEvent.KEYCODE_BUTTON_THUMBL),
 		KeyEvent.KEYCODE_BACK,
 		KeyEvent.KEYCODE_MENU,
 		//////
@@ -1300,6 +1300,27 @@ public class GameController implements IController {
 			detected = true;
 
 			desc = "NYKO PLAYPAD";
+		} else if (name.contains("BSP-D8")) {
+
+
+				deviceMappings[KeyEvent.KEYCODE_BUTTON_A][id] = B_VALUE;
+				deviceMappings[KeyEvent.KEYCODE_BUTTON_B][id] = A_VALUE;
+				deviceMappings[KeyEvent.KEYCODE_BUTTON_X][id] = C_VALUE;
+				deviceMappings[KeyEvent.KEYCODE_BUTTON_Y][id] = D_VALUE;
+
+				mapDPAD(id);
+				mapL1R1(id);
+				mapTHUMBS(id);
+
+				//mapSelectStart(id);
+			    deviceMappings[KeyEvent.KEYCODE_BUTTON_SELECT][id] = OPTION_VALUE ;
+			    deviceMappings[KeyEvent.KEYCODE_BUTTON_START][id] = EXIT_VALUE;
+
+				deviceMappings[KeyEvent.KEYCODE_BACK][id] = EXIT_VALUE;
+
+				desc = "BSP-D8";
+
+				detected = true;
 		}
 
 		//JOYPAD_B = X_VALUE

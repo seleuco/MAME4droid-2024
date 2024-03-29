@@ -47,6 +47,8 @@ package com.seleuco.mame4droid.input;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.MotionEvent;
 
@@ -66,7 +68,7 @@ public class TouchController implements IController {
 
 	static final int MAX_FINGERS = 20;
 
-	final byte vibrate_time = 1;//16;
+	//final byte vibrate_time = 1;//16;
 
 	protected static int[] newtouches = new int[MAX_FINGERS];
 	protected static int[] oldtouches = new int[MAX_FINGERS];
@@ -429,12 +431,8 @@ public class TouchController implements IController {
 						//System.out.println("CAMBIA STICK! "+stick_state+" != "+old_stick_state+" "+iv.getRect()+ " "+iv.getOrigRect()+" "+values.size()+"  POS:"+j+ " "+onlyStick+ " "+this);
 						mm.getInputView().invalidate(iv.getRect());
 					}
-					if (pH.isVibrate()) {
-						try {
-							Vibrator v = (Vibrator) mm.getSystemService(Context.VIBRATOR_SERVICE);
-							if (v != null) v.vibrate(vibrate_time);
-						} catch (Exception ignored) {
-						}
+					if (pH.isVibrate() && stick_state != STICK_NONE) {
+						vibrate();
 					}
 					old_stick_state = stick_state;
 				}
@@ -447,12 +445,8 @@ public class TouchController implements IController {
 						else
 							mm.getInputView().invalidate(iv.getRect());
 					}
-					if (pH.isVibrate()) {
-						try {
-							Vibrator v = (Vibrator) mm.getSystemService(Context.VIBRATOR_SERVICE);
-							if (v != null) v.vibrate(vibrate_time);
-						} catch (Exception ignored) {
-						}
+					if (pH.isVibrate()  && stick_state != STICK_NONE) {
+						vibrate();
 					}
 					old_stick_state = stick_state;
 				}
@@ -464,12 +458,8 @@ public class TouchController implements IController {
 				if (btnStates[iv.getValue()] != old_btnStates[iv.getValue()]) {
 					if (pH.isAnimatedInput())
 						mm.getInputView().invalidate(iv.getRect());
-					if (pH.isVibrate()) {
-						try {
-							Vibrator v = (Vibrator) mm.getSystemService(Context.VIBRATOR_SERVICE);
-							if (v != null) v.vibrate(15);
-						} catch (Exception ignored) {
-						}
+					if (pH.isVibrate() && btnStates[i] == BTN_PRESS_STATE) {
+						vibrate();
 					}
 					old_btnStates[iv.getValue()] = btnStates[iv.getValue()];
 				}
@@ -518,6 +508,15 @@ public class TouchController implements IController {
 				handle = true;
 			}
 			else {
+
+				if(mm.getPrefsHelper().isDisabledAllButtonsInFronted() &&
+					mm.getInputHandler().getGameController().isEnabled() && !Emulator.isInGame() )
+					return false;
+
+				if(mm.getPrefsHelper().isDisabledAllButtonsInGame() &&
+					mm.getInputHandler().getGameController().isEnabled() && Emulator.isInGame() )
+					return false;
+
 				handle = true;
 				int n;
 				if (mm.getInputHandler().isHideTouchController() ||
@@ -527,10 +526,6 @@ public class TouchController implements IController {
 					n = 0;
 				} else if (Emulator.isSaveorload()) {
 					n = 5;
-					/*if(mm.getPrefsHelper().getNumButtons() > 4)
-						n = 5;
-					else
-					    n = 4;*/
 				}else if (!Emulator.isInGame() ){
 					if(mm.getPrefsHelper().getNumButtons() > 2)
 						n = mm.getPrefsHelper().getNumButtons();
@@ -538,12 +533,6 @@ public class TouchController implements IController {
 						n = 0;
 					else
 						n = 2;
-				//n=6;//all buttons
-			    /*} else if(Emulator.isInGame() && Emulator.isInMenu()){
-					if(mm.getPrefsHelper().getNumButtons() > 2)
-						n = mm.getPrefsHelper().getNumButtons();
-					else
-						n = 2;*/
 				} else {
 					n = mm.getPrefsHelper().getNumButtons();
 					if (n == -1) {
@@ -552,7 +541,10 @@ public class TouchController implements IController {
 						else if (n <= 4) n = 4;
 						else n = 6;
 					}
+					if(Emulator.isInMenu() && n < 2)
+						n = 2;
 				}
+
 				int b = v.getValue();
 				if (b == IController.BTN_D && n < 4) handle=false;
 				if (b == IController.BTN_C && n < 3) handle=false;
@@ -736,4 +728,11 @@ public class TouchController implements IController {
 		}
 	}
 
+	protected void vibrate() {
+		Vibrator vibrator = (Vibrator) mm.getSystemService(Context.VIBRATOR_SERVICE);
+		if (vibrator == null) return;
+		vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+		//vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+		//vibrator.vibrate(VibrationEffect.createOneShot(1L, 180));
+	}
 }

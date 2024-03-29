@@ -396,7 +396,7 @@ public class MainHelper {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						throw new RuntimeException(e);
+
 					}
 					mm.showDialog(DialogHelper.DIALOG_INFO);
 				}
@@ -821,8 +821,8 @@ galaxy sde	   --> 2560x1600 16:10
             mm.getDialogHelper()
                     .setInfoMsg(
                             "When MAME4droid is first run, it will create a folder structure for you on the internal memory of your Android device. This folder contains all the other folders MAME uses as well as some basic configuration files."
-                                    + "Since MAME4droid does not come with game ROM files, you will need to copy them to the selected or '/storage/emulated/0/Android/media/com.seleuco.mame4d2024/roms' folder (" +
-                                    "the one that applies) yourself. These should be properly named, ZIPped MAME v0.263 ROMs files with the filenames in all lower case.\n\nImportant: You should define or map your Android TV game controller on 'options/settings/input/External controller/define Keys' to avoid this help screen constantly showing if the controller is not auto detected.\n\n"
+                                    + "Since MAME4droid does not come with game ROM files, you will need to copy them to (You can change it in options to external storage if your device allows it) '/storage/emulated/0/Android/media/com.seleuco.mame4d2024/roms' folder (" +
+                                    "the one that applies) yourself. These should be properly named, ZIPped MAME v0.264 ROMs files with the filenames in all lower case.\n\nImportant: You should define or map your Android TV game controller on 'options/settings/input/External controller/define Keys' to avoid this help screen constantly showing if the controller is not auto detected.\n\n"
                                     + "Controls: Buttons A,B,C,D,E,F on the controller map to buttons Button MAME 1 to 6 buttons."
                                     + " Coin button inserts coin/adds credit.START button starts 1P game. A+START is fast forward. B+START is toggle UI controls. START+A+B is service mode. SELECT+A+B is soft reset. Use SELECT(coin) or START for UI navigation."
                                     + "R1 + START loads a save state. L1 + START saves a save state. START + SELECT when gaming accesses the game's MAME menu (dip switches, etc)...");
