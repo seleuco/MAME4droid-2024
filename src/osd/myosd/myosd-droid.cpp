@@ -129,6 +129,8 @@ static int myosd_plugin_autofire = 0;
 static int myosd_plugin_inputmacro = 0;
 static int myosd_plugin_hiscore = 0;
 
+static int myosd_ui_mouse_as_pointer = 0;
+
 //vector options
 static int myosd_droid_vector_beam2x = 1;
 static int myosd_droid_vector_flicker = 0;
@@ -432,6 +434,9 @@ void myosd_droid_setMyValue(int key, int i, int value) {
         case com_seleuco_mame4droid_Emulator_HISCORE:
             myosd_plugin_hiscore = value;
             break;
+        case com_seleuco_mame4droid_Emulator_UI_MOUSE_AS_POINTER:
+            myosd_ui_mouse_as_pointer = value;
+            break;
     }
 }
 
@@ -591,13 +596,19 @@ int myosd_droid_setKeyData(int keyCode,int keyAction,char keyChar) {
 
 int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float cy) {
 
-    /*
+/*
     __android_log_print(ANDROID_LOG_DEBUG,
                         "MAME4droid.so", "set mouseData %d %d %d %f %f -> %d %d",i, mouseAction,
                         button, cx, cy, (int)cur_x_mouse, (int)cur_y_mouse);
 */
+    if(i>4) return 1;
+
+    static bool bt1_double_click = false;
+
     if(mouseAction == com_seleuco_mame4droid_Emulator_MOUSE_MOVE)
     {
+        //__android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "MOUSEB MOUSE MOVE!!!!");
+
         cur_x_mouse = MAX(0, MIN(cx + cur_x_mouse, myosd_droid_video_width));
         cur_y_mouse = MAX(0, MIN(cy + cur_y_mouse, myosd_droid_video_height));
 
@@ -635,9 +646,6 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
 
         if(button==1) {
 
-            ev.type = ev.MYOSD_MOUSE_BT1_DOWN;
-            myosd_pushEvent(ev);
-
             static float last_click_x = 0;
             static float last_click_y = 0;
             static std::chrono::steady_clock::time_point last_click_time = std::chrono::steady_clock::time_point::min();
@@ -658,8 +666,7 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
                 && (cur_y_mouse >= (last_click_y - offsetY) && cur_y_mouse <= (last_click_y + offsetY)))
             {
                 last_click_time = std::chrono::time_point<std::chrono::steady_clock>::min();
-                ev.type = ev.MYOSD_MOUSE_BT1_DBLCLK;
-                myosd_pushEvent(ev);
+                bt1_double_click = true;
                 __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "MOUSEB PULSO BT1 DBLCLK!!!!");
             }
             else
@@ -668,6 +675,10 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
                 last_click_x = cur_x_mouse;
                 last_click_y = cur_y_mouse;
             }
+
+            ev.type = ev.MYOSD_MOUSE_BT1_DOWN;
+            ev.data.mouse_data.double_click = bt1_double_click;
+            myosd_pushEvent(ev);
 
             mouse_status[i] |= MYOSD_A;
             __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "MOUSEB PULSO BT1!");
@@ -692,6 +703,8 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
         if(button==1)
         {
             ev.type = ev.MYOSD_MOUSE_BT1_UP;
+            ev.data.mouse_data.double_click = bt1_double_click;
+            bt1_double_click = false;
             myosd_pushEvent(ev);
             mouse_status[i] &= ~MYOSD_A;
         }
@@ -886,12 +899,17 @@ static void droid_init(void) {
         int efective_reswidth = MAX(MAX(reswidth,reswidth_osd),640);
         int efective_resheight = MAX(MAX(resheight,resheight_osd),480);
 
-        if (screenbuffer1 == nullptr)
-            screenbuffer1 = (unsigned char *) malloc(efective_reswidth * efective_resheight * PIXEL_PITCH);
+        if (screenbuffer1 == nullptr) {
+            screenbuffer1 = (unsigned char *) malloc(
+                    efective_reswidth * efective_resheight * PIXEL_PITCH);
+            __android_log_print(ANDROID_LOG_DEBUG, "MAME4droid.so", "init creating screenbuffer1 %d %d",efective_reswidth,efective_resheight);
+        }
 
-        if(myosd_droid_dbl_buffer && screenbuffer2==NULL)
-            screenbuffer2 = (unsigned char *)malloc(efective_reswidth * efective_resheight * PIXEL_PITCH);
-
+        if(myosd_droid_dbl_buffer && screenbuffer2==NULL) {
+            screenbuffer2 = (unsigned char *) malloc(
+                    efective_reswidth * efective_resheight * PIXEL_PITCH);
+            __android_log_print(ANDROID_LOG_DEBUG, "MAME4droid.so", "init creating screenbuffer2 %d %d",efective_reswidth,efective_resheight);
+        }
         myosd_screen_ptr  = myosd_droid_dbl_buffer ? screenbuffer2 : screenbuffer1;
 
         if (initVideo_callback != nullptr)
@@ -1342,6 +1360,10 @@ int myosd_droid_main(int argc, char **argv) {
             plugin_list+="inputmacro,";
 
         args[n] =  plugin_list.c_str();n++;
+    }
+
+    if(myosd_ui_mouse_as_pointer) {
+        args[n] = "-noui_mouse";n++;
     }
 
     if(0)

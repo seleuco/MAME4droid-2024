@@ -244,7 +244,7 @@ public class GLRendererES32 implements Renderer, IGLRenderer {
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		Log.v("mm", "sizeChanged: ==> new Viewport: [" + w + "," + h + "]");
+		Log.v(TAG, "sizeChanged: ==> new Viewport: [" + w + "," + h + "]");
 
 		width = w;
 		height = h;

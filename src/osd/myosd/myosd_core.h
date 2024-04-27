@@ -285,7 +285,6 @@ typedef struct {
         MYOSD_MOUSE_MOVE_EVENT,
         MYOSD_MOUSE_BT1_DOWN,
         MYOSD_MOUSE_BT1_UP,
-        MYOSD_MOUSE_BT1_DBLCLK,
         MYOSD_MOUSE_BT2_DOWN,
         MYOSD_MOUSE_BT2_UP,
     } type;
@@ -293,6 +292,7 @@ typedef struct {
         char key_char;
         struct {
             int x, y;
+            bool double_click;
         } mouse_data;
     } data;
 } myosd_inputevent;

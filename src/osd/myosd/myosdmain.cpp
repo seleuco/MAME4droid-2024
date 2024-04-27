@@ -177,30 +177,81 @@ extern "C" void myosd_speed_hack()
 //============================================================
 extern "C" void myosd_pushEvent(myosd_inputevent event)
 {
+    static unsigned buttons = 0;
+
     if(osdInterface!= nullptr && osdInterface->isMachine() && osdInterface->target()!= nullptr) {
 
         switch(event.type) {
             case event.MYOSD_KEY_EVENT:
                 osdInterface->machine().ui_input().push_char_event(osdInterface->target(), event.data.key_char);
                 break;
-            case event.MYOSD_MOUSE_MOVE_EVENT:
-                osdInterface->machine().ui_input().push_mouse_move_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+            case event.MYOSD_MOUSE_MOVE_EVENT: {
+                //osdInterface->machine().ui_input().push_mouse_move_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+                osdInterface->machine().ui_input().push_pointer_update(
+                        osdInterface->target(),
+                        osd::ui_event_handler::pointer::MOUSE,
+                        -1,
+                        1,
+                        event.data.mouse_data.x, event.data.mouse_data.y,
+                        0, 0, 0, 0);
                 break;
-            case event.MYOSD_MOUSE_BT1_DBLCLK:
-                osdInterface->machine().ui_input().push_mouse_double_click_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+            }
+            case event.MYOSD_MOUSE_BT1_DOWN: {
+                //osdInterface->machine().ui_input().push_mouse_down_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+                unsigned pressed = (1) << 0;
+                buttons |= pressed;
+                osdInterface->machine().ui_input().push_pointer_update(
+                        osdInterface->target(),
+                        osd::ui_event_handler::pointer::MOUSE,
+                        -1,
+                        1,
+                        event.data.mouse_data.x, event.data.mouse_data.y,
+                        buttons, pressed, 0, event.data.mouse_data.double_click ?  2 : 1);
+
                 break;
-            case event.MYOSD_MOUSE_BT1_DOWN:
-                osdInterface->machine().ui_input().push_mouse_down_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+            }
+            case event.MYOSD_MOUSE_BT1_UP: {
+                //osdInterface->machine().ui_input().push_mouse_up_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+                unsigned released = (1) << 0;
+                buttons &= ~released;
+                osdInterface->machine().ui_input().push_pointer_update(
+                        osdInterface->target(),
+                        osd::ui_event_handler::pointer::MOUSE,
+                        -1,
+                        1,
+                        event.data.mouse_data.x, event.data.mouse_data.y,
+                        buttons, 0, released, event.data.mouse_data.double_click ?  2 : 1);
+
                 break;
-            case event.MYOSD_MOUSE_BT1_UP:
-                osdInterface->machine().ui_input().push_mouse_up_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+            }
+            case event.MYOSD_MOUSE_BT2_DOWN: {
+                //osdInterface->machine().ui_input().push_mouse_rdown_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+                unsigned pressed = (1) << 1;
+                buttons |= pressed;
+                osdInterface->machine().ui_input().push_pointer_update(
+                        osdInterface->target(),
+                        osd::ui_event_handler::pointer::MOUSE,
+                        -1,
+                        1,
+                        event.data.mouse_data.x, event.data.mouse_data.y,
+                        buttons, pressed, 0, 1);
+
                 break;
-            case event.MYOSD_MOUSE_BT2_DOWN:
-                osdInterface->machine().ui_input().push_mouse_rdown_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+            }
+            case event.MYOSD_MOUSE_BT2_UP: {
+                //osdInterface->machine().ui_input().push_mouse_rup_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
+                unsigned released = (1) << 1;
+                buttons &= ~released;
+                osdInterface->machine().ui_input().push_pointer_update(
+                        osdInterface->target(),
+                        osd::ui_event_handler::pointer::MOUSE,
+                        -1,
+                        1,
+                        event.data.mouse_data.x, event.data.mouse_data.y,
+                        buttons, 0, released, 1);
+
                 break;
-            case event.MYOSD_MOUSE_BT2_UP:
-                osdInterface->machine().ui_input().push_mouse_rup_event(osdInterface->target(), event.data.mouse_data.x, event.data.mouse_data.y);
-                break;
+            }
             default:
                 osd_printf_error("has unknown myosd event type (%u)\n",event.type);
         }
