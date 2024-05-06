@@ -127,7 +127,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	final static public String PREF_VIBRATE = "PREF_VIBRATE";
 	final static public String PREF_MOUSE = "PREF_MOUSE";
 	final static public String PREF_TOUCH_MOUSE = "PREF_TOUCH_MOUSE";
-	final static public String PREF_TOUCH_MOUSE_AS_POINTER = "PREF_TOUCH_MOUSE_AS_POINTER";
+	final static public String PREF_TOUCH_UI = "PREF_TOUCH_UI";
 	final static public String PREF_TOUCH_GAME_MOUSE = "PREF_TOUCH_GAME_MOUSE";
 	final static public String PREF_TOUCH_GAME_MOUSE_FORCE = "PREF_TOUCH_GAME_MOUSE_FORCE";
 	final static public String PREF_TOUCH_GAME_MOUSE_HIDE_CONTROLLER = "PREF_TOUCH_GAME_MOUSE_HIDE_CONTROLLER";
@@ -423,8 +423,8 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 		return getSharedPreferences().getBoolean(PREF_TOUCH_MOUSE, true);
 	}
 
-	public boolean isTouchMouseAsPointer() {
-		return getSharedPreferences().getBoolean(PREF_TOUCH_MOUSE_AS_POINTER, true);
+	public boolean isTouchUI() {
+		return getSharedPreferences().getBoolean(PREF_TOUCH_UI, true);
 	}
 
 	public boolean isTouchGameMouseForced() {

@@ -39,6 +39,7 @@ void myosd_droid_setDigitalData(int i, unsigned long pad_status);
 void myosd_droid_setAnalogData(int i, float v1, float v2);
 int myosd_droid_setKeyData(int keyCode,int keyAction,char keyChar);
 int myosd_droid_setMouseData(int i, int mouseAction,int button,float x, float y);
+int myosd_droid_setTouchData(int i, int touchAction,float x, float y);
 
 int myosd_droid_main  (int argc, char **argv);
 

@@ -60,6 +60,7 @@ void (*setSAFCallbacks)(void *func1,void *func2,void *func3,void *func4) = NULL;
 
 int  (*setKeyData)(int keyCode, int keyAction, char keyChar)=NULL;
 int  (*setMouseData)(int i, int mouseAction, int button, float x, float y)=NULL;
+int  (*setTouchData)(int i, int touchAction, float x, float y)=NULL;
 
 /* Callbacks to Android */
 jmethodID android_dumpVideo;
@@ -149,6 +150,9 @@ static void load_lib(const char *str)
 
     setMouseData = dlsym(libdl, "myosd_droid_setMouseData");
     __android_log_print(ANDROID_LOG_DEBUG, "mame4droid-jni", "myosd_droid_setMouseData %d\n", setMouseData != NULL);
+
+    setTouchData = dlsym(libdl, "myosd_droid_setTouchData");
+    __android_log_print(ANDROID_LOG_DEBUG, "mame4droid-jni", "myosd_droid_setTouchData %d\n", setTouchData != NULL);
 }
 
 void myJNI_initVideo(void *buffer, int width, int height, int pitch)
@@ -674,14 +678,24 @@ JNIEXPORT jint JNICALL Java_com_seleuco_mame4droid_Emulator_setMouseData
 #ifdef DEBUG
     //__android_log_print(ANDROID_LOG_DEBUG, "mame4droid-jni", "setMouseData %d %d %d",mouseAction, cx, cy);
 #endif
-    if(setKeyData!=NULL)
+    if(setMouseData!=NULL)
         return setMouseData(i, mouseAction, button , cx, cy);
     else
         __android_log_print(ANDROID_LOG_WARN, "mame4droid-jni", "error no setMouseData!");
     return 0;
 }
 
-
+JNIEXPORT jint JNICALL Java_com_seleuco_mame4droid_Emulator_setTouchData
+        (JNIEnv *env, jclass c, jint i, jint touchAction, jfloat cx, jfloat cy){
+#ifdef DEBUG
+    __android_log_print(ANDROID_LOG_DEBUG, "mame4droid-jni", "setTouchData %d %d %d",touchAction, cx, cy);
+#endif
+    if(setTouchData!=NULL)
+        return setTouchData(i, touchAction, cx, cy);
+    else
+        __android_log_print(ANDROID_LOG_WARN, "mame4droid-jni", "error no setTouchData!");
+    return 0;
+}
 
 
 

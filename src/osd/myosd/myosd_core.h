@@ -287,13 +287,17 @@ typedef struct {
         MYOSD_MOUSE_BT1_UP,
         MYOSD_MOUSE_BT2_DOWN,
         MYOSD_MOUSE_BT2_UP,
+        MYOSD_FINGER_MOVE,
+        MYOSD_FINGER_DOWN,
+        MYOSD_FINGER_UP,
+
     } type;
     union {
         char key_char;
         struct {
             int x, y;
-            bool double_click;
-        } mouse_data;
+            bool double_action;
+        } pointer_data;
     } data;
 } myosd_inputevent;
 

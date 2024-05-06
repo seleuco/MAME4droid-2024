@@ -228,10 +228,6 @@
 				android:title="Touch mouse" android:summary="Enable touch mouse support"
 				android:defaultValue="True" />
 
-			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_MOUSE_AS_POINTER"
-				android:title="Touch mouse as pointer" android:summary="Enable to use touch mouse as pointer in frontend instead classic mouse."
-				android:defaultValue="True" android:dependency="PREF_TOUCH_MOUSE"/>
-
 			<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_GAME_MOUSE"
 				android:title="Gaming touch mouse" android:summary="Enable to use touch mouse for games (autodetected)."
 				android:defaultValue="True" android:dependency="PREF_TOUCH_MOUSE"/>
@@ -339,6 +335,10 @@
 			android:key="PREF_STICK_TYPE"
 			android:entryValues="@array/pref_stick_values"
 			android:defaultValue="-1" />
+
+		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_TOUCH_UI"
+			android:title="MAME touch UI" android:summary="Enable support for navigating MAME menus / arworks using the touch screen"
+			android:defaultValue="True"/>
 
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn  android:key="PREF_NODEADZONEANDSAT"
 			android:title="Override SAT and DZ" android:summary="Override MAME deadzone and saturation so touch stick and lightgun are accurate"

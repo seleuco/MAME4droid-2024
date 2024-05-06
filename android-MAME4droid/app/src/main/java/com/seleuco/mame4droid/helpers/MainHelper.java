@@ -535,9 +535,6 @@ public class MainHelper {
 		Emulator.setValue(Emulator.HISCORE, mm.getPrefsHelper()
 			.isHiscore() ? 1 : 0);
 
-		Emulator.setValue(Emulator.UI_MOUSE_AS_POINTER, mm.getPrefsHelper()
-			.isTouchMouseAsPointer() ? 1 : 0);
-
         Emulator.setValue(Emulator.VBEAM2X, mm.getPrefsHelper()
                 .isVectorBeam2x() ? 1 : 0);
         Emulator.setValue(Emulator.VFLICKER, mm.getPrefsHelper()

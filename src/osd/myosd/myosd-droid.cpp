@@ -129,8 +129,6 @@ static int myosd_plugin_autofire = 0;
 static int myosd_plugin_inputmacro = 0;
 static int myosd_plugin_hiscore = 0;
 
-static int myosd_ui_mouse_as_pointer = 0;
-
 //vector options
 static int myosd_droid_vector_beam2x = 1;
 static int myosd_droid_vector_flicker = 0;
@@ -434,9 +432,6 @@ void myosd_droid_setMyValue(int key, int i, int value) {
         case com_seleuco_mame4droid_Emulator_HISCORE:
             myosd_plugin_hiscore = value;
             break;
-        case com_seleuco_mame4droid_Emulator_UI_MOUSE_AS_POINTER:
-            myosd_ui_mouse_as_pointer = value;
-            break;
     }
 }
 
@@ -614,8 +609,8 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
 
         myosd_inputevent ev;
         ev.type = ev.MYOSD_MOUSE_MOVE_EVENT;
-        ev.data.mouse_data.x = cur_x_mouse;
-        ev.data.mouse_data.y = cur_y_mouse;
+        ev.data.pointer_data.x = cur_x_mouse;
+        ev.data.pointer_data.y = cur_y_mouse;
         myosd_pushEvent(ev);
 
         if(!myosd_droid_inMenu) {
@@ -634,15 +629,15 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
 
         myosd_inputevent ev;
         ev.type = ev.MYOSD_MOUSE_MOVE_EVENT;
-        ev.data.mouse_data.x = cur_x_mouse;
-        ev.data.mouse_data.y = cur_y_mouse;
+        ev.data.pointer_data.x = cur_x_mouse;
+        ev.data.pointer_data.y = cur_y_mouse;
         myosd_pushEvent(ev);
     }
     else if(mouseAction == com_seleuco_mame4droid_Emulator_MOUSE_BTN_DOWN)
     {
         myosd_inputevent ev;
-        ev.data.mouse_data.x = cur_x_mouse;
-        ev.data.mouse_data.y = cur_y_mouse;
+        ev.data.pointer_data.x = cur_x_mouse;
+        ev.data.pointer_data.y = cur_y_mouse;
 
         if(button==1) {
 
@@ -677,7 +672,7 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
             }
 
             ev.type = ev.MYOSD_MOUSE_BT1_DOWN;
-            ev.data.mouse_data.double_click = bt1_double_click;
+            ev.data.pointer_data.double_action = bt1_double_click;
             myosd_pushEvent(ev);
 
             mouse_status[i] |= MYOSD_A;
@@ -697,13 +692,13 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
     else if(mouseAction == com_seleuco_mame4droid_Emulator_MOUSE_BTN_UP)
     {
         myosd_inputevent ev;
-        ev.data.mouse_data.x = cur_x_mouse;
-        ev.data.mouse_data.y = cur_y_mouse;
+        ev.data.pointer_data.x = cur_x_mouse;
+        ev.data.pointer_data.y = cur_y_mouse;
 
         if(button==1)
         {
             ev.type = ev.MYOSD_MOUSE_BT1_UP;
-            ev.data.mouse_data.double_click = bt1_double_click;
+            ev.data.pointer_data.double_action = bt1_double_click;
             bt1_double_click = false;
             myosd_pushEvent(ev);
             mouse_status[i] &= ~MYOSD_A;
@@ -718,6 +713,76 @@ int myosd_droid_setMouseData(int i, int mouseAction, int button, float cx, float
         {
             mouse_status[i] &= ~MYOSD_C;
         }
+    }
+
+    return 1;
+}
+
+int myosd_droid_setTouchData(int i, int touchAction,  float cx, float cy) {
+/*
+    __android_log_print(ANDROID_LOG_DEBUG,
+                        "MAME4droid.so", "set touchData %d %d %f %f -> %d %d",i, touchAction,
+                        cx, cy, (int)cur_x_mouse, (int)cur_y_mouse);
+*/
+    static bool double_tap = false;
+
+    if(touchAction == com_seleuco_mame4droid_Emulator_FINGER_MOVE)
+    {
+        myosd_inputevent ev;
+        ev.type = ev.MYOSD_FINGER_MOVE;
+        ev.data.pointer_data.x = cx;
+        ev.data.pointer_data.y = cy;
+        myosd_pushEvent(ev);
+
+    } else if (touchAction == com_seleuco_mame4droid_Emulator_FINGER_DOWN) {
+        myosd_inputevent ev;
+        ev.data.pointer_data.x = cx;
+        ev.data.pointer_data.y = cy;
+
+        static float last_click_x = 0;
+        static float last_click_y = 0;
+        static std::chrono::steady_clock::time_point last_click_time = std::chrono::steady_clock::time_point::min();
+
+        auto double_click_speed = std::chrono::milliseconds(250);
+        auto const click = std::chrono::steady_clock::now();
+
+        int offsetX = 4;
+        int offsetY = 4;
+        if (cx != -1 && cy != -1) {
+            offsetX = cx;
+            offsetY = cy;
+            double_click_speed = std::chrono::milliseconds(400);
+        }
+
+        if (click < (last_click_time + double_click_speed)
+            && (cx >= (last_click_x - offsetX) && cx <= (last_click_x + offsetX))
+            &&
+            (cy >= (last_click_y - offsetY) && cy <= (last_click_y + offsetY))) {
+            last_click_time = std::chrono::time_point<std::chrono::steady_clock>::min();
+            double_tap = true;
+            __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "TOUCH DBLCLK!!!!");
+        } else {
+            last_click_time = click;
+            last_click_x = cx;
+            last_click_y = cy;
+        }
+
+        ev.type = ev.MYOSD_FINGER_DOWN;
+        ev.data.pointer_data.double_action = double_tap;
+        myosd_pushEvent(ev);
+
+        __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "TOUCH PULSO BT1!");
+
+    } else if (touchAction == com_seleuco_mame4droid_Emulator_FINGER_UP)
+    {
+        myosd_inputevent ev;
+        ev.data.pointer_data.x = cx;
+        ev.data.pointer_data.y = cy;
+
+        ev.type = ev.MYOSD_FINGER_UP;
+        ev.data.pointer_data.double_action = double_tap;
+        double_tap = false;
+        myosd_pushEvent(ev);
     }
 
     return 1;
@@ -1360,10 +1425,6 @@ int myosd_droid_main(int argc, char **argv) {
             plugin_list+="inputmacro,";
 
         args[n] =  plugin_list.c_str();n++;
-    }
-
-    if(myosd_ui_mouse_as_pointer) {
-        args[n] = "-noui_mouse";n++;
     }
 
     if(0)

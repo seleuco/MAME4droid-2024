@@ -66,6 +66,7 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 	protected TouchController touchController = new TouchController();
 	protected TouchStick touchStick = new TouchStick();
 	protected TouchMouse touchMouse = new TouchMouse();
+	protected TouchPointer touchPointer = new TouchPointer();
 	protected TouchLightgun touchLightgun = new TouchLightgun();
 	protected GameController gameController = new GameController();
 
@@ -78,6 +79,7 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 	public TouchController getTouchController() {return touchController;}
 	public TouchStick getTouchStick() {return touchStick;}
 	public TouchMouse getTouchMouse() {return touchMouse;}
+	public TouchPointer getTouchPointer() {return touchPointer;}
 	public TouchLightgun getTouchLightgun() {return touchLightgun;}
 	public Mouse getMouse() {return mouse;}
 	public Keyboard getKeyboard() {return keyboard;}
@@ -101,6 +103,7 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 		touchController.setMAME4droid(mm);
 		touchStick.setMAME4droid(mm);
 		touchMouse.setMAME4droid(mm);
+		touchPointer.setMAME4droid(mm);
 		touchLightgun.setMAME4droid(mm);
 		mouse.setMAME4droid(mm);
 		keyboard.setMAME4droid(mm);
@@ -128,6 +131,9 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 		Emulator.setMouseData(0, Emulator.MOUSE_BTN_UP, 1, -1, -1);
 		Emulator.setMouseData(0, Emulator.MOUSE_BTN_UP, 2, -1, -1);
 		Emulator.setMouseData(0, Emulator.MOUSE_BTN_UP, 3, -1, -1);
+
+		Emulator.setTouchData(0, Emulator.FINGER_DOWN, -1, -1);
+		Emulator.setTouchData(0, Emulator.FINGER_UP, -1, -1);
 
 		touchStick.reset();
     }
@@ -186,10 +192,17 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 			}
 
 			if(mm.getPrefsHelper().isTouchMouseEnabled()) {
-				if(!Emulator.isInGame() || Emulator.isInMenu() || mm.getPrefsHelper().isTouchGameMouse()) {
-					touchMouse.handleTouchMouse(v, event);
-					return true;
+				if((mm.getPrefsHelper().isTouchGameMouse() && !Emulator.isInMenu()) ||
+					(!mm.getPrefsHelper().isTouchUI()  && (!Emulator.isInGame() || Emulator.isInMenu()))
+				) {
+						touchMouse.handleTouchMouse(v, event);
+						return true;
 				}
+			}
+
+			if(mm.getPrefsHelper().isTouchUI()) {
+				touchPointer.handleTouchPointer(v,event);
+				return true;
 			}
 
             return false;
@@ -219,13 +232,22 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
 			}
 			else
 
-			if(!handled && mm.getPrefsHelper().isTouchMouseEnabled()
+			if(!handled && (mm.getPrefsHelper().isTouchMouseEnabled() || mm.getPrefsHelper().isTouchUI())
 				&& !(mm.getMainHelper().getscrOrientation() == Configuration.ORIENTATION_PORTRAIT && !mm.getPrefsHelper().isPortraitFullscreen())
 			) {
-				 if(!Emulator.isInGame() || Emulator.isInMenu() || mm.getPrefsHelper().isTouchGameMouse()) {
-					 touchMouse.handleTouchMouse(v, event);
-					 return true;
-				 }
+				if(mm.getPrefsHelper().isTouchMouseEnabled()) {
+					if ((mm.getPrefsHelper().isTouchGameMouse() && !Emulator.isInMenu()) ||
+						(!mm.getPrefsHelper().isTouchUI() && (!Emulator.isInGame() || Emulator.isInMenu()))
+					) {
+						touchMouse.handleTouchMouse(v, event);
+						return true;
+					}
+				}
+
+				if(mm.getPrefsHelper().isTouchUI()) {
+					touchPointer.handleTouchPointer(v,event);
+					return true;
+				}
 			}
 
             //return handled;
@@ -244,10 +266,17 @@ public class InputHandler implements OnTouchListener, OnKeyListener {
                 }
 
 				if(mm.getPrefsHelper().isTouchMouseEnabled()) {
-					if(!Emulator.isInGame() || Emulator.isInMenu() || mm.getPrefsHelper().isTouchGameMouse()) {
+					if((mm.getPrefsHelper().isTouchGameMouse() && !Emulator.isInMenu()) ||
+						(!mm.getPrefsHelper().isTouchUI()  && (!Emulator.isInGame() || Emulator.isInMenu()))
+					) {
 						touchMouse.handleTouchMouse(v, event);
 						return true;
 					}
+				}
+
+				if(mm.getPrefsHelper().isTouchUI()) {
+					touchPointer.handleTouchPointer(v,event);
+					return true;
 				}
 
                 return false;

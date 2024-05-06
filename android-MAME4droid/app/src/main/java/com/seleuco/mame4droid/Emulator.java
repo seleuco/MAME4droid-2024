@@ -138,8 +138,6 @@ public class Emulator {
 	final static public int AUTOFIRE = 71;
 	final static public int INPUTMACRO = 72;
 	final static public int HISCORE = 73;
-	final static public int UI_MOUSE_AS_POINTER = 74;
-
 
 	//set str
 	final static public int SAF_PATH = 1;
@@ -160,6 +158,11 @@ public class Emulator {
 	final static public int MOUSE_BTN_DOWN = 2;
 	final static public int MOUSE_BTN_UP = 3;
 	final static public int MOUSE_MOVE_POINTER = 4;
+
+	//TOUCH ACTIONS
+	final static public int FINGER_MOVE = 1;
+	final static public int FINGER_DOWN = 2;
+	final static public int FINGER_UP = 3;
 
 	private static MAME4droid mm = null;
 
@@ -834,5 +837,6 @@ public class Emulator {
 	public static native void setValueStr(int key, int i, String value);
 	public static native int setKeyData(int keyCode, int keyAction, char keyChar);
 	public static native int setMouseData(int i, int mouseAction, int button, float cx, float cy);
+	public static native int setTouchData(int i, int touchAction, float cx, float cy);
 
 }

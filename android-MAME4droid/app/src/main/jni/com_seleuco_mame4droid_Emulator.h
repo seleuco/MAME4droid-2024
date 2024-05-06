@@ -93,8 +93,6 @@ extern "C" {
 #define com_seleuco_mame4droid_Emulator_INPUTMACRO 72L
 #undef com_seleuco_mame4droid_Emulator_HISCORE
 #define com_seleuco_mame4droid_Emulator_HISCORE 73L
-#undef com_seleuco_mame4droid_Emulator_UI_MOUSE_AS_POINTER
-#define com_seleuco_mame4droid_Emulator_UI_MOUSE_AS_POINTER 74L
 #undef com_seleuco_mame4droid_Emulator_SAF_PATH
 #define com_seleuco_mame4droid_Emulator_SAF_PATH 1L
 #undef com_seleuco_mame4droid_Emulator_ROM_NAME
@@ -119,6 +117,12 @@ extern "C" {
 #define com_seleuco_mame4droid_Emulator_MOUSE_BTN_UP 3L
 #undef com_seleuco_mame4droid_Emulator_MOUSE_MOVE_POINTER
 #define com_seleuco_mame4droid_Emulator_MOUSE_MOVE_POINTER 4L
+#undef com_seleuco_mame4droid_Emulator_FINGER_MOVE
+#define com_seleuco_mame4droid_Emulator_FINGER_MOVE 1L
+#undef com_seleuco_mame4droid_Emulator_FINGER_DOWN
+#define com_seleuco_mame4droid_Emulator_FINGER_DOWN 2L
+#undef com_seleuco_mame4droid_Emulator_FINGER_UP
+#define com_seleuco_mame4droid_Emulator_FINGER_UP 3L
 /*
  * Class:     com_seleuco_mame4droid_Emulator
  * Method:    init
@@ -198,6 +202,14 @@ JNIEXPORT jint JNICALL Java_com_seleuco_mame4droid_Emulator_setKeyData
  */
 JNIEXPORT jint JNICALL Java_com_seleuco_mame4droid_Emulator_setMouseData
   (JNIEnv *, jclass, jint, jint, jint, jfloat, jfloat);
+
+/*
+ * Class:     com_seleuco_mame4droid_Emulator
+ * Method:    setTouchData
+ * Signature: (IIFF)I
+ */
+JNIEXPORT jint JNICALL Java_com_seleuco_mame4droid_Emulator_setTouchData
+  (JNIEnv *, jclass, jint, jint, jfloat, jfloat);
 
 #ifdef __cplusplus
 }
