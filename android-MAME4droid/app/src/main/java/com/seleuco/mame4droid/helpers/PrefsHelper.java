@@ -304,7 +304,7 @@ public class PrefsHelper implements OnSharedPreferenceChangeListener {
 	}
 
 	public int getOSDResolution() {
-		return Integer.valueOf(getSharedPreferences().getString(PREF_EMU_RESOLUTION_OSD, "1")).intValue();
+		return Integer.valueOf(getSharedPreferences().getString(PREF_EMU_RESOLUTION_OSD, "9")).intValue();
 	}
 
 	public boolean isWarnOnExit() {

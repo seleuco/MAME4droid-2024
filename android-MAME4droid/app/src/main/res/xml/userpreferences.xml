@@ -22,7 +22,7 @@
 			android:title='Frontend resolution'
 			android:key="PREF_EMU_RESOLUTION_OSD_2"
 			android:entryValues="@array/pref_osd_resolution_values"
-			android:defaultValue="1" />
+			android:defaultValue="9" />
 <!--
 		<com.seleuco.mame4droid.prefs.CheckBoxPrefWithWarn android:key="PREF_EMU_ONE_PROCESSOR"
 			android:title="Only one processor" android:summary="Enable it so that games that use discrete sound like dkong don't hung. Disable it to get a great improvement in 3D games that are capable of taking advantage of several threads"

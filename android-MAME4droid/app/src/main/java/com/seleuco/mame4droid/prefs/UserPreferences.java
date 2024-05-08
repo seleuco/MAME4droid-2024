@@ -302,13 +302,13 @@ public class UserPreferences extends PreferenceActivity implements OnSharedPrefe
 
 				if(enable){
 					edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "0");
-					if(!androidTv)
-					  edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "0");
+					//if(!androidTv)
+					  //edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "0");
 				}
 				else{
 					edit.putString(PrefsHelper.PREF_EMU_RESOLUTION, "1");
-					if(!androidTv)
-					   edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "1");
+					//if(!androidTv)
+					   //edit.putString(PrefsHelper.PREF_EMU_RESOLUTION_OSD, "1");
 				}
 				edit.commit();
 			}

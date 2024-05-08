@@ -725,14 +725,20 @@ int myosd_droid_setTouchData(int i, int touchAction,  float cx, float cy) {
                         cx, cy, (int)cur_x_mouse, (int)cur_y_mouse);
 */
     static bool double_tap = false;
+    static float last_cx;
+    static float last_cy;
 
     if(touchAction == com_seleuco_mame4droid_Emulator_FINGER_MOVE)
     {
-        myosd_inputevent ev;
-        ev.type = ev.MYOSD_FINGER_MOVE;
-        ev.data.pointer_data.x = cx;
-        ev.data.pointer_data.y = cy;
-        myosd_pushEvent(ev);
+        if(last_cx != cx || last_cy != cy) {
+            myosd_inputevent ev;
+            ev.type = ev.MYOSD_FINGER_MOVE;
+            ev.data.pointer_data.x = cx;
+            ev.data.pointer_data.y = cy;
+            myosd_pushEvent(ev);
+            last_cx = cx;
+            last_cy = cy;
+        }
 
     } else if (touchAction == com_seleuco_mame4droid_Emulator_FINGER_DOWN) {
         myosd_inputevent ev;
@@ -770,6 +776,8 @@ int myosd_droid_setTouchData(int i, int touchAction,  float cx, float cy) {
         ev.type = ev.MYOSD_FINGER_DOWN;
         ev.data.pointer_data.double_action = double_tap;
         myosd_pushEvent(ev);
+        last_cx = cx;
+        last_cy = cy;
 
         __android_log_print(ANDROID_LOG_DEBUG, "libMAME4droid.so", "TOUCH PULSO BT1!");
 

@@ -279,7 +279,7 @@ extern "C" void myosd_pushEvent(myosd_inputevent event)
                         1,
                         1,
                         event.data.pointer_data.x, event.data.pointer_data.y,
-                        0, 0, 1, event.data.pointer_data.double_action ? 2 : 1);
+                        0, 0, 1, event.data.pointer_data.double_action ? 2 : -1);
 /*
                 osdInterface->machine().ui_input().push_pointer_leave(
                         osdInterface->target(),
