@@ -355,6 +355,9 @@ void input_profile_init(running_machine &machine)
         if(g_input.num_keyboard)
             g_input.num_mouse = 0;//no queremos raton touch en micro
 
+        if(std::string(machine.system().type.source()).find("taito_f3") != std::string::npos && std::string(machine.system().name).find("arkretrn") == std::string::npos)
+            g_input.num_mouse = 0;//ban taito has dial why??
+
         // 8 if analog or lightgun or up or down
         if (g_input.num_ways != 4) {
             if (way8)
