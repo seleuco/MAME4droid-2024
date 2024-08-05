@@ -1,6 +1,6 @@
 # MAME4droid-2024
 
-MAME4droid 2024 is developed by David Valdeita (Seleuco) as a port of the MAME 0.267 emulator by MAMEDev and contributors. It emulates arcade games and systems like ZX Spectrum, Amstrad CPC, MSX etc. This version of MAME support over 40000 different ROMs.
+MAME4droid 2024 is developed by David Valdeita (Seleuco) as a port of the MAME 0.268 emulator by MAMEDev and contributors. It emulates arcade games and systems like ZX Spectrum, Amstrad CPC, MSX etc. This version of MAME support over 40000 different ROMs.
 
 * MAME4droid is an EMULATOR and DOES NOT INCLUDE ROMS OR COPYRIGHTED MATERIAL OF ANY KIND. 
 
@@ -14,7 +14,7 @@ With over 40000 games and system supported, some games will run better than othe
 
 After installing, place your MAME-titled zipped ROMs in /storage/emulated/0/Android/data/com.seleuco.mame4d2024/files/roms folder (Read the help to see other possibilities for reading your ROMs). 
 
-This MAME4droid version uses only '0.266' romset. 
+This MAME4droid version uses only '0.268' romset. 
 
 FEATURES 
 ========
